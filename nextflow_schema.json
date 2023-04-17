@@ -283,5 +283,27 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "index_genome": {
+            "type": "boolean",
+            "default": true
+        },
+        "aligner": {
+            "type": "string",
+            "default": "bwa-mem"
+        },
+        "bwa_index": {
+            "type": "string",
+            "default": null
+        },
+        "bwamem2_index": {
+            "type": "string",
+            "default": null
+        },
+        "fasta_fai": {
+            "type": "string",
+            "default": null
+        }
+    }
 }
