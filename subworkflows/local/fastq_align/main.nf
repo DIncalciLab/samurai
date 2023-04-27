@@ -8,6 +8,7 @@ include { BWAMEM2_MEM                 } from '../../../modules/nf-core/bwamem2/m
 
 
 
+
 // Workflow
 
 workflow FASTQ_ALIGN {
