@@ -92,6 +92,7 @@ workflow SWGSCNA {
     fasta = (params.fasta == null) ? file(params.genomes[params.genome].fasta): file(params.fasta)
     fai = (params.fasta_fai == null) ? file(params.genomes[params.genome].fasta_fai): file(params.fasta_fai)
     aligner_index = (params.index == null) ? file(params.genomes[params.genome][params.aligner]): file(params.index)
+    aligner = (params.aligner == "bwa") ? "bwa-mem": params.aligner
 
     // SUBWORKFLOW: FASTQ_ALIGN
     sort_bam = true
@@ -99,7 +100,7 @@ workflow SWGSCNA {
     FASTQ_ALIGN_DNA (
         INPUT_CHECK.out.reads,
         aligner_index,
-        params.aligner,
+        params.aligner ,
         sort_bam
     )
 
