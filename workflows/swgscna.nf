@@ -11,8 +11,8 @@ WorkflowSwgscna.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, 
-                           params.multiqc_config, 
+def checkPathParamList = [ params.input,
+                           params.multiqc_config,
                            params.fasta
                            ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
@@ -43,9 +43,9 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { INPUT_CHECK                } from '../subworkflows/local/input_check'
 include { FASTQ_ALIGN                } from '../subworkflows/local/fastq_align/main'
+include { FASTQ_ALIGN_DNA            } from '../subworkflows/nf-core/fastq_align_dna/main'
 include { PREPARE_GENOME             } from '../subworkflows/local/prepare_genome/main'
-
-include { BAM_MARKDUPLICATES_PICARD } from '../subworkflows/nf-core/bam_markduplicates_picard/main' 
+include { BAM_MARKDUPLICATES_PICARD } from '../subworkflows/nf-core/bam_markduplicates_picard/main'
 
 
 /*
@@ -83,37 +83,37 @@ workflow SWGSCNA {
 
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     INPUT_CHECK ( ch_input )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions) 
-    
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
     // MODULE: Run FastQC
     FASTQC ( INPUT_CHECK.out.reads )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
- 
-    // INDEX REFERENCE GENOME 
-    fasta = Channel.value(file(params.fasta))
 
-    PREPARE_GENOME(fasta)
-    ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
-      
+    fasta = (params.fasta == null) ? file(params.genomes[params.genome].fasta): file(params.fasta)
+    aligner_index = (params.index == null) ? file(params.genomes[params.genome][params.aligner]): file(params.index)
+
+    meta2 = [id: "aligner_index"]
+    aligner_index = [meta2, aligner_index]
+
     // SUBWORKFLOW: FASTQ_ALIGN
     sort_bam = true
-    
+
     FASTQ_ALIGN (
         INPUT_CHECK.out.reads,
-        PREPARE_GENOME.out.index.map{ it -> [[id:it[0].baseName], it] },
+        aligner_index,
         sort_bam
     )
     ch_versions = ch_versions.mix(FASTQ_ALIGN.out.versions.first())
-       
+
     // MARKDUPLICATES
     BAM_MARKDUPLICATES_PICARD (
         FASTQ_ALIGN.out.bam,
         fasta,
-        PREPARE_GENOME.out.fasta_fai 
+        PREPARE_GENOME.out.fasta_fai
     )
     ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
- 
-    // Versioni software 
+
+    // Versioni software
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
