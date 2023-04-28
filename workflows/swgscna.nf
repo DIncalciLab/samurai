@@ -90,27 +90,38 @@ workflow SWGSCNA {
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
     fasta = (params.fasta == null) ? file(params.genomes[params.genome].fasta): file(params.fasta)
+    fai = (params.fasta_fai == null) ? file(params.genomes[params.genome].fasta_fai): file(params.fasta_fai)
     aligner_index = (params.index == null) ? file(params.genomes[params.genome][params.aligner]): file(params.index)
-
-    meta2 = [id: "aligner_index"]
-    aligner_index = [meta2, aligner_index]
 
     // SUBWORKFLOW: FASTQ_ALIGN
     sort_bam = true
 
-    FASTQ_ALIGN (
+    FASTQ_ALIGN_DNA (
         INPUT_CHECK.out.reads,
         aligner_index,
+        params.aligner,
         sort_bam
     )
+
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQ_ALIGN_DNA.ch_reports.collect())
     ch_versions = ch_versions.mix(FASTQ_ALIGN.out.versions.first())
 
     // MARKDUPLICATES
     BAM_MARKDUPLICATES_PICARD (
-        FASTQ_ALIGN.out.bam,
+        FASTQ_ALIGN_DNA.out.bam,
         fasta,
-        PREPARE_GENOME.out.fasta_fai
+        fai
     )
+
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.stats.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
+        meta, metrics -> metrics })
+
     ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
 
     // Versioni software
