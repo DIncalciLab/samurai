@@ -41,11 +41,13 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+
 include { INPUT_CHECK                } from '../subworkflows/local/input_check'
 include { FASTQ_ALIGN                } from '../subworkflows/local/fastq_align/main'
 include { PREPARE_GENOME             } from '../subworkflows/local/prepare_genome/main'
+include { SOLID_BIOPSY               } from '../subworkflows/local/solid_biopsy/main'
 
-include { BAM_MARKDUPLICATES_PICARD } from '../subworkflows/nf-core/bam_markduplicates_picard/main' 
+include { BAM_MARKDUPLICATES_PICARD  } from '../subworkflows/nf-core/bam_markduplicates_picard/main' 
 
 
 /*
@@ -111,8 +113,17 @@ workflow SWGSCNA {
         fasta,
         PREPARE_GENOME.out.fasta_fai 
     )
+    
     ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
  
+    binfile = Channel.value(params.binfile)
+
+    if (params.biopsy == 'tissue') {
+
+        SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai, binfile)
+        ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())        
+    }
+
     // Versioni software 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
@@ -130,8 +141,22 @@ workflow SWGSCNA {
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    
+    
+    // MultiQC for FASTQC
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    
+    // MultiQC for BAM_MARKDUPLICATES_PICARD
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.stats.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
+        meta, metrics -> metrics })
+    
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
     MULTIQC (
         ch_multiqc_files.collect(),
