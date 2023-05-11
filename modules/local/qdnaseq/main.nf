@@ -15,7 +15,8 @@ process QDNASEQ {
     output:
         path("*_bins.bed"),                       emit: bins, optional: true
         path("*.calls.seg"),                      emit: called_segments
-        path("*.seg"),                            emit: segments
+        path("*_.seg"),                           emit: segments
+        path("*_filt.seg"),                       emit: filtered_segments
         path("*.rds"),                            emit: processed_data
         path("*_bin_plot.pdf"),                   emit: bin_plot
         path("*_segment_plot.pdf"),               emit: segment_plot, optional: true

@@ -228,12 +228,12 @@ segments <- exportSegments(called, include_calls = TRUE)
 segments_nocall <- exportSegments(called, include_calls = FALSE)
 
 savedfiles <- exportBins(called, type = "segments",
-                         file = "%s.seg",
+                         file = "%s_filt.seg",
                          format = "seg", filter = TRUE)
 
 write.table(segments, paste0(args$project, ".calls.seg"), sep = "\t",
             row.names = FALSE)
-write.table(segments_nocall, paste0(args$project, ".seg"), sep = "\t",
+write.table(segments_nocall, paste0(args$project, "_.seg"), sep = "\t",
             row.names = FALSE)
 
 message("Complete.")
