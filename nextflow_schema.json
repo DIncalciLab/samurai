@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/dincalcilab/swgscna/master/nextflow_schema.json",
-    "title": "dincalcilab/swgscna pipeline parameters",
-    "description": "",
+    "$id": "https://raw.githubusercontent.com/swgscna/master/nextflow_schema.json",
+    "title": "swgscna pipeline parameters",
+    "description": "Workflow for the identification of CNV from sWGS",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -286,12 +286,28 @@
     ],
     "properties": {
         "index_genome": {
-            "type": "boolean",
-            "default": true
+            "type": "string",
+            "default": "true"
         },
         "aligner": {
             "type": "string",
             "default": "bwa-mem"
+        },
+        "biopsy": {
+            "type": "string",
+            "default": "tissue"
+        },
+        "binsizes": {
+            "type": "integer",
+            "default": 30
+        },
+        "binfile": {
+            "type": "string",
+            "default": null
+        },
+        "purity": {
+            "type": "integer",
+            "default": 1
         },
         "bwa_index": {
             "type": "string",
