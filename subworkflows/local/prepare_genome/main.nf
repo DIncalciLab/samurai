@@ -13,9 +13,7 @@ workflow PREPARE_GENOME {
         ch_versions = Channel.empty()
         ch_index = Channel.empty()
 
-        if (params.index_genome) {
-
-            if (params.aligner == 'bwa-mem') { //if aligner is bwa-mem
+        if (params.aligner == 'bwa-mem') { //if aligner is bwa-mem
 
                 BWA_INDEX((fasta.map{ it -> [[id:it[0].baseName], it] }))
                 ch_index = ch_index.mix(BWA_INDEX.out.index)
@@ -27,9 +25,6 @@ workflow PREPARE_GENOME {
                 ch_index = ch_index.mix(BWAMEM2_INDEX.out.index)
                 ch_versions = ch_versions.mix(BWAMEM2_INDEX.out.versions.first())
             }
-        } else {
-            ch_index = ch_index.mix(ch_fasta)
-        }
 
                 
         SAMTOOLS_FAIDX(fasta.map{ it -> [[id:it[0].baseName], it] })

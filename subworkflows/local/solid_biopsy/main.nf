@@ -29,7 +29,7 @@ workflow SOLID_BIOPSY {
         ch_versions = ch_versions.mix( CONCATENATE_BIN_PLOTS.out.versions.first() )
 
         CONCATENATE_SEGMENTS(QDNASEQ.out.segments.collect(), "all_segments")
-        CONCATENATE_FILT_SEG(QDNASEQ.out.filtered_segmentsls n.collect(), "all_filtered_segments")
+        CONCATENATE_FILT_SEG(QDNASEQ.out.filtered_segments.collect(), "all_filtered_segments")
         CONCATENATE_SEG_CALLS(QDNASEQ.out.called_segments.collect(), "all_called_segments")
         
     emit:
