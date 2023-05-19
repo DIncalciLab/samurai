@@ -285,10 +285,6 @@
         }
     ],
     "properties": {
-        "index_genome": {
-            "type": "string",
-            "default": "true"
-        },
         "aligner": {
             "type": "string",
             "default": "bwa-mem"
