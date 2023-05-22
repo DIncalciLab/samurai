@@ -2,9 +2,7 @@
 include { QDNASEQ                                  } from '../../../modules/local/qdnaseq/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS } from '../../../modules/local/concatenate_pdf/main'
 include { CONCATENATE_PDF as CONCATENATE_SEG_PLOTS } from '../../../modules/local/concatenate_pdf/main'
-include { CONCATENATE_SEG as CONCATENATE_SEGMENTS  } from '../../../modules/local/concatenate_seg/main'
-include { CONCATENATE_SEG as CONCATENATE_FILT_SEG  } from '../../../modules/local/concatenate_seg/main'
-include { CONCATENATE_SEG as CONCATENATE_SEG_CALLS } from '../../../modules/local/concatenate_seg/main'
+
 
 
 
@@ -28,9 +26,27 @@ workflow SOLID_BIOPSY {
         CONCATENATE_SEG_PLOTS(QDNASEQ.out.segment_plot.collect())
         ch_versions = ch_versions.mix( CONCATENATE_BIN_PLOTS.out.versions.first() )
 
-        CONCATENATE_SEGMENTS(QDNASEQ.out.segments.collect(), "all_segments")
-        CONCATENATE_FILT_SEG(QDNASEQ.out.filtered_segments.collect(), "all_filtered_segments")
-        CONCATENATE_SEG_CALLS(QDNASEQ.out.called_segments.collect(), "all_called_segments")
+        QDNASEQ.out.segments
+                    .collectFile(storeDir: "${params.outdir}/qdnaseq/", 
+                                 name: 'all_segments.seg', 
+                                 keepHeader: true, 
+                                 skip: 1)
+                                .set{ all_seg_ch}
+
+
+        QDNASEQ.out.called_segments
+                    .collectFile(storeDir: "${params.outdir}/qdnaseq/",
+                                 name: 'all_called_segments.seg', 
+                                 keepHeader: true, 
+                                 skip: 1)
+                                 .set{ all_called_seg_ch}
+        QDNASEQ.out.summary_table
+                    .collectFile(storeDir: "${params.outdir}/qdnaseq/",
+                                 name: 'summary_qdnaseq.txt', 
+                                 keepHeader: true, 
+                                 skip: 1)
+                                 .set{ summary_all_samples}
+
         
     emit:
         bins                  = QDNASEQ.out.bins //optional: true
@@ -40,9 +56,9 @@ workflow SOLID_BIOPSY {
         bin_plot              = QDNASEQ.out.bin_plot
         segment_plot          = QDNASEQ.out.segment_plot //optional: true
         
-        all_segments          = CONCATENATE_SEGMENTS.out.all_segments
-        all_filtered_segments = CONCATENATE_FILT_SEG.out.all_segments
-        all_calls             = CONCATENATE_SEG_CALLS.out.all_segments
+        all_segments          = all_seg_ch
+        //all_filtered_segments = CONCATENATE_FILT_SEG.out.all_segments
+        all_calls             = all_called_seg_ch
         all_bin_plots         = CONCATENATE_BIN_PLOTS.out.genome_plot
         all_seg_plots         = CONCATENATE_SEG_PLOTS.out.genome_plot
 

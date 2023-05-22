@@ -206,11 +206,19 @@ saveRDS(corrected_bins, dest_rds)
 
 message("Segmenting data...")
 segmented <- segmentBins(corrected_bins, transformFun = "log2")
-                         
 
 create_pdf(output, "%s_segment_plot.pdf", args$project)
 plot(segmented)
 dev.off()
+
+# Create Summary table
+col_names <- c("sample", "nr_reads", "binsize", "expected_sd")
+summary_table <- data.frame(reads_filtered@phenoData@data, row.names = NULL)[ c("name", "total.reads", "expected.variance")]
+summary_table$expected.variance <- round(summary_table$expected.variance, 5)
+summary_table$expected_sd <- round(sqrt(summary_table$expected.variance), 5)
+summary_table$binsize <- bins@data$end[1]
+write.table(summary_table, file = paste0(args$project, "_summary.txt"),
+            quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
 
 
 # This is useless, but QDNAseq won't export data if there isn't call information
