@@ -43,6 +43,7 @@ workflow BAM_MARKDUPLICATES_PICARD {
     metrics  = PICARD_MARKDUPLICATES.out.metrics // channel: [ val(meta), path(bam) ]
     bai      = SAMTOOLS_INDEX.out.bai            // channel: [ val(meta), path(bai) ]
     csi      = SAMTOOLS_INDEX.out.csi            // channel: [ val(meta), path(csi) ]
+    bam_bai  = ch_bam_bai
 
     stats    = BAM_STATS_SAMTOOLS.out.stats      // channel: [ val(meta), path(stats) ]
     flagstat = BAM_STATS_SAMTOOLS.out.flagstat   // channel: [ val(meta), path(flagstat) ]

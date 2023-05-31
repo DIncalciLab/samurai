@@ -286,18 +286,34 @@
     ],
     "properties": {
         "index_genome": {
-            "type": "boolean",
-            "default": true
+            "type": "string",
+            "default": "false"
         },
         "aligner": {
             "type": "string",
-            "default": "bwa-mem"
+            "default": "bwamem"
         },
-        "bwa_index": {
+        "biopsy": {
+            "type": "string",
+            "default": "tissue"
+        },
+        "binsizes": {
+            "type": "integer",
+            "default": 30
+        },
+        "binfile": {
             "type": "string",
             "default": null
         },
-        "bwamem2_index": {
+        "purity": {
+            "type": "integer",
+            "default": 1
+        },
+        "bwa": {
+            "type": "string",
+            "default": null
+        },
+        "bwamem2": {
             "type": "string",
             "default": null
         },
