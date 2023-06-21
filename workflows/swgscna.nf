@@ -126,8 +126,6 @@ workflow SWGSCNA {
         meta, metrics -> metrics })
     ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
         meta, metrics -> metrics })
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.stats_pre.collect{
-        meta, metrics -> metrics })
 
     // Size selection workflow
     ch_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
