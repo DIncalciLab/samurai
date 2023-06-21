@@ -11,8 +11,8 @@ WorkflowSwgscna.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, 
-                           params.multiqc_config, 
+def checkPathParamList = [ params.input,
+                           params.multiqc_config,
                            params.fasta
                            ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
@@ -43,11 +43,13 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 
 include { INPUT_CHECK                } from '../subworkflows/local/input_check'
-include { FASTQ_ALIGN                } from '../subworkflows/local/fastq_align/main'
 include { PREPARE_GENOME             } from '../subworkflows/local/prepare_genome/main'
 include { SOLID_BIOPSY               } from '../subworkflows/local/solid_biopsy/main'
+include { SIZE_SELECTION             } from '../subworkflows/local/size_selection/main'
 
-include { BAM_MARKDUPLICATES_PICARD  } from '../subworkflows/nf-core/bam_markduplicates_picard/main' 
+
+include { FASTQ_ALIGN_DNA            } from '../subworkflows/nf-core/fastq_align_dna/main'
+include { BAM_MARKDUPLICATES_PICARD  } from '../subworkflows/nf-core/bam_markduplicates_picard/main'
 
 
 /*
@@ -82,49 +84,78 @@ def multiqc_report = []
 workflow SWGSCNA {
 
     ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
 
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     INPUT_CHECK ( ch_input )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions) 
-    
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
     // MODULE: Run FastQC
     FASTQC ( INPUT_CHECK.out.reads )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
- 
-    // INDEX REFERENCE GENOME 
-    fasta = Channel.value(file(params.fasta))
 
-    PREPARE_GENOME(fasta)
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+
+    // SUBWORKFLOW: FASTQ_ALIGN_DNA
+
+    fasta         = (params.fasta == null)      ? Channel.value(file(params.genomes[params.genome].fasta))           : Channel.value(file(params.fasta))
+
+    PREPARE_GENOME(fasta) 
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
-      
-    // SUBWORKFLOW: FASTQ_ALIGN
+
     sort_bam = true
-    
-    FASTQ_ALIGN (
+
+    FASTQ_ALIGN_DNA (
         INPUT_CHECK.out.reads,
-        PREPARE_GENOME.out.index.map{ it -> [[id:it[0].baseName], it] },
+        PREPARE_GENOME.out.index, 
+        params.aligner,
         sort_bam
     )
-    ch_versions = ch_versions.mix(FASTQ_ALIGN.out.versions.first())
-       
+    ch_versions = ch_versions.mix(FASTQ_ALIGN_DNA.out.versions.first())
+
     // MARKDUPLICATES
     BAM_MARKDUPLICATES_PICARD (
-        FASTQ_ALIGN.out.bam,
+        FASTQ_ALIGN_DNA.out.bam,
         fasta,
-        PREPARE_GENOME.out.fasta_fai 
+        PREPARE_GENOME.out.fasta_fai
     )
     
     ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
- 
+
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
+        meta, metrics -> metrics })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.stats_pre.collect{
+        meta, metrics -> metrics })
+
+    // Size selection workflow
+    ch_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
+                                             
+    
+    if (params.size_selection) {
+        SIZE_SELECTION(ch_bam_bai, fasta)
+        ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
+
+        ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
+            meta, file -> return file})
+        ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_table)
+        ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_raw_table)
+    } 
+
+    // Copy-Number Analysis: Solid Biopsy
     binfile = Channel.value(params.binfile)
 
-    if (params.biopsy == 'tissue') {
-
+    if (params.biopsy == 'tissue' && !params.size_selection) {
         SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai, binfile)
-        ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())        
-    }
+        ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())  
 
-    // Versioni software 
+        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary)
+        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.bin_plot)     
+    }
+    // Software versions
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
@@ -138,25 +169,12 @@ workflow SWGSCNA {
     methods_description    = WorkflowSwgscna.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
     ch_methods_description = Channel.value(methods_description)
 
-    ch_multiqc_files = Channel.empty()
+    
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    
-    
-    // MultiQC for FASTQC
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
-    
-    // MultiQC for BAM_MARKDUPLICATES_PICARD
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
-        meta, metrics -> metrics })
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.stats.collect{
-        meta, metrics -> metrics })
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect{
-        meta, metrics -> metrics })
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
-        meta, metrics -> metrics })
-    
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+
+
 
     MULTIQC (
         ch_multiqc_files.collect(),

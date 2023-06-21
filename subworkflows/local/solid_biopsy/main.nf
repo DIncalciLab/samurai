@@ -57,8 +57,8 @@ workflow SOLID_BIOPSY {
         segment_plot          = QDNASEQ.out.segment_plot //optional: true
         
         all_segments          = all_seg_ch
-        //all_filtered_segments = CONCATENATE_FILT_SEG.out.all_segments
         all_calls             = all_called_seg_ch
+        summary               = summary_all_samples
         all_bin_plots         = CONCATENATE_BIN_PLOTS.out.genome_plot
         all_seg_plots         = CONCATENATE_SEG_PLOTS.out.genome_plot
 

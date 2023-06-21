@@ -285,9 +285,13 @@
         }
     ],
     "properties": {
+        "index_genome": {
+            "type": "string",
+            "default": "false"
+        },
         "aligner": {
             "type": "string",
-            "default": "bwa-mem"
+            "default": "bwamem"
         },
         "biopsy": {
             "type": "string",
@@ -305,11 +309,11 @@
             "type": "integer",
             "default": 1
         },
-        "bwa_index": {
+        "bwa": {
             "type": "string",
             "default": null
         },
-        "bwamem2_index": {
+        "bwamem2": {
             "type": "string",
             "default": null
         },
