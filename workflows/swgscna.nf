@@ -98,18 +98,16 @@ workflow SWGSCNA {
 
     // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
-    fasta         = (params.fasta == null)      ? Channel.value(file(params.genomes[params.genome].fasta))           : Channel.value(file(params.fasta))
+    fasta = (params.fasta == null) ? Channel.value(file(params.genomes[params.genome].fasta)) : Channel.value(file(params.fasta))
 
-    PREPARE_GENOME(fasta) 
+    PREPARE_GENOME(fasta)
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
-
-    sort_bam = true
 
     FASTQ_ALIGN_DNA (
         INPUT_CHECK.out.reads,
-        PREPARE_GENOME.out.index, 
+        PREPARE_GENOME.out.index,
         params.aligner,
-        sort_bam
+        true // sort_bam
     )
     ch_versions = ch_versions.mix(FASTQ_ALIGN_DNA.out.versions.first())
 
@@ -119,7 +117,7 @@ workflow SWGSCNA {
         fasta,
         PREPARE_GENOME.out.fasta_fai
     )
-    
+
     ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
 
     ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
@@ -133,9 +131,9 @@ workflow SWGSCNA {
 
     // Size selection workflow
     ch_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
-                                             
-    
-    if (params.size_selection) {
+
+
+    if (params.size_selection && params.biopsy == 'plasma') {
         SIZE_SELECTION(ch_bam_bai, fasta)
         ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
@@ -143,17 +141,17 @@ workflow SWGSCNA {
             meta, file -> return file})
         ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_table)
         ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_raw_table)
-    } 
+    }
 
     // Copy-Number Analysis: Solid Biopsy
     binfile = Channel.value(params.binfile)
 
-    if (params.biopsy == 'tissue' && !params.size_selection) {
+    if (params.biopsy == 'tissue' && !params.size_selection && params.qdnaseq) {
         SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai, binfile)
-        ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())  
+        ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
 
         ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary)
-        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.bin_plot)     
+        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.bin_plot)
     }
     // Software versions
     CUSTOM_DUMPSOFTWAREVERSIONS (
@@ -169,7 +167,7 @@ workflow SWGSCNA {
     methods_description    = WorkflowSwgscna.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
     ch_methods_description = Channel.value(methods_description)
 
-    
+
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
