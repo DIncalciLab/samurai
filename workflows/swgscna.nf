@@ -98,7 +98,7 @@ workflow SWGSCNA {
 
     // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
-    fasta = (params.fasta == null) ? Channel.value(file(params.genomes[params.genome].fasta)) : Channel.value(file(params.fasta))
+    fasta = (!params.fasta) ? Channel.value(file(params.genomes[params.genome].fasta)) : Channel.value(file(params.fasta))
 
     PREPARE_GENOME(fasta)
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
