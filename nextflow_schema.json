@@ -265,6 +265,59 @@
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 }
             }
+        },
+        "workflow_specific_options": {
+            "title": "Workflow specific options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "aligner": {
+                    "type": "string",
+                    "default": "bwamem",
+                    "enum": ["bwamem", "bwamem2"]
+                },
+                "index_genome": {
+                    "type": "boolean"
+                },
+                "biopsy": {
+                    "type": "string",
+                    "default": "tissue"
+                },
+                "purity": {
+                    "type": "integer",
+                    "default": 1
+                },
+                "binsizes": {
+                    "type": "integer",
+                    "default": 30
+                },
+                "binfile": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "fasta_fai": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "size_selection": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string",
+                    "default": "Fragment size distribution after size selection",
+                    "hidden": true
+                },
+                "max_fragmentsize": {
+                    "type": "integer",
+                    "default": 400,
+                    "hidden": true
+                },
+                "qdnaseq": {
+                    "type": "boolean",
+                    "description": "Run QDNAseq on the aligned data."
+                }
+            }
         }
     },
     "allOf": [
@@ -282,44 +335,19 @@
         },
         {
             "$ref": "#/definitions/generic_options"
+        },
+        {
+            "$ref": "#/definitions/workflow_specific_options"
         }
     ],
     "properties": {
-        "index_genome": {
-            "type": "string",
-            "default": "false"
-        },
-        "aligner": {
-            "type": "string",
-            "default": "bwamem"
-        },
-        "biopsy": {
-            "type": "string",
-            "default": "tissue"
-        },
-        "binsizes": {
-            "type": "integer",
-            "default": 30
-        },
-        "binfile": {
-            "type": "string",
-            "default": null
-        },
-        "purity": {
-            "type": "integer",
-            "default": 1
-        },
         "bwa": {
             "type": "string",
-            "default": null
+            "default": "None"
         },
         "bwamem2": {
             "type": "string",
-            "default": null
-        },
-        "fasta_fai": {
-            "type": "string",
-            "default": null
+            "default": "None"
         }
     }
 }
