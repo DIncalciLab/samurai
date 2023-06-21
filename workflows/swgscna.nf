@@ -98,7 +98,9 @@ workflow SWGSCNA {
 
     // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
-    fasta = (!params.fasta) ? Channel.value(file(params.genomes[params.genome].fasta)) : Channel.value(file(params.fasta))
+    // This is set at the level of WorkflowSwgsCna.getGenomeAttribute if not set
+    // so actually checking if it's defined is useless
+    fasta = params.fasta
 
     PREPARE_GENOME(fasta)
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
