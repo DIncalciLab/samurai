@@ -9,9 +9,11 @@ workflow PREPARE_GENOME {
     take:
         fasta // channel (mandatory): [ val(meta2), path(index) ]
 
-    main: 
+    main:
         ch_versions = Channel.empty()
         ch_index = Channel.empty()
+
+        //TODO: Leverage more the igenomes machinery, avoid specifying parameters if not needed
 
         if (params.aligner == 'bwamem') { //if aligner is bwa-mem
 
@@ -19,12 +21,12 @@ workflow PREPARE_GENOME {
                 BWA_INDEX((fasta.map{ it -> [[id:it[0].baseName], it] }))
                 ch_versions = ch_versions.mix(BWA_INDEX.out.versions.first())
 
-                
+
                 }
 
-            ch_index = params.fasta ? params.bwa ? Channel.value(file(params.bwa)).map{ it -> [[id:it[0].baseName], it] } : BWA_INDEX.out.index : Channel.value(file(params.genomes[params.genome].bwa)).collect() 
+            ch_index = params.fasta ? params.bwa ? Channel.value(file(params.bwa)).map{ it -> [[id:it[0].baseName], it] } : BWA_INDEX.out.index : Channel.value(file(params.genomes[params.genome].bwa)).collect()
 
-            } else { // if aligner is bwa-mem2 
+            } else { // if aligner is bwa-mem2
 
             if (params.index_genome) {
                 BWAMEM2_INDEX((fasta.map{ it -> [[id:it[0].baseName], it] }))
@@ -39,9 +41,9 @@ workflow PREPARE_GENOME {
             ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions.first())
         }
         ch_fasta_fai = params.fasta ? params.fasta_fai  ? Channel.value(file(params.fasta_fai))  : SAMTOOLS_FAIDX.out.fai : Channel.value(file(params.genomes[params.genome].fasta_fai)).collect()
-        
+
     emit:
         index = ch_index.collect()
         fasta_fai = ch_fasta_fai.collect()
-        versions = ch_versions     
+        versions = ch_versions
 }

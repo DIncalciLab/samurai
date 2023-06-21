@@ -1,5 +1,15 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    GENOME PARAMETER VALUES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+params.fasta            = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.fasta_fai        = WorkflowMain.getGenomeAttribute(params, 'fasta_fai')
+
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     VALIDATE INPUTS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -98,7 +108,7 @@ workflow SWGSCNA {
 
     // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
-    // This is set at the level of WorkflowSwgsCna.getGenomeAttribute if not set
+    // This is set at the level of WorkflowMain.getGenomeAttribute if not set
     // so actually checking if it's defined is useless
     fasta = params.fasta
 
