@@ -108,11 +108,7 @@ workflow SWGSCNA {
 
     // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
-    // This is set at the level of WorkflowMain.getGenomeAttribute if not set
-    // so actually checking if it's defined is useless
-    fasta = params.fasta
-
-    PREPARE_GENOME(fasta)
+    PREPARE_GENOME(params.fasta)
     ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
 
     FASTQ_ALIGN_DNA (
@@ -126,8 +122,8 @@ workflow SWGSCNA {
     // MARKDUPLICATES
     BAM_MARKDUPLICATES_PICARD (
         FASTQ_ALIGN_DNA.out.bam,
-        fasta,
-        PREPARE_GENOME.out.fasta_fai
+        params.fasta,
+        params.fasta_fai
     )
 
     ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
