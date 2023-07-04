@@ -56,6 +56,7 @@ include { INPUT_CHECK                } from '../subworkflows/local/input_check'
 include { PREPARE_GENOME             } from '../subworkflows/local/prepare_genome/main'
 include { SOLID_BIOPSY               } from '../subworkflows/local/solid_biopsy/main'
 include { SIZE_SELECTION             } from '../subworkflows/local/size_selection/main'
+include { LIQUID_BIOPSY              } from '../subworkflows/local/liquid_biopsy/main'
 
 
 include { FASTQ_ALIGN_DNA            } from '../subworkflows/nf-core/fastq_align_dna/main'
@@ -135,19 +136,37 @@ workflow SWGSCNA {
     ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
         meta, metrics -> metrics })
 
-    // Size selection workflow
-    ch_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
-
+    // Size selection workflow & CN Liquid Biopsy 
 
     if (params.size_selection && params.biopsy == 'plasma') {
-        SIZE_SELECTION(ch_bam_bai, fasta)
+        SIZE_SELECTION(BAM_MARKDUPLICATES_PICARD.out.bam_bai, fasta)
+        ch_bam_bai   = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
+                        .map {
+                            meta, bam, bai -> [ meta, bam, bai ]
+                            }
         ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
         ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
             meta, file -> return file})
         ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_table)
         ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_raw_table)
-    }
+
+        gc_wig              = Channel.value(params.gc_wig)
+        map_wig             = Channel.value(params.map_wig)
+        centromere          = Channel.value(params.centromere)
+        reptime_file        = Channel.value(params.reptime_file)
+
+        LIQUID_BIOPSY(ch_bam_bai,
+                      gc_wig,
+                      map_wig,
+                      centromere,
+                      reptime_file
+                    )
+
+        ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions.first())
+
+    } 
+
 
     // Copy-Number Analysis: Solid Biopsy
     binfile = Channel.value(params.binfile)
