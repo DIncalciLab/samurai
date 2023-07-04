@@ -46,7 +46,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Credits
 
-dincalcilab/swgscna was originally written by Sara Potente .
+dincalcilab/swgscna was originally written by Sara Potente and Luca Beltrame.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
