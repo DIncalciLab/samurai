@@ -10,7 +10,7 @@ process QDNASEQ {
 
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
-        val(binsizes)
+        val(binsize)
 
     output:
         path("*_bins.bed"),                       emit: bins, optional: true
@@ -27,7 +27,7 @@ process QDNASEQ {
 
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def binfile = binsizes ? "--bin-data ${binsizes}" : ''
+    def binfile = binsize ? "--bin-data ${binsize}" : ''
 
     """
     run_qdnaseq.R \\

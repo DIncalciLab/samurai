@@ -1,9 +1,9 @@
 // Import modules
-include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS     } from '../../../modules/local/concatenate_pdf/main'
-include { ICHORCNA_GENERATE_PON                        } from '../../../modules/local/ichorcna/create_pon/main'
-include { RUN_ICHORCNA                                 } from '../../../modules/local/ichorcna/run/main'
-include { AGGREGATE_TABLE                              } from '../../../modules/local/aggregate_table/main'
-include { HMMCOPY_READCOUNTER                          } from '../../../modules/nf-core/hmmcopy/readcounter/main'
+include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
+include { ICHORCNA_PON                                        } from '../../../subworkflows/local/ichorcna_pon/main'
+include { RUN_ICHORCNA                                        } from '../../../modules/local/ichorcna/run/main'
+include { AGGREGATE_TABLE                                     } from '../../../modules/local/aggregate_table/main'
+include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../modules/nf-core/hmmcopy/readcounter/main'
 
 workflow LIQUID_BIOPSY {
 
@@ -20,34 +20,23 @@ workflow LIQUID_BIOPSY {
 
         ch_versions = Channel.empty()
 
-        //ch_bam_bai = bam.join(bai, by: [0], remainder: true)
-        //                .map {
-        //                    meta, bam, bai -> [ meta, bam, bai ]
-        //                    }
-
-        //reptime = file(params.ichorcna_data[params.genome].reptime)
-
-        // If we want to do size selection
-
-        // To generate Wig Files
-        HMMCOPY_READCOUNTER(bam_bai)
-        wigfiles = HMMCOPY_READCOUNTER.out.wig.map{it -> it[1]}
-
-
         // If we want to build the normal panel
         if (params.build_pon) {
-            ICHORCNA_GENERATE_PON(wigfiles.collect(),
-                                  gc_wig, map_wig, centromere, reptime_file)
-            ch_versions = ch_versions.mix(ICHORCNA_GENERATE_PON.out.versions)
-            pon_file = ICHORCNA_GENERATE_PON.out.normal_panel
+            ICHORCNA_PON(params.pon_path, 
+                        gc_wig, map_wig, centromere, reptime_file)
+            ch_versions = ch_versions.mix(ICHORCNA_PON.out.versions)
+            pon_file = ICHORCNA_PON.out.normal_panel
             } else {
                 pon_file = Channel.value(params.normal_panel)
             }
 
-        ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER.out.versions)
+         // To generate Wig Files
+        HMMCOPY_READCOUNTER_ICHORCNA(bam_bai)
+        wigfiles = HMMCOPY_READCOUNTER_ICHORCNA.out.wig.map{it -> it[1]}
+        ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_ICHORCNA.out.versions)
 
         RUN_ICHORCNA (
-            HMMCOPY_READCOUNTER.out.wig,
+            HMMCOPY_READCOUNTER_ICHORCNA.out.wig,
             gc_wig,
             map_wig,
             pon_file,

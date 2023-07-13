@@ -135,28 +135,46 @@ workflow SWGSCNA {
         meta, metrics -> metrics })
     ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
         meta, metrics -> metrics })
+                    
 
-    // Size selection workflow & CN Liquid Biopsy 
+    // CN Calling Solid Biopsy
+    if (params.biopsy == 'tissue' && !params.size_selection) {
 
-    if (params.size_selection && params.biopsy == 'plasma') {
-        SIZE_SELECTION(BAM_MARKDUPLICATES_PICARD.out.bam_bai, fasta)
-        ch_bam_bai   = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
+        binfile             = Channel.value(params.binfile)
+        SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai, binfile)
+        ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
+
+        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary)
+        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.all_bin_plots)
+
+    } else {
+
+        if (params.size_selection) {
+            SIZE_SELECTION(BAM_MARKDUPLICATES_PICARD.out.bam_bai, Channel.value(file(params.fasta)))
+            ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
+
+            ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_pre.map{
+                    meta, file -> return file })
+            ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_table)
+            ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
+                    meta, file -> return file })
+            ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_raw_table)
+
+            bam_bai   = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
                         .map {
                             meta, bam, bai -> [ meta, bam, bai ]
                             }
-        ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
-
-        ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
-            meta, file -> return file})
-        ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_table)
-        ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_raw_table)
+ 
+        } else {
+            bam_bai = bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
+        }
 
         gc_wig              = Channel.value(params.gc_wig)
         map_wig             = Channel.value(params.map_wig)
         centromere          = Channel.value(params.centromere)
         reptime_file        = Channel.value(params.reptime_file)
 
-        LIQUID_BIOPSY(ch_bam_bai,
+        LIQUID_BIOPSY(bam_bai,
                       gc_wig,
                       map_wig,
                       centromere,
@@ -165,18 +183,9 @@ workflow SWGSCNA {
 
         ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions.first())
 
-    } 
 
+        ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.all_bin_plots)
 
-    // Copy-Number Analysis: Solid Biopsy
-    binfile = Channel.value(params.binfile)
-
-    if (params.biopsy == 'tissue' && !params.size_selection && params.qdnaseq) {
-        SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai, binfile)
-        ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
-
-        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary)
-        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.bin_plot)
     }
     // Software versions
     CUSTOM_DUMPSOFTWAREVERSIONS (
