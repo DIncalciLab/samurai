@@ -169,23 +169,12 @@ workflow SWGSCNA {
             bam_bai = bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
         }
 
-        gc_wig              = Channel.value(params.gc_wig)
-        map_wig             = Channel.value(params.map_wig)
-        centromere          = Channel.value(params.centromere)
-        reptime_file        = Channel.value(params.reptime_file)
-
-        LIQUID_BIOPSY(bam_bai,
-                      gc_wig,
-                      map_wig,
-                      centromere,
-                      reptime_file
-                    )
+        LIQUID_BIOPSY(bam_bai)
 
         ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions.first())
 
 
-        ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.all_bin_plots)
-
+        
     }
     // Software versions
     CUSTOM_DUMPSOFTWAREVERSIONS (

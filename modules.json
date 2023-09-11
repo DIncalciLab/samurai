@@ -45,6 +45,11 @@
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
+                    "hmmcopy/readcounter": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
@@ -94,6 +99,21 @@
                         "branch": "master",
                         "git_sha": "d629f06adcee25aa36806aa4b5f422c6aed63e7d",
                         "installed_by": ["fastq_align_dna"]
+                    },
+                    "wisecondorx/convert": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
+                    "wisecondorx/newref": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
+                    "wisecondorx/predict": {
+                        "branch": "master",
+                        "git_sha": "1ee4e6cb8f49fcb4a1982cb3888b6f7cfa9f7a99",
+                        "installed_by": ["modules"]
                     }
                 }
             },
