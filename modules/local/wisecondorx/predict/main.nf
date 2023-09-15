@@ -27,6 +27,7 @@ process WISECONDORX_PREDICT {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def blacklist_bed = blacklist ? "--blacklist ${blacklist}" : ''
+    def gender = meta.gender ? "--gender ${meta.gender}": ''
 
     """
     WisecondorX predict \\
@@ -35,6 +36,7 @@ process WISECONDORX_PREDICT {
         ${prefix} \\
         $args \\
         ${blacklist_bed} \\
+        ${gender} \\
         --plot \\
         --bed \\
         --add-plot-title
