@@ -2,15 +2,16 @@
 
 include { BUILD_PON                                           } from '../../../subworkflows/local/build_pon/main'
 include { RUN_ICHORCNA                                        } from '../../../modules/local/ichorcna/run/main'
-include { AGGREGATE_TABLE                                     } from '../../../modules/local/aggregate_table/main'
+include { AGGREGATE_ICHORCNA_TABLE                            } from '../../../modules/local/aggregate_ichorcna_table/main'
 include { WISECONDORX_CONVERT                                 } from '../../../modules/local/wisecondorx/convert/main'
 include { WISECONDORX_PREDICT                                 } from '../../../modules/local/wisecondorx/predict/main'
 include { CONVERT_GISTIC_SEG                                  } from '../../../modules/local/convert_gistic_seg/main'
-include { ASSEMBLE_OUTPUTS                                    } from '../../../modules/local/assemble_outputs/main'
-include { CONVERT_IMAGES                                      } from '../../../modules/local/convert_images/main'
+include { ASSEMBLE_WISECONDORX_OUTPUTS                        } from '../../../modules/local/assemble_wisecondorx_outputs/main'
+include { CONVERT_WISECONDORX_IMAGES                          } from '../../../modules/local/convert_wisecondorx_images/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
 
 include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../modules/nf-core/hmmcopy/readcounter/main'
+
 workflow LIQUID_BIOPSY {                                      
 
     take:
@@ -53,10 +54,12 @@ workflow LIQUID_BIOPSY {
 
             called_segments     = RUN_ICHORCNA.out.cna_seg
             genome_plot         = RUN_ICHORCNA.out.genome_plot
-
-            AGGREGATE_TABLE (
+            
+            AGGREGATE_ICHORCNA_TABLE (
                 RUN_ICHORCNA.out.ichorcna_params.collect())
-            ch_versions = ch_versions.mix(AGGREGATE_TABLE.out.versions)
+            ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
+
+            summary = AGGREGATE_ICHORCNA_TABLE.out.ploidy_summary
 
             CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
             ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
@@ -66,17 +69,17 @@ workflow LIQUID_BIOPSY {
             blacklist = params.blacklist ? file(params.blacklist, checkIfExists: true): []
 
             WISECONDORX_CONVERT(bam_bai)
-            ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions.first())
+            ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions)
             ch_npz = WISECONDORX_CONVERT.out.npz
 
             
             WISECONDORX_PREDICT(ch_npz, blacklist, pon_file)
-            ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions.first())
+            ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions)
 
             CONVERT_GISTIC_SEG(WISECONDORX_PREDICT.out.segments,
                        WISECONDORX_PREDICT.out.bins,
                        WISECONDORX_PREDICT.out.calls)
-            ch_versions = ch_versions.mix(CONVERT_GISTIC_SEG.out.versions.first())
+            ch_versions = ch_versions.mix(CONVERT_GISTIC_SEG.out.versions)
 
             called_segments     = WISECONDORX_PREDICT.out.calls
 
@@ -85,15 +88,17 @@ workflow LIQUID_BIOPSY {
                                    .collectFile(name: "all_segments.seg",
                                                 skip: 1,
                                                 storeDir: "${params.outdir}" )
-            ASSEMBLE_OUTPUTS(
+            ASSEMBLE_WISECONDORX_OUTPUTS(
                         WISECONDORX_PREDICT.out.statistics.collect{meta, result -> result},
                         WISECONDORX_PREDICT.out.calls.collect{meta, result -> result},)
-            ch_versions = ch_versions.mix(ASSEMBLE_OUTPUTS.out.versions)
+            ch_versions = ch_versions.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.versions)
 
-            CONVERT_IMAGES(WISECONDORX_PREDICT.out.genome_plot.collect{meta, result -> result})
-            ch_versions = ch_versions.mix(CONVERT_IMAGES.out.versions)
+            summary = ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary
 
-            genome_plot         = CONVERT_IMAGES.out.genome_plot
+            CONVERT_WISECONDORX_IMAGES(WISECONDORX_PREDICT.out.genome_plot.collect{meta, result -> result})
+            ch_versions = ch_versions.mix(CONVERT_WISECONDORX_IMAGES.out.versions)
+
+            genome_plot         = CONVERT_WISECONDORX_IMAGES.out.genome_plot
             }
 
     emit:
@@ -101,6 +106,7 @@ workflow LIQUID_BIOPSY {
         normal_panel        = pon_file
         called_segments     = called_segments
         genome_plot         = genome_plot
+        summary             = summary
         
         versions            = ch_versions
 

@@ -1,4 +1,4 @@
-process CONVERT_IMAGES {
+process CONVERT_WISECONDORX_IMAGES {
 
     tag "genome_plot"
     container "quay.io/einar_rainhart/img2pdf:latest"

@@ -155,11 +155,9 @@ workflow SWGSCNA {
 
             ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_pre.map{
                     meta, file -> return file })
-            ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_table)
             ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
                     meta, file -> return file })
-            ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.size_raw_table)
-
+            
             bam_bai   = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
                         .map {
                             meta, bam, bai -> [ meta, bam, bai ]
@@ -171,10 +169,11 @@ workflow SWGSCNA {
 
         LIQUID_BIOPSY(bam_bai)
 
-        ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions.first())
+        ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
 
+        ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
 
-        
+       
     }
     // Software versions
     CUSTOM_DUMPSOFTWAREVERSIONS (

@@ -1,7 +1,7 @@
 process CONVERT_GISTIC_SEG {
 
     tag "${meta.id}"
-    container "quay.io/dincalcilab/pandas-pybedtools:1.4.4"
+    container "/mnt/svgs/cache_singularity/quay.io-dincalcilab-pandas-pybedtools-1.4.4.img"
     label "process_single"
 
     input:
