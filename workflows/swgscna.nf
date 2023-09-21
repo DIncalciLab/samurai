@@ -144,8 +144,8 @@ workflow SWGSCNA {
         SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai, binfile)
         ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
 
-        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary)
-        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.all_bin_plots)
+        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
+        
 
     } else {
 

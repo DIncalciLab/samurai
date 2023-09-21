@@ -64,7 +64,7 @@ def main() -> None:
     )
 
     final_df.to_excel("summary.xlsx", index=False)
-    final_df.to_csv("summary.txt", sep='\t', index=False)
+    final_df.to_csv("wisecondorx_summary_mqc.txt", sep='\t', index=False)
 
 
 if __name__ == "__main__":

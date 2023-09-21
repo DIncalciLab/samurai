@@ -59,7 +59,7 @@ workflow LIQUID_BIOPSY {
                 RUN_ICHORCNA.out.ichorcna_params.collect())
             ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
 
-            summary = AGGREGATE_ICHORCNA_TABLE.out.ploidy_summary
+            summary = AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary
 
             CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
             ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)

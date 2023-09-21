@@ -212,11 +212,12 @@ plot(segmented)
 dev.off()
 
 # Create Summary table
-col_names <- c("sample", "nr_reads", "binsize", "expected_sd")
-summary_table <- data.frame(reads_filtered@phenoData@data, row.names = NULL)[ c("name", "total.reads", "expected.variance")]
+col_names <- c("sample", "nr_reads", "expected_var", "expected_sd", "binsize")
+summary_table <- data.frame(reads_filtered@phenoData@data, row.names = NULL)[ c("name", "total.reads", "expected.variance")] # nolint
 summary_table$expected.variance <- round(summary_table$expected.variance, 5)
 summary_table$expected_sd <- round(sqrt(summary_table$expected.variance), 5)
 summary_table$binsize <- bins@data$end[1]
+colnames(summary_table) <- col_names
 write.table(summary_table, file = paste0(args$project, "_summary.txt"),
             quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
 

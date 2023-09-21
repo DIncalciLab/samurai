@@ -20,7 +20,7 @@ process QDNASEQ {
         path("*.rds"),                            emit: processed_data
         path("*_bin_plot.pdf"),                   emit: bin_plot
         path("*_segment_plot.pdf"),               emit: segment_plot, optional: true
-        path("*_summary.txt"),                     emit: summary_table
+        path("*_summary.txt"),                    emit: summary_table
         path("versions.yml"),                     emit: versions
 
     script:
