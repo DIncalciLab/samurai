@@ -1,8 +1,10 @@
 // Import modules
-include { QDNASEQ                                  } from '../../../modules/local/qdnaseq/main'
-include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS } from '../../../modules/local/concatenate_pdf/main'
-include { CONCATENATE_PDF as CONCATENATE_SEG_PLOTS } from '../../../modules/local/concatenate_pdf/main'
-include { CREATE_QDNASEQ_SUMMARY                   } from '../../../modules/local/create_qdnaseq_summary/main'
+include { QDNASEQ                                      } from '../../../modules/local/qdnaseq/main'
+include { ASCAT_SC                                     } from '../../../modules/local/ascat_sc/main'
+include { CONCATENATE_PDF as CONCATENATE_QDNASEQ_PLOTS } from '../../../modules/local/concatenate_pdf/main'
+include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS } from '../../../modules/local/concatenate_pdf/main'
+include { CREATE_QDNASEQ_SUMMARY                       } from '../../../modules/local/create_qdnaseq_summary/main'
+include { CREATE_ASCATSC_SUMMARY                       } from '../../../modules/local/create_ascatsc_summary/main'
 
 
 
@@ -13,64 +15,80 @@ workflow SOLID_BIOPSY {
 
     take:
         ch_bam_bai
-        ch_binsize
 
     main:
         ch_versions = Channel.empty()
 
         if (params.qdnaseq) {
 
-            QDNASEQ(ch_bam_bai, 
-                    ch_binsize)
+            binfile             = Channel.value(params.binfile)
+
+            QDNASEQ(ch_bam_bai)
 
             ch_versions = ch_versions.mix( QDNASEQ.out.versions.first() )
-            
-            CONCATENATE_BIN_PLOTS(QDNASEQ.out.bin_plot.collect())
-            CONCATENATE_SEG_PLOTS(QDNASEQ.out.segment_plot.collect())
-            ch_versions = ch_versions.mix( CONCATENATE_BIN_PLOTS.out.versions.first() )
+
+            CONCATENATE_QDNASEQ_PLOTS(QDNASEQ.out.bin_plot.collect())
+            ch_versions = ch_versions.mix( CONCATENATE_QDNASEQ_PLOTS.out.versions)
+
+            all_seg_plot = CONCATENATE_QDNASEQ_PLOTS.out.genome_plot
 
             QDNASEQ.out.segments
-                        .collectFile(storeDir: "${params.outdir}/qdnaseq/", 
-                                    name: 'all_segments.seg', 
-                                    keepHeader: true, 
+                        .collectFile(storeDir: "${params.outdir}/qdnaseq/",
+                                    name: 'all_segments.seg',
+                                    keepHeader: true,
                                     skip: 1)
                                     .set{ all_seg_ch}
 
 
-            QDNASEQ.out.called_segments
-                        .collectFile(storeDir: "${params.outdir}/qdnaseq/",
-                                    name: 'all_called_segments.seg', 
-                                    keepHeader: true, 
-                                    skip: 1)
-                                    .set{ all_called_seg_ch}
-
             QDNASEQ.out.summary_table
                         .collectFile(storeDir: "${params.outdir}/qdnaseq/",
-                                    name: 'qdnaseq_summary.txt', 
-                                    keepHeader: true, 
+                                    name: 'qdnaseq_summary.txt',
+                                    keepHeader: true,
                                     skip: 1)
                                     .set{qdnaseq_summary}
 
             CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
+            ch_versions = ch_versions.mix( CREATE_QDNASEQ_SUMMARY.out.versions)
 
             summary_multiqc = CREATE_QDNASEQ_SUMMARY.out.qdnaseq_summary
         }
 
-        
-    emit:
-        bins                  = QDNASEQ.out.bins //optional: true
-        called_segments       = QDNASEQ.out.called_segments
-        segments              = QDNASEQ.out.segments
-        processed_data        = QDNASEQ.out.processed_data
-        bin_plot              = QDNASEQ.out.bin_plot
-        segment_plot          = QDNASEQ.out.segment_plot //optional: true
-        
-        all_segments          = all_seg_ch
-        all_calls             = all_called_seg_ch
-        summary               = summary_multiqc
-        all_bin_plots         = CONCATENATE_BIN_PLOTS.out.genome_plot
-        all_seg_plots         = CONCATENATE_SEG_PLOTS.out.genome_plot
+        if (params.ascat_sc) {
 
-        versions = ch_versions
+            ASCAT_SC(ch_bam_bai)
+            ch_versions = ch_versions.mix( ASCAT_SC.out.versions )
+
+            CONCATENATE_ASCATSC_PLOTS(ASCAT_SC.out.profiles_plot.collect())
+            ch_versions = ch_versions.mix( CONCATENATE_ASCATSC_PLOTS.out.versions)
+            all_seg_plot = CONCATENATE_ASCATSC_PLOTS.out.genome_plot
+
+            ASCAT_SC.out.segments
+                        .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                                    name: 'all_segments.seg',
+                                    keepHeader: true,
+                                    skip: 1)
+                                    .set{ all_seg_ch}
+
+
+            ASCAT_SC.out.summary_table
+                        .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                                    name: 'ascatsc_summary.txt',
+                                    keepHeader: true,
+                                    skip: 1)
+                                    .set{ascatsc_summary}
+
+            CREATE_ASCATSC_SUMMARY(ascatsc_summary)
+            ch_versions = ch_versions.mix( CREATE_ASCATSC_SUMMARY.out.versions)
+
+            summary_multiqc = CREATE_ASCATSC_SUMMARY.out.ascatsc_summary
+
+        }
+
+
+    emit:
+        all_seg_ch      = all_seg_ch
+        summary         = summary_multiqc
+
+        versions        = ch_versions
 
 }

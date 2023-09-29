@@ -40,6 +40,7 @@ process QDNASEQ {
         -- \\
         ./
 
+    
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

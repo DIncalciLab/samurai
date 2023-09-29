@@ -135,16 +135,16 @@ workflow SWGSCNA {
         meta, metrics -> metrics })
     ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
         meta, metrics -> metrics })
-                    
+
 
     // CN Calling Solid Biopsy
     if (params.biopsy == 'tissue' && !params.size_selection) {
 
-        binfile             = Channel.value(params.binfile)
-        SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai, binfile)
+        SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai)
         ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
 
         ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
+
         
 
     } else {
@@ -157,12 +157,12 @@ workflow SWGSCNA {
                     meta, file -> return file })
             ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
                     meta, file -> return file })
-            
+
             bam_bai   = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
                         .map {
                             meta, bam, bai -> [ meta, bam, bai ]
                             }
- 
+
         } else {
             bam_bai = bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
         }
@@ -173,7 +173,7 @@ workflow SWGSCNA {
 
         ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
 
-       
+
     }
     // Software versions
     CUSTOM_DUMPSOFTWAREVERSIONS (
