@@ -51,14 +51,7 @@ parser <- add_argument(parser, "--max_tumor_ploidy", type = "float",
 
 args <- parse_args(parser)
 
-message("Initializing...")
-# Initialize multisession
-future::plan("multisession", workers = args$cpus)
-
-options("R.cache.rootPath" = "~/.Rcache")
-R.cache::getCacheRootPath()
-
-message("Starting Analysis...")
+message("Starting analysis...")
 
 res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
                          allchr = paste0("chr", (1:22)),

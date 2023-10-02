@@ -7,7 +7,7 @@ process CREATE_ASCATSC_SUMMARY{
 
     input:
         path "ascatsc_summary.txt"
-        
+
     output:
         path "ascatsc_summary_mqc.tsv"       , emit: ascatsc_summary
         path "versions.yml"                  , emit: versions
@@ -16,7 +16,7 @@ process CREATE_ASCATSC_SUMMARY{
 
         """
         cat <<-MULTIQC_HEADER > ascatsc_summary_mqc.tsv
-        #id: 'wisecondorx_data_summary'
+        #id: 'ascat_sc_data_summary'
         #section_name: 'ASCATsc'
         #description: 'This table shows purity and ploidy values computed by ASCAT.sc.'
         #format: 'tsv'
@@ -39,7 +39,7 @@ process CREATE_ASCATSC_SUMMARY{
 
         # Reorder samples
         cat ascatsc_summary.txt >> ascatsc_summary_mqc.tsv
-        
+
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
             create_ascatsc_summary: ${VERSION}
