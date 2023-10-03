@@ -67,20 +67,17 @@ res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
                          segmentation_alpha = args$segmentation_alpha,
                          predict_refit = args$predict_refit)
 
-for (i in seq_along(length(args$tumour_bams))) {
-  if (args$predict_refit == TRUE)
-    {
-      df_summary <- as.data.frame(res$summary$allSols.refitted)
-      df_segment <- as.data.frame(res[["allProfiles.refitted.auto"]][[1]])
-      df_seg <- as.data.frame(res[["allProfiles.refitted.auto"]][[i]])
-      df_final <- rbind(df_segment, df_seg)
-    } else {
-        df_summary <- as.data.frame(res$summary$allSols)
-        df_segment <- as.data.frame(res[["allProfiles"]][[1]])
-        df_seg <- as.data.frame(res[["allProfiles"]][[i]])
-        df_final <- rbind(df_segment, df_seg)
-        }
+attribute <- ifelse(args$predict_refit, "allProfiles.refitted.auto",
+                    "allProfiles.refitted")
+df_final <- as.data.frame(res[[attribute]][[1]])
+df_summary <- ifelse(args$predict_refit, res$summary$allSols.refitted,
+                     res$summary$allSols)
+
+for (index in seq_along(length(args$tumour_bams))) {
+  df_seg <- res[[attribute]][[index]]
+  df_final <- rbind(df_final, as.data.frame(df_seg))
 }
+
 rownames(df_summary) <- NULL
 rownames(df_final) <- NULL
 
