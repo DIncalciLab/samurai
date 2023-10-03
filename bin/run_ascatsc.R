@@ -1,10 +1,13 @@
 #!/usr/bin/env Rscript
 
 suppressPackageStartupMessages({
-    library(ASCAT.sc, quietly = TRUE)
-    library(argparser, quietly = TRUE)
-    library(copynumber, quietly = TRUE)
-    library(future, quietly = TRUE)
+  library(ASCAT.sc, quietly = TRUE)
+  library(argparser, quietly = TRUE)
+  library(copynumber, quietly = TRUE)
+  library(future, quietly = TRUE)
+  library(purrr, quietly = TRUE)
+  library(readr, quietly = TRUE)
+  library(dplyr, quietly = TRUE)
 }
 )
 
@@ -69,32 +72,21 @@ res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
 
 attribute <- ifelse(args$predict_refit, "allProfiles.refitted.auto",
                     "allProfiles.refitted")
-df_final <- as.data.frame(res[[attribute]][[1]])
 df_summary <- ifelse(args$predict_refit, res$summary$allSols.refitted,
                      res$summary$allSols)
+# Convert all dataframes to a single dataframe
+df_final <- purrr::list_rbind(res[[attribute]])
 
-for (index in seq_along(length(args$tumour_bams))) {
-  df_seg <- res[[attribute]][[index]]
-  df_final <- rbind(df_final, as.data.frame(df_seg))
-}
+readr::write_tsv(df_summary, file = paste0(args$project, "_summary.txt"),
+                 quote = "needed")
+readr::write_tsv(df_final, file = paste0(args$project, "_segments.seg"),
+                 quote = "needed")
 
-rownames(df_summary) <- NULL
-rownames(df_final) <- NULL
+df_gistic <- df_final %>%
+  dplyr::select(chromosome, start, end, num.mark, logr) %>%
+  dplyr::mutate(logr = round(as.numeric(logr), 5))
 
-write.table(df_summary, file = paste0(args$project, "_summary.txt"),
-            quote = FALSE, sep = "\t",
-            row.names = FALSE,
-            col.names = TRUE)
-write.table(df_final,
-            file = paste0(args$project, "_segments.seg"),
-            quote = FALSE, sep = "\t",
-            row.names = FALSE,
-            col.names = TRUE)
+readr::write_tsv(df_gistic, file = paste0(args$project, "_gistic.seg"),
+                 quote = "needed")
 
-df_gistic <- df_final[c("chromosome", "start", "end", "num.mark", "logr")]
-df_gistic$logr <- round(as.numeric(df_gistic$logr), 5)
-write.table(df_gistic, file = paste0(args$project, "_gistic.seg"),
-            quote = FALSE, sep = "\t",
-            row.names = FALSE,
-            col.names = TRUE)
 message("Complete.")
