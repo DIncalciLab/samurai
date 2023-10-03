@@ -4,7 +4,6 @@ suppressPackageStartupMessages({
   library(ASCAT.sc, quietly = TRUE)
   library(argparser, quietly = TRUE)
   library(copynumber, quietly = TRUE)
-  library(future, quietly = TRUE)
   library(purrr, quietly = TRUE)
   library(readr, quietly = TRUE)
   library(dplyr, quietly = TRUE)
