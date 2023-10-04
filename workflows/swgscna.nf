@@ -145,10 +145,9 @@ workflow SWGSCNA {
 
         ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
 
-        
-
     } else {
 
+        // TODO: Add a size parameter for size selection (not urgent)
         if (params.size_selection) {
             SIZE_SELECTION(BAM_MARKDUPLICATES_PICARD.out.bam_bai, Channel.value(file(params.fasta)))
             ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
@@ -170,9 +169,7 @@ workflow SWGSCNA {
         LIQUID_BIOPSY(bam_bai)
 
         ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
-
         ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
-
 
     }
     // Software versions
@@ -189,12 +186,9 @@ workflow SWGSCNA {
     methods_description    = WorkflowSwgscna.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
     ch_methods_description = Channel.value(methods_description)
 
-
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-
-
 
     MULTIQC (
         ch_multiqc_files.collect(),
