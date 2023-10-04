@@ -69,12 +69,19 @@ res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
                          segmentation_alpha = args$segmentation_alpha,
                          predict_refit = args$predict_refit)
 
-attribute <- ifelse(args$predict_refit, "allProfiles.refitted.auto",
-                    "allProfiles.refitted")
-df_summary <- ifelse(args$predict_refit, res$summary$allSols.refitted,
-                     res$summary$allSols)
-# Convert all dataframes to a single dataframe
-df_final <- purrr::list_rbind(res[[attribute]])
+# create segmentation dataframe
+df_final <- as.data.frame(ifelse(args$predict_refit, res[["allProfiles.refitted.auto"]],
+                    res[["allProfiles"]]))
+
+if (args$predict_refit == TRUE) {
+  df_summary <- res$summary$allSols.refitted
+} else {
+  df_summary <- res$summary$allSols
+}
+
+#save output files
+
+saveRDS(res, paste0(args$project, "_ASCAT.rds"))
 
 readr::write_tsv(df_summary, file = paste0(args$project, "_summary.txt"),
                  quote = "needed")

@@ -21,12 +21,14 @@ process ASCAT_SC {
     script:
 
     def args = task.ext.args ?: ''
+    def gender = meta.gender ? "--sex ${meta.gender}": ''
          
     """
     run_ascatsc.R \\
         --tumour_bams ${bamfiles} \\
         --cpus "${task.cpus}" \\
         --projectname "${meta.id}" \\
+        ${gender} \\
         $args 
         
     cat <<-END_VERSIONS > versions.yml
