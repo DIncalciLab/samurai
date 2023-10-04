@@ -6,9 +6,6 @@ include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS } from '../../../modules/
 include { CREATE_QDNASEQ_SUMMARY                       } from '../../../modules/local/create_qdnaseq_summary/main'
 include { CREATE_ASCATSC_SUMMARY                       } from '../../../modules/local/create_ascatsc_summary/main'
 
-
-
-
 // Workfow
 
 workflow SOLID_BIOPSY {
@@ -24,7 +21,6 @@ workflow SOLID_BIOPSY {
             binfile             = Channel.value(params.binfile)
 
             QDNASEQ(ch_bam_bai)
-
             ch_versions = ch_versions.mix( QDNASEQ.out.versions.first() )
 
             CONCATENATE_QDNASEQ_PLOTS(QDNASEQ.out.bin_plot.collect())
@@ -38,7 +34,6 @@ workflow SOLID_BIOPSY {
                                     keepHeader: true,
                                     skip: 1)
                                     .set{ all_seg_ch}
-
 
             QDNASEQ.out.summary_table
                         .collectFile(storeDir: "${params.outdir}/qdnaseq/",
@@ -69,7 +64,6 @@ workflow SOLID_BIOPSY {
                                     skip: 1)
                                     .set{ all_seg_ch}
 
-
             ASCAT_SC.out.summary_table
                         .collectFile(storeDir: "${params.outdir}/ascat_sc/",
                                     name: 'ascatsc_summary.txt',
@@ -84,11 +78,8 @@ workflow SOLID_BIOPSY {
 
         }
 
-
     emit:
         all_seg_ch      = all_seg_ch
         summary         = summary_multiqc
-
         versions        = ch_versions
-
 }
