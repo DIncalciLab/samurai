@@ -33,14 +33,14 @@ workflow SOLID_BIOPSY {
                                     name: 'all_segments.seg',
                                     keepHeader: true,
                                     skip: 1)
-                                    .set{ all_seg_ch}
+                                    .set{ all_seg_ch }
 
             QDNASEQ.out.summary_table
                         .collectFile(storeDir: "${params.outdir}/qdnaseq/",
                                     name: 'qdnaseq_summary.txt',
                                     keepHeader: true,
                                     skip: 1)
-                                    .set{qdnaseq_summary}
+                                    .set{ qdnaseq_summary }
 
             CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
             ch_versions = ch_versions.mix( CREATE_QDNASEQ_SUMMARY.out.versions)
@@ -62,14 +62,14 @@ workflow SOLID_BIOPSY {
                                     name: 'all_segments.seg',
                                     keepHeader: true,
                                     skip: 1)
-                                    .set{ all_seg_ch}
+                                    .set{ all_seg_ch }
 
             ASCAT_SC.out.summary_table
                         .collectFile(storeDir: "${params.outdir}/ascat_sc/",
                                     name: 'ascatsc_summary.txt',
                                     keepHeader: true,
                                     skip: 1)
-                                    .set{ascatsc_summary}
+                                    .set { ascatsc_summary }
 
             CREATE_ASCATSC_SUMMARY(ascatsc_summary)
             ch_versions = ch_versions.mix( CREATE_ASCATSC_SUMMARY.out.versions)
@@ -78,6 +78,8 @@ workflow SOLID_BIOPSY {
 
         }
 
+    //TODO: Differentiate between ASCAT.sc and QDNAseq outputs somehow
+    // Otherwise, what happens if you run *both* ?
     emit:
         all_seg_ch      = all_seg_ch
         summary         = summary_multiqc
