@@ -9,6 +9,8 @@ process ASCAT_SC {
 
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
+        val(binsize)
+        val(genome)
 
 
     output:
@@ -25,11 +27,14 @@ process ASCAT_SC {
     def gender = meta.gender ? "--sex ${meta.gender}": ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
+
     """
     run_ascatsc.R \\
         --tumour_bams ${bamfiles} \\
         --cpus "${task.cpus}" \\
         --projectname "${prefix}" \\
+        --binsize "${binsize}" \\
+        --genome "${genome}" \\
         ${gender} \\
         $args
 

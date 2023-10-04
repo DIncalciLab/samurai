@@ -11,6 +11,7 @@ process QDNASEQ {
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
         val(binsize)
+        val(genome)
 
     output:
         path("*_bins.bed"),                       emit: bins, optional: true
@@ -40,7 +41,7 @@ process QDNASEQ {
         -- \\
         ./
 
-    
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
