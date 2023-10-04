@@ -42,6 +42,7 @@ workflow SOLID_BIOPSY {
                 CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
                 ch_versions = ch_versions.mix(CREATE_QDNASEQ_SUMMARY.out.versions)
                 summary_multiqc = CREATE_QDNASEQ_SUMMARY.out.qdnaseq_summary
+                //TODO: Generate the GISTIC output here? If not, remove the step from the module
                 break
             case "ascat_sc":
                 ASCAT_SC(ch_bam_bai, binsize, genome)
@@ -66,13 +67,12 @@ workflow SOLID_BIOPSY {
                     .set { ascatsc_summary }
 
                 CREATE_ASCATSC_SUMMARY(ascatsc_summary)
+                //TODO: Generate the GISTIC output here? If not, remove the step from the module
                 break
             default:
                 error "Unknown CNV caller ${caller}"
         }
 
-    //TODO: Differentiate between ASCAT.sc and QDNAseq outputs somehow
-    // Otherwise, what happens if you run *both* ?
     emit:
         all_seg_ch      = all_seg_ch
         summary         = summary_multiqc

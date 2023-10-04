@@ -27,7 +27,6 @@ process ASCAT_SC {
     def gender = meta.gender ? "--sex ${meta.gender}": ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-
     """
     run_ascatsc.R \\
         --tumour_bams ${bamfiles} \\
