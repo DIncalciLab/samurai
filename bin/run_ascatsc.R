@@ -29,7 +29,7 @@ parser <- add_argument(parser, "--outdir",
                        default = "./",
                        help = "Destination directory to save data to")
 parser <- add_argument(parser, "--allchr", type = "string",
-                       default = paste0("chr", (1:22)),
+                       default = paste0("chr", c(1:22, "X")),
                        help = "Chromosome names.")
 parser <- add_argument(parser, "--chrstring_bam", type = "string",
                        default = "chr",
