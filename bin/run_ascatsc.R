@@ -4,7 +4,6 @@ suppressPackageStartupMessages({
   library(ASCAT.sc, quietly = TRUE)
   library(argparser, quietly = TRUE)
   library(copynumber, quietly = TRUE)
-  library(purrr, quietly = TRUE)
   library(readr, quietly = TRUE)
   library(dplyr, quietly = TRUE)
 }
@@ -70,12 +69,12 @@ res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
                          predict_refit = args$predict_refit)
 
 # create segmentation dataframe
-df_final <- as.data.frame(ifelse(args$predict_refit, res[["allProfiles.refitted.auto"]],
-                    res[["allProfiles"]]))
 
 if (args$predict_refit == TRUE) {
+  df_final <- res[["allProfiles.refitted.auto"]]
   df_summary <- res$summary$allSols.refitted
 } else {
+  df_final <- res[["allProfiles.refitted"]]
   df_summary <- res$summary$allSols
 }
 
