@@ -74,7 +74,7 @@ if (args$predict_refit == TRUE) {
   df_final <- res[["allProfiles.refitted.auto"]]
   df_summary <- res$summary$allSols.refitted
 } else {
-  df_final <- res[["allProfiles.refitted"]]
+  df_final <- res[["allProfiles"]]
   df_summary <- res$summary$allSols
 }
 
