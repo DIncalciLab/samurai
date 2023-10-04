@@ -16,15 +16,17 @@ workflow SOLID_BIOPSY {
     main:
         ch_versions = Channel.empty()
 
+        //TODO: Use a single parameter, which goes for either QDNAseq or ASCAT.sc
+        // Something like '--analysis_method {qdnaseq,ascatsc}'
         if (params.qdnaseq) {
 
-            binfile             = Channel.value(params.binfile)
+            binfile             = file(params.binfile)
 
             QDNASEQ(ch_bam_bai)
-            ch_versions = ch_versions.mix( QDNASEQ.out.versions.first() )
+            ch_versions = ch_versions.mix(QDNASEQ.out.versions.first() )
 
             CONCATENATE_QDNASEQ_PLOTS(QDNASEQ.out.bin_plot.collect())
-            ch_versions = ch_versions.mix( CONCATENATE_QDNASEQ_PLOTS.out.versions)
+            ch_versions = ch_versions.mix(CONCATENATE_QDNASEQ_PLOTS.out.versions)
 
             all_seg_plot = CONCATENATE_QDNASEQ_PLOTS.out.genome_plot
 
@@ -43,7 +45,7 @@ workflow SOLID_BIOPSY {
                                     .set{ qdnaseq_summary }
 
             CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
-            ch_versions = ch_versions.mix( CREATE_QDNASEQ_SUMMARY.out.versions)
+            ch_versions = ch_versions.mix(CREATE_QDNASEQ_SUMMARY.out.versions)
 
             summary_multiqc = CREATE_QDNASEQ_SUMMARY.out.qdnaseq_summary
         }
@@ -51,10 +53,10 @@ workflow SOLID_BIOPSY {
         if (params.ascat_sc) {
 
             ASCAT_SC(ch_bam_bai)
-            ch_versions = ch_versions.mix( ASCAT_SC.out.versions )
+            ch_versions = ch_versions.mix(ASCAT_SC.out.versions )
 
             CONCATENATE_ASCATSC_PLOTS(ASCAT_SC.out.profiles_plot.collect())
-            ch_versions = ch_versions.mix( CONCATENATE_ASCATSC_PLOTS.out.versions)
+            ch_versions = ch_versions.mix(CONCATENATE_ASCATSC_PLOTS.out.versions)
             all_seg_plot = CONCATENATE_ASCATSC_PLOTS.out.genome_plot
 
             ASCAT_SC.out.segments
@@ -72,7 +74,7 @@ workflow SOLID_BIOPSY {
                                     .set { ascatsc_summary }
 
             CREATE_ASCATSC_SUMMARY(ascatsc_summary)
-            ch_versions = ch_versions.mix( CREATE_ASCATSC_SUMMARY.out.versions)
+            ch_versions = ch_versions.mix(CREATE_ASCATSC_SUMMARY.out.versions)
 
             summary_multiqc = CREATE_ASCATSC_SUMMARY.out.ascatsc_summary
 
