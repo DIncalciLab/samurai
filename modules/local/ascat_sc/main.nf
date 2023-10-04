@@ -5,7 +5,7 @@ process ASCAT_SC {
     tag "${meta.id}"
     label "process_medium"
 
-    container "/home/sarap/cache_singularity/ASCAT-sc.sif"
+    container "quay.io/dincalcilab/ascat_sc:1.0.0"
 
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
