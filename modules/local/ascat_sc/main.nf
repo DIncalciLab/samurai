@@ -16,21 +16,23 @@ process ASCAT_SC {
         path("*_gistic.seg"),                     emit: gistic_file
         path("*_summary.txt"),                    emit: summary_table
         path("*_segments.seg"),                   emit: segments
+        path("*.rds"),                            emit: rds
         path("versions.yml"),                     emit: versions
 
     script:
 
     def args = task.ext.args ?: ''
     def gender = meta.gender ? "--sex ${meta.gender}": ''
-         
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
     """
     run_ascatsc.R \\
         --tumour_bams ${bamfiles} \\
         --cpus "${task.cpus}" \\
-        --projectname "${meta.id}" \\
+        --projectname "${prefix}" \\
         ${gender} \\
-        $args 
-        
+        $args
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         ASCAT.sc: ${VERSION}
