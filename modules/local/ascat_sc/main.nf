@@ -29,7 +29,7 @@ process ASCAT_SC {
 
     """
     run_ascatsc.R \\
-        --tumour_bams ${bamfiles} \\
+        --tumor_bams ${bamfiles} \\
         --cpus "${task.cpus}" \\
         --projectname "${prefix}" \\
         --binsize "${binsize}" \\
