@@ -28,7 +28,7 @@ parser <- add_argument(parser, "--build", type = "string",
 parser <- add_argument(parser, "--outdir",
                        default = "./",
                        help = "Destination directory to save data to")
-parser <- add_argument(parser, "--allchr", type = "string",
+parser <- add_argument(parser, "--allchr", nargs = Inf,
                        default = paste0("chr", c(1:22, "X")),
                        help = "Chromosome names.")
 parser <- add_argument(parser, "--chrstring_bam", type = "string",
@@ -73,16 +73,17 @@ res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
                          projectname = args$projectname,
                          segmentation_alpha = args$segmentation_alpha,
                          predict_refit = args$predict_refit,
-                         multipcf = multipcf)
+                         multipcf = multipcf,
+                         outdir = args$outdir)
 
 # create segmentation dataframe
 
 if (args$predict_refit == TRUE) {
-  df_final <- res[["allProfiles.refitted.auto"]]
+  df_final <- as.data.frame(res[["allProfiles.refitted.auto"]])
   df_summary <- res$summary$allSols.refitted
 } else {
   df_final <- res[["allProfiles"]]
-  df_summary <- res$summary$allSols
+  df_summary <- as.data.frame(res$summary$allSols)
 }
 
 #save output files
