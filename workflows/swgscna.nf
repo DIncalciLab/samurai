@@ -101,77 +101,84 @@ workflow SWGSCNA {
     INPUT_CHECK ( ch_input )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
-    // MODULE: Run FastQC
-    FASTQC ( INPUT_CHECK.out.reads )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    if (params.aligner) {
+        FASTQC ( INPUT_CHECK.out.reads )
+        ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
-    // SUBWORKFLOW: FASTQ_ALIGN_DNA
+        // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
-    PREPARE_GENOME(params.fasta)
-    ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
+        PREPARE_GENOME(params.fasta)
+        ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
 
-    FASTQ_ALIGN_DNA (
-        INPUT_CHECK.out.reads,
-        PREPARE_GENOME.out.index,
-        params.aligner,
-        true // sort_bam
-    )
-    ch_versions = ch_versions.mix(FASTQ_ALIGN_DNA.out.versions.first())
+        FASTQ_ALIGN_DNA (
+            INPUT_CHECK.out.reads,
+            PREPARE_GENOME.out.index,
+            params.aligner,
+            true // sort_bam
+        )
+        ch_versions = ch_versions.mix(FASTQ_ALIGN_DNA.out.versions.first())
 
-    // MARKDUPLICATES
-    BAM_MARKDUPLICATES_PICARD (
-        FASTQ_ALIGN_DNA.out.bam,
-        params.fasta,
-        params.fasta_fai
-    )
+        // MARKDUPLICATES
+        BAM_MARKDUPLICATES_PICARD (
+            FASTQ_ALIGN_DNA.out.bam,
+            params.fasta,
+            params.fasta_fai
+        )
 
-    ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
+        ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
 
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
-        meta, metrics -> metrics })
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect{
-        meta, metrics -> metrics })
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
-        meta, metrics -> metrics })
+        ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
+            meta, metrics -> metrics })
+        ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect{
+            meta, metrics -> metrics })
+        ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
+            meta, metrics -> metrics })
 
-
-    // CN Calling Solid Biopsy
-    if (params.biopsy == 'tissue' && !params.size_selection) {
-
-        SOLID_BIOPSY(BAM_MARKDUPLICATES_PICARD.out.bam_bai)
-        ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
-
-        ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
-
+        ch_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
     } else {
-
-        // TODO: Add a size parameter for size selection (not urgent)
-        if (params.size_selection) {
-            SIZE_SELECTION(BAM_MARKDUPLICATES_PICARD.out.bam_bai, Channel.value(file(params.fasta)))
-            ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
-
-            ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_pre.map{
-                    meta, file -> return file })
-            ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
-                    meta, file -> return file })
-
-            bam_bai   = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
-                        .map {
-                            meta, bam, bai -> [ meta, bam, bai ]
-                            }
-
-        } else {
-            bam_bai = bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
-        }
-
-        LIQUID_BIOPSY(bam_bai)
-
-        ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
-
+        ch_bam_bai = INPUT_CHECK.out.reads //TODO: switch to nf-validation
     }
+
+
+    // CN Calling
+
+    switch(params.analysis_type) {
+        case "solid_tumor":
+            SOLID_BIOPSY(ch_bam_bai)
+            ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
+            ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
+            break
+        case "liquid_biopsy_ichorcna":
+            if (params.size_selection) {
+                SIZE_SELECTION(ch_bam_bai, file(params.fasta))
+                ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
+
+                ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_pre.map{
+                        meta, file -> return file })
+                ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
+                        meta, file -> return file })
+
+                ch_analysis = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
+                            .map {
+                                meta, bam, bai -> [ meta, bam, bai ]
+                            }
+                } else {
+                    ch_analysis = ch_bam_bai
+                LIQUID_BIOPSY(ch_analysis)
+                ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
+                ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
+                }
+            break
+        case "wisecondorx":
+            ch_analysis = ch_bam_bai
+            LIQUID_BIOPSY(ch_analysis)
+                ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
+                ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
+            break
+    }
+
     // Software versions
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
