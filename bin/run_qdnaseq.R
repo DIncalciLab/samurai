@@ -168,7 +168,7 @@ R.cache::getCacheRootPath()
 if (!is.null(args$bin_data)) {
     bins <- readRDS(args$bin_data)
 } else {
-    bins <- getBinAnnotations(binSize = args$bin_size)
+    bins <- getBinAnnotations(binSize = args$bin_size, genome=args$genome)
 }
 
 message("Reading data...")

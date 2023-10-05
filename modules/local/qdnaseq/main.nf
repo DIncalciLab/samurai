@@ -6,7 +6,7 @@ process QDNASEQ {
     label "process_high"
     stageInMode "link"
 
-    container "quay.io/dincalcilab/qdnaseq:1.30.0"
+    container "quay.io/dincalcilab/qdnaseq:1.30.0-a28ebc1"
 
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
