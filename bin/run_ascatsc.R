@@ -11,8 +11,8 @@ suppressPackageStartupMessages({
 
 parser <- arg_parser("Run ASCAT.sc", hide.opts = TRUE)
 
-parser <- add_argument(parser, "--tumour_bams",
-                       help = "Paths to the bams (sorted and indexed).",
+parser <- add_argument(parser, "--tumor_bams",
+                       help = "Paths to the tumor BAMs (sorted and indexed)",
                        nargs = Inf)
 parser <- add_argument(parser, "--binsize", type = "integer",
                        default = 30000,
@@ -28,9 +28,9 @@ parser <- add_argument(parser, "--build", type = "string",
 parser <- add_argument(parser, "--outdir",
                        default = "./",
                        help = "Destination directory to save data to")
-parser <- add_argument(parser, "--allchr", nargs = Inf,
-                       default = paste0("chr", c(1:22, "X")),
-                       help = "Chromosome names.")
+parser <- add_argument(parser, "--chromosomes",
+                       help = "Chromosomes to evaluate",
+                       default = "autosomes_x")
 parser <- add_argument(parser, "--chrstring_bam", type = "string",
                        default = "chr",
                        help = "Chromosome prefix present in BAMs.")
@@ -46,11 +46,36 @@ parser <- add_argument(parser, "--predict_refit", type = "boolean",
                                 and refit the profiles automatically")
 parser <- add_argument(parser, "--max_tumor_ploidy", type = "float",
                        default = 5,
-                       help = "Maximum tumour ploidy above which solutions \n
+                       help = "Maximum tumor ploidy above which solutions \n
                        will be masked")
-
+parser <- add_argument(parser, "--min-ploidy", type = "float",
+                       help = "Minimum ploidy to consider",
+                       default = 1.7)
+parser <- add_argument(parser, "--max-ploidy", type = "float",
+                       help = "Maximum ploidy to consider",
+                       default = 5)
+parser <- add_argument(parser, "--min-purity", type = "float",
+                       help = "Minimum purity to consider (fractional scale)",
+                       default = 0.05)
+parser <- add_argument(parser, "--max-purity", type = "float",
+                       help = "Maximum purity to consider (fractional scale)",
+                       default = 1)
 
 args <- parse_args(parser)
+
+allchr <- switch(
+  args$chromosomes,
+  "autosomes" = paste0(args$chrstring_bam, (1:22)),
+  "autosomes_x" = paste0(args$chrstring_bam, c(1:22, "X")),
+  "all" = paste0(args$chrstring_bam, c(1:22, "X", "Y")),
+  stop("Invalid 'chromsomes' value. Use 'autosomes', 'autosomes_x' or 'all'.")
+)
+
+if (args$min_ploidy > args$max_ploidy) {
+  stop("Minimum ploidy cannot be higher than maximum ploidy")
+} else if (args$min_purity > args$max_purity) {
+  stop("Minimum purity cannot be higher than maximum purity")
+}
 
 message("Starting analysis...")
 
@@ -60,13 +85,16 @@ if(length(args$tumour_bams) > 1) {
   multipcf <- TRUE
 }
 
-res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
-                         allchr = paste0("chr", c(1:22, "X", "Y")),
+purities <- seq(args$min_purity, args$max_purity, 0.01)
+ploidies <- seq(args$min_ploidy, args$max_ploidy, 0.01)
+
+res <- run_sc_sequencing(tumour_bams = args$tumor_bams,
+                         allchr = allchr,
                          sex = args$sex,
                          binsize = args$binsize,
                          chrstring_bam = args$chrstring_bam,
-                         purs = seq(0.05, 1, 0.01),
-                         ploidies = seq(1.7, 5, 0.01),
+                         purs = purities,
+                         ploidies = ploidies,
                          maxtumourpsi = args$max_tumor_ploidy,
                          build = args$build,
                          MC.CORES = args$cpus,
