@@ -54,19 +54,26 @@ args <- parse_args(parser)
 
 message("Starting analysis...")
 
+multipcf <- FALSE
+
+if(length(args$tumour_bams) > 1) {
+  multipcf <- TRUE
+}
+
 res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
-                         allchr = paste0("chr", (1:22)),
+                         allchr = paste0("chr", c(1:22, "X", "Y")),
                          sex = args$sex,
                          binsize = args$binsize,
                          chrstring_bam = args$chrstring_bam,
                          purs = seq(0.05, 1, 0.01),
                          ploidies = seq(1.7, 5, 0.01),
-                         maxtumourpsi = 5,
+                         maxtumourpsi = args$max_tumor_ploidy,
                          build = args$build,
                          MC.CORES = args$cpus,
                          projectname = args$projectname,
                          segmentation_alpha = args$segmentation_alpha,
-                         predict_refit = args$predict_refit)
+                         predict_refit = args$predict_refit,
+                         multipcf = multipcf)
 
 # create segmentation dataframe
 
