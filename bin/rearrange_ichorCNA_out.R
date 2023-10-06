@@ -19,7 +19,8 @@ df <- df %>%
         select(chr, start, end, ends_with("logR_Copy_Number")) %>%
         mutate(sample = samplename) %>%
         rename("chromosome" = "chr") %>%
-        rename(segVal = ends_with("logR_Copy_Number")) %>% na.omit()
+        rename(segVal = ends_with("logR_Copy_Number")) %>%
+        na.omit()
 
 readr::write_tsv(df, file = paste0(samplename, "_df_signatures.seg"),
                  quote = "needed")

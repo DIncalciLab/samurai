@@ -69,8 +69,9 @@ res <- run_sc_sequencing(tumour_bams = args$tumour_bams,
                          predict_refit = args$predict_refit)
 
 # create segmentation dataframe
-df_final <- as.data.frame(ifelse(args$predict_refit, res[["allProfiles.refitted.auto"]],
-                    res[["allProfiles"]]))
+df_final <- as.data.frame(ifelse(args$predict_refit,
+                          res[["allProfiles.refitted.auto"]],
+                          res[["allProfiles"]]))
 df_final$sample <- res$summary$allSols$samplename
 
 if (args$predict_refit == TRUE) {
@@ -92,7 +93,8 @@ readr::write_tsv(df_final, file = paste0(args$project, "_segments.seg"),
 #Create df for Signature Extraction
 df_sig <- df_final %>%
   dplyr::select(chromosome, start, end, total_copy_number_logr, sample) %>%
-  dplyr::rename(segVal = total_copy_number_logr) %>% na.omit()
+  dplyr::rename(segVal = total_copy_number_logr) %>%
+   na.omit()
 
 readr::write_tsv(df_sig, file = paste0(args$project, "_df_signatures.seg"),
                  quote = "needed")

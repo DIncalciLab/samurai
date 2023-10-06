@@ -15,7 +15,7 @@ create_pdf <- function(template, project) {
 parser <- arg_parser("Compute Signatures", hide.opts = TRUE)
 
 parser <- add_argument(parser, "--seg_file",
-                       help = "Input segmentation file (chromosome,start,end,segVal,sample).",
+                       help = "Input segmentation file",
                        nargs = Inf)
 parser <- add_argument(parser, "--cpus", type = "integer", default = 1,
                        help = "Number of cores to use.")
@@ -56,7 +56,7 @@ plotSampleByComponent(object = cnobj)
 dev.off()
 
 create_pdf("%s_plot_activities.pdf", args$project)
-plotActivities(object = cnobj,type = "threshold")
+plotActivities(object = cnobj, type = "threshold")
 dev.off()
 
 message("Complete.")
