@@ -7,7 +7,7 @@ process CREATE_QDNASEQ_SUMMARY{
 
     input:
         path "qdnaseq_summary.txt"
-        
+
     output:
         path "qdnaseq_summary_mqc.tsv"       , emit: qdnaseq_summary
         path "versions.yml"                  , emit: versions
@@ -45,7 +45,7 @@ process CREATE_QDNASEQ_SUMMARY{
         MULTIQC_HEADER
 
         cat qdnaseq_summary.txt >> qdnaseq_summary_mqc.tsv
-        
+
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
             create_qdna_summary: ${VERSION}
