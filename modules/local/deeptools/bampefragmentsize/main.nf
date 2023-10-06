@@ -8,7 +8,7 @@ process BAMPE_FRAGMENTSIZE {
        val prefix
        path(bamfiles)
        path(bamindexes)
-       
+
     output:
         path "*_fragment_size_histogram.svg", emit: histogram
         path "*_fragment_size_table.txt", emit: table
@@ -38,5 +38,4 @@ process BAMPE_FRAGMENTSIZE {
             bamPEFragmentSize: \$( bamPEFragmentSize --version | sed -e "s/bamPEFragmentSize //g" )
         END_VERSIONS
         """
-
 }
