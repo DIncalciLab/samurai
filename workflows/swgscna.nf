@@ -97,6 +97,10 @@ workflow SWGSCNA {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
+    binsize = Channel.value(params.binsize)
+    genome = Channel.value(params.genome)
+    caller = Channel.value(params.caller)
+
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     INPUT_CHECK ( ch_input )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
@@ -145,13 +149,13 @@ workflow SWGSCNA {
     // CN Calling
 
     switch(params.analysis_type) {
-        case "solid_tumor":
-            SOLID_BIOPSY(ch_bam_bai)
+        case "solid_biopsy":
+            SOLID_BIOPSY(ch_bam_bai, caller, binsize)
             ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
             ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
             break
-        case "liquid_biopsy_ichorcna":
-            if (params.size_selection) {
+        case "liquid_biopsy":
+            if (params.size_selection && params.caller != "wisecondorx") {
                 SIZE_SELECTION(ch_bam_bai, file(params.fasta))
                 ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
@@ -166,17 +170,12 @@ workflow SWGSCNA {
                             }
                 } else {
                     ch_analysis = ch_bam_bai
-                LIQUID_BIOPSY(ch_analysis)
-                ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
-                ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
                 }
             break
-        case "wisecondorx":
-            ch_analysis = ch_bam_bai
-            LIQUID_BIOPSY(ch_analysis)
-                ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
-                ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
-            break
+
+        LIQUID_BIOPSY(ch_analysis, caller)
+        ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
     }
 
     // Software versions
