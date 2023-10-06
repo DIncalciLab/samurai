@@ -118,30 +118,30 @@ create_pdf <- function(output, template, project) {
 parser <- arg_parser("Run QDNAseq", hide.opts = TRUE)
 
 parser <- add_argument(parser, "--cpus", type = "integer", default = 10,
-                       help = "Number of CPU cores to use")
+    help = "Number of CPU cores to use")
 parser <- add_argument(parser, "--bin-size", type = "integer", default = 30,
-                        help = "Bin size in kbp (default: 30)")
+    help = "Bin size in kbp (default: 30)")
 parser <- add_argument(parser, "--bin-data",
-                        help = "Path to RDS containing bin data",
-                        default = NULL)
+    help = "Path to RDS containing bin data",
+    default = NULL)
 parser <- add_argument(parser, "--project-name", default = "sWGS",
-                        help = "Set the name for the collected data")
+    help = "Set the name for the collected data")
 parser <- add_argument(parser, "--min-mapq", type = "integer",
-                        default = 1,
-                        help = "Minimum mapping quality (default: 1)")
+    default = 1,
+    help = "Minimum mapping quality (default: 1)")
 parser <- add_argument(parser, "--purity", type = "integer",
-                        default = 1,
-                        help = "Set purity for the calling algorithm (default: 1)")
+    default = 1,
+    help = "Set purity for the calling algorithm (default: 1)")
 parser <- add_argument(parser, "--genome", default = "hg38",
-                       help = "Genome to use")
+    help = "Genome to use")
 parser <- add_argument(parser, "--paired-end",
-                        help = "Whether reads are paired or not",
-                        flag = TRUE)
+    help = "Whether reads are paired or not",
+    flag = TRUE)
 parser <- add_argument(parser, "--source",
-                        help = "Source BAM files (one or more)",
-                        nargs = Inf)
+    help = "Source BAM files (one or more)",
+    nargs = Inf)
 parser <- add_argument(parser, "destination",
-                        help = "Destination directory to save data to")
+    help = "Destination directory to save data to")
 
 args <- parse_args(parser)
 
@@ -173,20 +173,21 @@ if (!is.null(args$bin_data)) {
 
 message("Reading data...")
 read_counts <- binReadCounts(bins, bamfiles = bamfiles,
-                             cache = TRUE,
-                             minMapq = args$min_mapq,
-                             pairedEnds = args$paired_end,
-                             isPaired = TRUE,
-                             isProperPair = TRUE,
-                             chunkSize = TRUE)
+    cache = TRUE,
+    minMapq = args$min_mapq,
+    pairedEnds = args$paired_end,
+    isPaired = TRUE,
+    isProperPair = TRUE,
+    chunkSize = TRUE
+)
 
 message("Filtering read counts...")
 reads_filtered <- applyFilters(read_counts, residual = TRUE,
-                                blacklist = TRUE,
-                                chromosome = c("X", "Y", "MT"))
+    blacklist = TRUE,
+    chromosome = c("X", "Y", "MT"))
 reads_filtered <- estimateCorrection(reads_filtered)
 dest_rds <- paste(output, sprintf("%s_reads_filtered.rds", args$project),
-                  sep = "/")
+    sep = "/")
 saveRDS(reads_filtered, dest_rds)
 
 message("Correcting and smoothing copy numbers...")
@@ -201,7 +202,7 @@ dev.off()
 message("Saving bins...")
 exportBins(corrected_bins, file = "%s_bins.bed", format = "bed", filter = TRUE)
 dest_rds <- paste(output, sprintf("%s_bins.rds", args$project),
-                  sep = "/")
+    sep = "/")
 saveRDS(corrected_bins, dest_rds)
 
 message("Segmenting data...")
@@ -219,16 +220,16 @@ summary_table$expected_sd <- round(sqrt(summary_table$expected.variance), 5)
 summary_table$binsize <- bins@data$end[1]
 colnames(summary_table) <- col_names
 write.table(summary_table, file = paste0(args$project, "_summary.txt"),
-            quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+    quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
 
 
 # This is useless, but QDNAseq won't export data if there isn't call information
 called <- callBins(segmented, method = "CGHcall", build = args$genome,
-                   cellularity = args$purity, nclass = 3)
+    cellularity = args$purity, nclass = 3)
 
 message("Saving RDS data set...")
 dest_rds <- paste(output, sprintf("%s.rds", args$project),
-                  sep = "/")
+    sep = "/")
 saveRDS(called, dest_rds)
 
 message("Exporting segments to SEG format...")
@@ -237,12 +238,12 @@ segments <- exportSegments(called, include_calls = TRUE)
 segments_nocall <- exportSegments(called, include_calls = FALSE)
 
 savedfiles <- exportBins(called, type = "segments",
-                         file = "%s_filt.seg",
-                         format = "seg", filter = TRUE)
+    file = "%s_filt.seg",
+    format = "seg", filter = TRUE)
 
 write.table(segments, paste0(args$project, ".calls.seg"), sep = "\t",
-            row.names = FALSE)
+    row.names = FALSE)
 write.table(segments_nocall, paste0(args$project, "_.seg"), sep = "\t",
-            row.names = FALSE)
+    row.names = FALSE)
 
 message("Complete.")
