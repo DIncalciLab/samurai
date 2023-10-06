@@ -5,6 +5,7 @@ include { CONCATENATE_PDF as CONCATENATE_QDNASEQ_PLOTS } from '../../../modules/
 include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS } from '../../../modules/local/concatenate_pdf/main'
 include { CREATE_QDNASEQ_SUMMARY                       } from '../../../modules/local/create_qdnaseq_summary/main'
 include { CREATE_ASCATSC_SUMMARY                       } from '../../../modules/local/create_ascatsc_summary/main'
+include { QUANTIFY_CIN_SIGNATURES                      } from '../../../modules/local/quantify_cin_signatures/main'
 
 // Workfow
 
@@ -73,10 +74,24 @@ workflow SOLID_BIOPSY {
                                     skip: 1)
                                     .set { ascatsc_summary }
 
+            ASCAT_SC.out.sig_file
+                        .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                                    name: 'segments_sig_extraction.seg',
+                                    keepHeader: true,
+                                    skip: 1)
+                                    .set{signature_file}
+
             CREATE_ASCATSC_SUMMARY(ascatsc_summary)
             ch_versions = ch_versions.mix(CREATE_ASCATSC_SUMMARY.out.versions)
 
             summary_multiqc = CREATE_ASCATSC_SUMMARY.out.ascatsc_summary
+
+            if (params.quantify_signatures) {
+                QUANTIFY_CIN_SIGNATURES(signature_file)
+                ch_versions = ch_versions.mix( QUANTIFY_CIN_SIGNATURES.out.versions)
+            }
+
+
 
         }
 
