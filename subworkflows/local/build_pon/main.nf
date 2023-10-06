@@ -8,7 +8,7 @@ include { WISECONDORX_NEWREF                               } from '../../../modu
 workflow BUILD_PON {
     take:
         normal_dir
-        analysis_type
+        caller
 
     main:
         ch_versions = Channel.empty()
@@ -29,8 +29,8 @@ workflow BUILD_PON {
                 ch_bam_for_pon = ch_bam_files
         }
 
-        switch(analysis_type) {
-            case "liquid_biopsy_ichorcna":
+        switch(caller) {
+            case "ichorcna":
                 HMMCOPY_READCOUNTER_PON(ch_bam_for_pon)
                 wigfiles = HMMCOPY_READCOUNTER_PON.out.wig.map {
                     it ->
@@ -56,7 +56,7 @@ workflow BUILD_PON {
                 ch_versions = ch_versions.mix(WISECONDORX_NEWREF.out.versions)
                 break
             default:
-                error "Unknown/unsupported analysis type ${analysis_type}"
+                error "Unknown/unsupported caller ${caller}"
         }
 
     emit:
