@@ -498,6 +498,42 @@
                     "type": "string"
                 }
             }
+        },
+        "ascat_sc_options": {
+            "title": "ASCAT.sc options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "ascat_sc_predict_refit": {
+                    "type": "string",
+                    "default": "TRUE"
+                },
+                "ascat_sc_segmentation_alpha": {
+                    "type": "number",
+                    "default": 0.01
+                },
+                "ascat_sc_min_purity": {
+                    "type": "number",
+                    "default": 0.01
+                },
+                "ascat_sc_max_purity": {
+                    "type": "integer",
+                    "default": 1
+                },
+                "ascat_sc_min_ploidy": {
+                    "type": "number",
+                    "default": 1.7
+                },
+                "ascat_sc_max_ploidy": {
+                    "type": "integer",
+                    "default": 5
+                },
+                "ascat_sc_max_tumor_ploidy": {
+                    "type": "integer",
+                    "default": 5
+                }
+            }
         }
     },
     "allOf": [
@@ -533,37 +569,12 @@
         },
         {
             "$ref": "#/definitions/wisecondorx_options"
+        },
+        {
+            "$ref": "#/definitions/ascat_sc_options"
         }
     ],
     "properties": {
-        "ascat_sc_predict_refit": {
-            "type": "string",
-            "default": "TRUE"
-        },
-        "ascat_sc_segmentation_alpha": {
-            "type": "number",
-            "default": 0.01
-        },
-        "ascat_sc_min_purity": {
-            "type": "number",
-            "default": 0.01
-        },
-        "ascat_sc_max_purity": {
-            "type": "integer",
-            "default": 1
-        },
-        "ascat_sc_min_ploidy": {
-            "type": "number",
-            "default": 1.7
-        },
-        "ascat_sc_max_ploidy": {
-            "type": "integer",
-            "default": 5
-        },
-        "ascat_sc_max_tumor_ploidy": {
-            "type": "integer",
-            "default": 5
-        },
         "schema_ignore_params": {
             "type": "string",
             "default": "genomes"
