@@ -339,7 +339,7 @@
         },
         "caller": {
             "type": "string",
-            "default": null
+            "default": "None"
         },
         "analysis_type": {
             "type": "string",
@@ -347,19 +347,18 @@
         },
         "normal_panel": {
             "type": "string",
-            "default": null
+            "default": "None"
         },
         "pon_path": {
             "type": "string",
-            "default": null
+            "default": "None"
         },
         "pon_name": {
             "type": "string",
             "default": "PoN"
         },
         "build_pon": {
-            "type": "string",
-            "default": "false"
+            "type": "boolean"
         },
         "normal_states": {
             "type": "string",
@@ -446,20 +445,17 @@
             "default": "c(-2,4)"
         },
         "ichorcna_estimate_sc": {
-            "type": "string",
-            "default": "false"
+            "type": "boolean"
         },
         "ichorcna_estimate_ploidy": {
-            "type": "string",
-            "default": "true"
+            "type": "boolean",
+            "default": true
         },
         "ichorcna_filter_bam_pon": {
-            "type": "string",
-            "default": "false"
+            "type": "boolean"
         },
         "wisecondorx_no_rm_dup": {
-            "type": "string",
-            "default": "false"
+            "type": "boolean"
         },
         "wisecondorx_yfrac": {
             "type": "number",
@@ -467,7 +463,7 @@
         },
         "wisecondorx_ylim": {
             "type": "string",
-            "default": null
+            "default": "None"
         },
         "wisecondorx_zscore": {
             "type": "integer",
