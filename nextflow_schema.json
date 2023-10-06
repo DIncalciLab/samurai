@@ -280,21 +280,9 @@
                 "index_genome": {
                     "type": "boolean"
                 },
-                "biopsy": {
-                    "type": "string",
-                    "default": "tissue"
-                },
                 "purity": {
                     "type": "integer",
                     "default": 1
-                },
-                "binsizes": {
-                    "type": "integer",
-                    "default": 30
-                },
-                "binfile": {
-                    "type": "string",
-                    "default": "None"
                 },
                 "fasta_fai": {
                     "type": "string",
@@ -312,10 +300,6 @@
                     "type": "integer",
                     "default": 400,
                     "hidden": true
-                },
-                "qdnaseq": {
-                    "type": "boolean",
-                    "description": "Run QDNAseq on the aligned data."
                 }
             }
         }
@@ -348,6 +332,178 @@
         "bwamem2": {
             "type": "string",
             "default": "None"
+        },
+        "binsize": {
+            "type": "integer",
+            "default": 500
+        },
+        "caller": {
+            "type": "string",
+            "default": null
+        },
+        "analysis_type": {
+            "type": "string",
+            "default": "solid_biopsy"
+        },
+        "normal_panel": {
+            "type": "string",
+            "default": null
+        },
+        "pon_path": {
+            "type": "string",
+            "default": null
+        },
+        "pon_name": {
+            "type": "string",
+            "default": "PoN"
+        },
+        "build_pon": {
+            "type": "string",
+            "default": "false"
+        },
+        "normal_states": {
+            "type": "string",
+            "default": "0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99"
+        },
+        "ichorcna_genome_style": {
+            "type": "string",
+            "default": "UCSC"
+        },
+        "ichorcna_readcounter_chrs": {
+            "type": "string",
+            "default": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22"
+        },
+        "ichorcna_readcounter_quality": {
+            "type": "integer",
+            "default": 20
+        },
+        "ichorcna_chrs_to_use": {
+            "type": "string",
+            "default": "paste0(\\'chr\\', c(1:22))"
+        },
+        "ichorcna_chrs_to_train": {
+            "type": "string",
+            "default": "paste0(\\'chr\\', c(1:22))"
+        },
+        "ichorcna_chrs_to_normalize": {
+            "type": "string",
+            "default": "paste0(\\'chr\\', c(1:22))"
+        },
+        "ichorcna_estimate_normal": {
+            "type": "string",
+            "default": "TRUE"
+        },
+        "ichorcna_fraction_reads_male": {
+            "type": "number",
+            "default": 0.3
+        },
+        "ichorcna_male_chrX_logR": {
+            "type": "number",
+            "default": 0.3
+        },
+        "ichorcna_min_map_score": {
+            "type": "number",
+            "default": 0.75
+        },
+        "ichorcna_max_frac_genome_subclone": {
+            "type": "number",
+            "default": 0.5
+        },
+        "ichorcna_max_frac_cna_subclone": {
+            "type": "number",
+            "default": 0.7
+        },
+        "ichorcna_min_segment_bins": {
+            "type": "integer",
+            "default": 50
+        },
+        "ichorcna_max_cn": {
+            "type": "integer",
+            "default": 5
+        },
+        "ichorcna_include_homd": {
+            "type": "string",
+            "default": "FALSE"
+        },
+        "ichorcna_txne": {
+            "type": "number",
+            "default": 0.9999
+        },
+        "ichorcna_alt_frac_threshold": {
+            "type": "number",
+            "default": 0.05
+        },
+        "ichorcna_trx_strength": {
+            "type": "integer",
+            "default": 10000
+        },
+        "ichorcna_plotfiletype": {
+            "type": "string",
+            "default": "pdf"
+        },
+        "ichorcna_plotylim": {
+            "type": "string",
+            "default": "c(-2,4)"
+        },
+        "ichorcna_estimate_sc": {
+            "type": "string",
+            "default": "false"
+        },
+        "ichorcna_estimate_ploidy": {
+            "type": "string",
+            "default": "true"
+        },
+        "ichorcna_filter_bam_pon": {
+            "type": "string",
+            "default": "false"
+        },
+        "wisecondorx_no_rm_dup": {
+            "type": "string",
+            "default": "false"
+        },
+        "wisecondorx_yfrac": {
+            "type": "number",
+            "default": 0.4
+        },
+        "wisecondorx_ylim": {
+            "type": "string",
+            "default": null
+        },
+        "wisecondorx_zscore": {
+            "type": "integer",
+            "default": 5
+        },
+        "ascat_sc_predict_refit": {
+            "type": "string",
+            "default": "TRUE"
+        },
+        "ascat_sc_segmentation_alpha": {
+            "type": "number",
+            "default": 0.01
+        },
+        "ascat_sc_min_purity": {
+            "type": "number",
+            "default": 0.01
+        },
+        "ascat_sc_max_purity": {
+            "type": "integer",
+            "default": 1
+        },
+        "ascat_sc_min_ploidy": {
+            "type": "number",
+            "default": 1.7
+        },
+        "ascat_sc_max_ploidy": {
+            "type": "integer",
+            "default": 5
+        },
+        "ascat_sc_max_tumor_ploidy": {
+            "type": "integer",
+            "default": 5
+        },
+        "schema_ignore_params": {
+            "type": "string",
+            "default": "genomes"
         }
     }
 }
