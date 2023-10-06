@@ -354,6 +354,27 @@
                 }
             }
         },
+        "common_liquid_biopsy_options": {
+            "title": "Common liquid biopsy options",
+            "type": "object",
+            "description": "Options common to all liquid biopsy workflows.",
+            "default": "",
+            "properties": {
+                "normal_panel": {
+                    "type": "string"
+                },
+                "pon_path": {
+                    "type": "string"
+                },
+                "pon_name": {
+                    "type": "string",
+                    "default": "PoN"
+                },
+                "build_pon": {
+                    "type": "boolean"
+                }
+            }
+        },
         "ichorcna_options": {
             "title": "ichorCNA options",
             "type": "object",
@@ -449,6 +470,32 @@
                 },
                 "ichorcna_filter_bam_pon": {
                     "type": "boolean"
+                },
+                "ichorcna_normal_states": {
+                    "type": "string",
+                    "default": "0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99"
+                }
+            }
+        },
+        "wisecondorx_options": {
+            "title": "WisecondorX options",
+            "type": "object",
+            "description": "WisecondorX specific options",
+            "default": "",
+            "properties": {
+                "wisecondorx_no_rm_dup": {
+                    "type": "boolean"
+                },
+                "wisecondorx_yfrac": {
+                    "type": "number",
+                    "default": 0.4
+                },
+                "wisecondorx_zscore": {
+                    "type": "integer",
+                    "default": 5
+                },
+                "wisecondorx_ylim": {
+                    "type": "string"
                 }
             }
         }
@@ -479,40 +526,16 @@
             "$ref": "#/definitions/common_swgs_options"
         },
         {
+            "$ref": "#/definitions/common_liquid_biopsy_options"
+        },
+        {
             "$ref": "#/definitions/ichorcna_options"
+        },
+        {
+            "$ref": "#/definitions/wisecondorx_options"
         }
     ],
     "properties": {
-        "normal_panel": {
-            "type": "string",
-            "default": "None"
-        },
-        "pon_path": {
-            "type": "string",
-            "default": "None"
-        },
-        "pon_name": {
-            "type": "string",
-            "default": "PoN"
-        },
-        "build_pon": {
-            "type": "boolean"
-        },
-        "wisecondorx_no_rm_dup": {
-            "type": "boolean"
-        },
-        "wisecondorx_yfrac": {
-            "type": "number",
-            "default": 0.4
-        },
-        "wisecondorx_ylim": {
-            "type": "string",
-            "default": "None"
-        },
-        "wisecondorx_zscore": {
-            "type": "integer",
-            "default": 5
-        },
         "ascat_sc_predict_refit": {
             "type": "string",
             "default": "TRUE"
@@ -544,10 +567,6 @@
         "schema_ignore_params": {
             "type": "string",
             "default": "genomes"
-        },
-        "ichorcna_normal_states": {
-            "type": "string",
-            "default": "0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99"
         }
     }
 }
