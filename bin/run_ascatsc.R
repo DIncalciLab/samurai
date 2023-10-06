@@ -1,11 +1,11 @@
 #!/usr/bin/env Rscript
 
 suppressPackageStartupMessages({
-  library(ASCAT.sc, quietly = TRUE)
-  library(argparser, quietly = TRUE)
-  library(copynumber, quietly = TRUE)
-  library(readr, quietly = TRUE)
-  library(dplyr, quietly = TRUE)
+    library(ASCAT.sc, quietly = TRUE)
+    library(argparser, quietly = TRUE)
+    library(copynumber, quietly = TRUE)
+    library(readr, quietly = TRUE)
+    library(dplyr, quietly = TRUE)
 }
 )
 
@@ -64,25 +64,25 @@ parser <- add_argument(parser, "--max-purity", type = "float",
 args <- parse_args(parser)
 
 allchr <- switch(
-  args$chromosomes,
-  "autosomes" = paste0(args$chrstring_bam, (1:22)),
-  "autosomes_x" = paste0(args$chrstring_bam, c(1:22, "X")),
-  "all" = paste0(args$chrstring_bam, c(1:22, "X", "Y")),
-  stop("Invalid 'chromsomes' value. Use 'autosomes', 'autosomes_x' or 'all'.")
+    args$chromosomes,
+    "autosomes" = paste0(args$chrstring_bam, (1:22)),
+    "autosomes_x" = paste0(args$chrstring_bam, c(1:22, "X")),
+    "all" = paste0(args$chrstring_bam, c(1:22, "X", "Y")),
+    stop("Invalid 'chromsomes' value. Use 'autosomes', 'autosomes_x' or 'all'.")
 )
 
 if (args$min_ploidy > args$max_ploidy) {
-  stop("Minimum ploidy cannot be higher than maximum ploidy")
+    stop("Minimum ploidy cannot be higher than maximum ploidy")
 } else if (args$min_purity > args$max_purity) {
-  stop("Minimum purity cannot be higher than maximum purity")
+    stop("Minimum purity cannot be higher than maximum purity")
 }
 
 message("Starting analysis...")
 
 multipcf <- FALSE
 
-if(length(args$tumour_bams) > 1) {
-  multipcf <- TRUE
+if (length(args$tumour_bams) > 1) {
+    multipcf <- TRUE
 }
 
 purities <- seq(args$min_purity, args$max_purity, 0.01)
@@ -107,11 +107,11 @@ res <- run_sc_sequencing(tumour_bams = args$tumor_bams,
 # create segmentation dataframe
 
 if (args$predict_refit == TRUE) {
-  df_final <- as.data.frame(res[["allProfiles.refitted.auto"]])
-  df_summary <- res$summary$allSols.refitted
+    df_final <- as.data.frame(res[["allProfiles.refitted.auto"]])
+    df_summary <- res$summary$allSols.refitted
 } else {
-  df_final <- res[["allProfiles"]]
-  df_summary <- as.data.frame(res$summary$allSols)
+    df_final <- res[["allProfiles"]]
+    df_summary <- as.data.frame(res$summary$allSols)
 }
 
 #save output files
@@ -124,8 +124,8 @@ readr::write_tsv(df_final, file = paste0(args$project, "_segments.seg"),
                  quote = "needed")
 
 df_gistic <- df_final %>%
-  dplyr::select(chromosome, start, end, num.mark, logr) %>%
-  dplyr::mutate(logr = round(as.numeric(logr), 5))
+    dplyr::select(chromosome, start, end, num.mark, logr) %>%
+    dplyr::mutate(logr = round(as.numeric(logr), 5))
 
 readr::write_tsv(df_gistic, file = paste0(args$project, "_gistic.seg"),
                  quote = "needed")
