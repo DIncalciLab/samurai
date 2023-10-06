@@ -20,5 +20,12 @@ trim_trailing_whitespace = unset
 indent_style = unset
 indent_size = unset
 
+# Contains YAML
+[/modules/local/aggregate_ichorcna_table/main.nf]
+indent_size = unset
+
+[*.lintr]
+indent_size = unset
+
 [/assets/email*]
 indent_size = unset
