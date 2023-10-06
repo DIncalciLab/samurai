@@ -34,5 +34,4 @@ process CONVERT_GISTIC_SEG {
 
     """
 
-
 }
