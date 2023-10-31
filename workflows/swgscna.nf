@@ -245,8 +245,6 @@ workflow SWGSCNA {
             break
         default:
             error "Uknown / unsupported analysis ${analysis_type}"
-        }
-
     }
 
     // Software versions
