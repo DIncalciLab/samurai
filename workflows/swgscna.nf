@@ -216,7 +216,7 @@ workflow SWGSCNA {
 
     switch(params.analysis_type) {
         case "solid_biopsy":
-            SOLID_BIOPSY(ch_bam_bai, caller, binsize, Channel.value(params.genome))
+            SOLID_BIOPSY(ch_bam_bai, params.caller, binsize, Channel.value(params.genome))
             ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
             ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
             break
