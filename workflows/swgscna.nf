@@ -195,12 +195,6 @@ workflow SWGSCNA {
         ch_versions = ch_versions.mix(
             BAM_QC_PICARD.out.versions.first()
         )
-
-        ch_multiqc_files = ch_multiqc_files.mix(
-            BAM_QC_PICARD.out.metrics.collect{
-                meta, metrics -> metrics
-            }
-        )
         ch_multiqc_files = ch_multiqc_files.mix(
                 BAM_QC_PICARD.out.coverage_metrics.collect{
                 meta, metrics -> metrics
