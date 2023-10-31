@@ -143,9 +143,9 @@ workflow SWGSCNA {
             ch_versions = ch_versions.mix(FASTA_INDEX_DNA.out.versions.first())
         } else {
             if (!params.aligner_index && !params.igenomes_ignore) {
-                ch_index = file(WorkflowMain.getGenomeAttribute(params, params.aligner))
+                ch_index = [["id": "aligner"], file(WorkflowMain.getGenomeAttribute(params, params.aligner))]
             } else {
-                ch_index = file(params.aligner_index)
+                ch_index = [["id": "aligner"], file(params.aligner_index)]
             }
         }
 
