@@ -31,6 +31,12 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
 
+// Grab genomes from iGenomes if available
+if (!params.fasta && !params.igenomes_ignore) {
+    params.fasta   = WorkflowMain.getGenomeAttribute(params, 'fasta')
+    params.fai     = WorkflowMain.getGenomeAttribute(params, 'fai')
+}
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES
@@ -58,7 +64,7 @@ include { SOLID_BIOPSY               } from '../subworkflows/local/solid_biopsy/
 include { SIZE_SELECTION             } from '../subworkflows/local/size_selection/main'
 include { LIQUID_BIOPSY              } from '../subworkflows/local/liquid_biopsy/main'
 
-
+include { FASTA_INDEX_DNA            } from '../subworkflows/nf-core/fasta_index_dna/main'
 include { FASTQ_ALIGN_DNA            } from '../subworkflows/nf-core/fastq_align_dna/main'
 include { BAM_MARKDUPLICATES_PICARD  } from '../subworkflows/nf-core/bam_markduplicates_picard/main'
 
@@ -101,6 +107,18 @@ workflow SWGSCNA {
     genome = Channel.value(params.genome)
     caller = Channel.value(params.caller)
 
+    ch_fasta = Channel.value(
+        [["id": "fasta"], file(params.fasta, checkIfExists: true)]
+    )
+    ch_fai = Channel.value(
+        [["id": "fai"], file(params.fai, checkIfExists: true)]
+    )
+
+    // Dummy channel for indexing
+    ch_liftover = Channel.value(
+        [["id": "dummy"], []]
+    )
+
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     INPUT_CHECK ( ch_input )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
@@ -113,12 +131,21 @@ workflow SWGSCNA {
 
         // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
-        PREPARE_GENOME(params.fasta)
-        ch_versions = ch_versions.mix(PREPARE_GENOME.out.versions.first())
+        if (params.index_genome) {
+            FASTA_INDEX_DNA(ch_fasta, ch_liftover, params.aligner)
+            ch_index = FASTA_INDEX_DNA.out.index
+            ch_versions = ch_versions.mix(FASTA_INDEX_DNA.out.versions.first())
+        } else {
+            if (!params.aligner_index && !params.igenomes_ignore) {
+                ch_index = file(WorkflowMain.getGenomeAttribute(params, params.aligner))
+            } else {
+                ch_index = file(params.aligner_index)
+            }
+        }
 
         FASTQ_ALIGN_DNA (
             INPUT_CHECK.out.reads,
-            PREPARE_GENOME.out.index,
+            ch_index,
             params.aligner,
             true // sort_bam
         )
