@@ -116,6 +116,10 @@ workflow SWGSCNA {
         [["id": "fai"], file(params.fai, checkIfExists: true)]
     )
 
+    ch_dict = Channel.value(
+        [["id": "dict"], file(params.dict, checkIfExists: true)]
+    )
+
     // Dummy channel for indexing
     ch_liftover = Channel.value(
         [["id": "liftover"], []]
