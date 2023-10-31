@@ -47,6 +47,8 @@ workflow LIQUID_BIOPSY {
                 HMMCOPY_READCOUNTER_ICHORCNA(ch_bam_bai)
                 wigfiles = HMMCOPY_READCOUNTER_ICHORCNA.out.wig.map{it -> it[1]}
                 ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_ICHORCNA.out.versions)
+
+                // Step 2: run ichorCNA
                 RUN_ICHORCNA (
                     HMMCOPY_READCOUNTER_ICHORCNA.out.wig,
                     gc_wig,
@@ -60,18 +62,21 @@ workflow LIQUID_BIOPSY {
                 called_segments     = RUN_ICHORCNA.out.cna_seg
                 genome_plot         = RUN_ICHORCNA.out.genome_plot
 
+                // Step 3: produce an aggregate table of the results
                 AGGREGATE_ICHORCNA_TABLE (
                     RUN_ICHORCNA.out.ichorcna_params.collect())
                 ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
 
                 summary = AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary
 
+                // Step 4: Aggregate bin-level plots into a single file
                 CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
                 ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
                 break
 
             case "wisecondorx":
                 blacklist = params.blacklist ? file(params.blacklist, checkIfExists: true): []
+
 
                 WISECONDORX_CONVERT(ch_bam_bai)
                 ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions)
@@ -93,16 +98,24 @@ workflow LIQUID_BIOPSY {
                                                     skip: 1,
                                                     storeDir: "${params.outdir}" )
                 ASSEMBLE_WISECONDORX_OUTPUTS(
-                            WISECONDORX_PREDICT.out.statistics.collect{meta, result -> result},
-                            WISECONDORX_PREDICT.out.calls.collect{meta, result -> result},)
+                            WISECONDORX_PREDICT.out.statistics.collect{
+                                meta, result -> result
+                            },
+                            WISECONDORX_PREDICT.out.calls.collect{
+                                meta, result -> result
+                            },)
                 ch_versions = ch_versions.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.versions)
 
                 summary = ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary
 
-                CONVERT_WISECONDORX_IMAGES(WISECONDORX_PREDICT.out.genome_plot.collect{meta, result -> result})
+                CONVERT_WISECONDORX_IMAGES(
+                    WISECONDORX_PREDICT.out.genome_plot.collect{
+                        meta, result -> result
+                    }
+                )
                 ch_versions = ch_versions.mix(CONVERT_WISECONDORX_IMAGES.out.versions)
 
-                genome_plot         = CONVERT_WISECONDORX_IMAGES.out.genome_plot
+                genome_plot = CONVERT_WISECONDORX_IMAGES.out.genome_plot
                 break
             default:
                 error "Uknown / unsupported analysis type ${analysis_type}"
