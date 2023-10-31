@@ -35,6 +35,7 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 if (!params.fasta && !params.igenomes_ignore) {
     params.fasta   = WorkflowMain.getGenomeAttribute(params, 'fasta')
     params.fai     = WorkflowMain.getGenomeAttribute(params, 'fai')
+    params.dict    = WorkflowMain.getGenomeAttribute(params, 'dict')
 }
 
 /*
@@ -67,6 +68,7 @@ include { LIQUID_BIOPSY              } from '../subworkflows/local/liquid_biopsy
 include { FASTA_INDEX_DNA            } from '../subworkflows/nf-core/fasta_index_dna/main'
 include { FASTQ_ALIGN_DNA            } from '../subworkflows/nf-core/fastq_align_dna/main'
 include { BAM_MARKDUPLICATES_PICARD  } from '../subworkflows/nf-core/bam_markduplicates_picard/main'
+include { BAM_QC_PICARD              } from '../subworkflows/nf-core/bam_qc_picard/main'
 
 
 /*
@@ -116,7 +118,7 @@ workflow SWGSCNA {
 
     // Dummy channel for indexing
     ch_liftover = Channel.value(
-        [["id": "dummy"], []]
+        [["id": "liftover"], []]
     )
 
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -151,21 +153,60 @@ workflow SWGSCNA {
         )
         ch_versions = ch_versions.mix(FASTQ_ALIGN_DNA.out.versions.first())
 
-        // MARKDUPLICATES
+        // Mark duplicates after alignment
         BAM_MARKDUPLICATES_PICARD (
             FASTQ_ALIGN_DNA.out.bam,
             params.fasta,
             params.fasta_fai
         )
-
         ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
 
-        ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
-            meta, metrics -> metrics })
-        ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.flagstat.collect{
-            meta, metrics -> metrics })
-        ch_multiqc_files = ch_multiqc_files.mix(BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
-            meta, metrics -> metrics })
+        ch_multiqc_files = ch_multiqc_files.mix(
+            BAM_MARKDUPLICATES_PICARD.out.metrics.collect{
+                meta, metrics -> metrics
+            }
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(
+            BAM_MARKDUPLICATES_PICARD.out.flagstat.collect{
+                meta, metrics -> metrics
+            }
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(
+                BAM_MARKDUPLICATES_PICARD.out.idxstats.collect{
+                    meta, metrics -> metrics
+                }
+        )
+
+        // QC metrics about alignment (coverage, etc.)
+        BAM_QC_PICARD(
+            // sWGS has neither baits nor targets, 3rd and 4th args are thus empty
+            BAM_MARKDUPLICATES_PICARD.out.bam_bai.map {
+                meta, bam, bai -> [meta, bam, bai, [], []]
+            },
+            ch_fasta,
+            ch_fai,
+            ch_dict
+        )
+
+        ch_versions = ch_versions.mix(
+            BAM_QC_PICARD.out.versions.first()
+        )
+
+        ch_multiqc_files = ch_multiqc_files.mix(
+            BAM_QC_PICARD.out.metrics.collect{
+                meta, metrics -> metrics
+            }
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(
+                BAM_QC_PICARD.out.metrics.collect{
+                meta, metrics -> metrics
+            }
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(
+            BAM_QC_PICARD.out.multiplemetrics.collect{
+                meta, metrics -> metrics
+            }
+        )
 
         ch_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
     } else {
@@ -182,7 +223,7 @@ workflow SWGSCNA {
             ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
             break
         case "liquid_biopsy":
-            if (params.size_selection && params.caller != "wisecondorx") {
+            if (params.size_selection && params.caller == "ichorcna") {
                 SIZE_SELECTION(ch_bam_bai, file(params.fasta))
                 ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
@@ -198,11 +239,14 @@ workflow SWGSCNA {
                 } else {
                     ch_analysis = ch_bam_bai
                 }
+            LIQUID_BIOPSY(ch_analysis, caller)
+            ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
+            ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
             break
+        default:
+            error "Uknown / unsupported analysis ${analysis_type}"
+        }
 
-        LIQUID_BIOPSY(ch_analysis, caller)
-        ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
     }
 
     // Software versions
