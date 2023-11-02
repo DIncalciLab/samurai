@@ -28,7 +28,7 @@ def checkPathParamList = [ params.input,
                            params.fasta,
                            params.fai,
                            params.dict,
-                           params.qdnaseq_bindata
+                           params.qdnaseq_bin_data
                            ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
