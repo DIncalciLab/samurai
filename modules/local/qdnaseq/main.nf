@@ -10,7 +10,6 @@ process QDNASEQ {
 
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
-        val(binsize)
         val(genome)
 
     output:
@@ -28,12 +27,10 @@ process QDNASEQ {
 
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def binfile = binsize ? "--bin-data ${binsize}" : ''
 
     """
     run_qdnaseq.R \\
         --cpus "${task.cpus}" \\
-        ${binfile} \\
         --project-name "${prefix}" \\
         --paired-end \\
         $args \\

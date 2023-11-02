@@ -366,6 +366,19 @@
                 }
             }
         },
+        "qdnaseq_specific_options": {
+            "title": "QDNAseq specific options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "qdnaseq_bin_data": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream"
+                }
+            }
+        },
         "common_liquid_biopsy_options": {
             "title": "Common liquid biopsy options",
             "type": "object",
@@ -585,6 +598,9 @@
         },
         {
             "$ref": "#/definitions/common_swgs_options"
+        },
+        {
+            "$ref": "#/definitions/qdnaseq_specific_options"
         },
         {
             "$ref": "#/definitions/common_liquid_biopsy_options"
