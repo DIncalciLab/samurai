@@ -25,13 +25,13 @@ workflow SIZE_SELECTION {
                 bam: it[1]
                 bai: it[2]
             }
-        
+
         BAMPE_FRAGMENTSIZE_PRE(Channel.value("prefiltering"),
                         bam_bai_pre.bam.collect(),
                         bam_bai_pre.bai.collect())
 
        SAMTOOLS_VIEW(ch_bam_bai.map{ it -> [[id:it[1].baseName], it[1], it[2]]},
-                            fasta.map{ it -> [[id:it[0].baseName], it] }, []) // size selection 
+                            fasta.map{ it -> [[id:it[0].baseName], it] }, []) // size selection
         ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
 
         SAMTOOLS_INDEX_SIZE_SELECTION(SAMTOOLS_VIEW.out.bam)
