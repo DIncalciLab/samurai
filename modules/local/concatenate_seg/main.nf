@@ -17,7 +17,6 @@ process CONCATENATE_SEG {
     concatenate_segments.R \\
         --segfiles ${seg_files} \\
         --output ${output_name}
-
     """
 
 }
