@@ -129,13 +129,10 @@ workflow SWGSCNA {
     ch_liftover = Channel.value(
         [["id": "liftover"], []]
     )
-
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    INPUT_CHECK ( ch_input )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-
     //FIXME: Differentiate between BAM / FASTQ
-    ch_input = Channel.fromSamplesheet("input")
+    ch_input = Channel.fromSamplesheet("input").map {
+        meta, fastq1, fastq2 -> [meta, [reads1, reads2]]
+    }
 
     if (params.aligner) {
         FASTQC ( ch_input )
