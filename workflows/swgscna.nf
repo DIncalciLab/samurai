@@ -155,7 +155,7 @@ workflow SWGSCNA {
         }
 
         FASTQ_ALIGN_DNA (
-            INPUT_CHECK.out.reads,
+            ch_input,
             ch_index,
             params.aligner,
             true // sort_bam
