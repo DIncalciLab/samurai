@@ -231,10 +231,8 @@ colnames(summary_table) <- col_names
 write.table(summary_table, file = paste0(args$project, "_summary.txt"),
     quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
 
-
 # This is useless, but QDNAseq won't export data if there isn't call information
-called <- callBins(segmented, method = "CGHcall", build = args$genome,
-    cellularity = args$purity, nclass = 3)
+called <- callBins(segmented, method = "cutoff")
 
 message("Saving RDS data set...")
 dest_rds <- paste(output, sprintf("%s.rds", args$project),
