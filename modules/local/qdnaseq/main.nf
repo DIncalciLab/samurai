@@ -10,6 +10,7 @@ process QDNASEQ {
 
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
+        val(binsize)
         val(genome)
 
     output:
@@ -33,6 +34,7 @@ process QDNASEQ {
         --cpus "${task.cpus}" \\
         --project-name "${prefix}" \\
         --paired-end \\
+        --bin-size ${binsize} \\
         $args \\
         --source ${bamfiles} \\
         -- \\

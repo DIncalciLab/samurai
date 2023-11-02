@@ -166,6 +166,7 @@ R.cache::getCacheRootPath()
 
 
 if (!is.null(args$bin_data)) {
+    message("Custom bin annotations loaded. Overriding bin size parameters.")
     bins <- readRDS(args$bin_data)
 } else {
     bins <- getBinAnnotations(binSize = args$bin_size, genome=args$genome)
