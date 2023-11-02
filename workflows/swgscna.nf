@@ -161,7 +161,7 @@ workflow SWGSCNA {
         BAM_MARKDUPLICATES_PICARD (
             FASTQ_ALIGN_DNA.out.bam,
             ch_fasta.map { meta, fasta -> fasta },
-            ch_fai
+            ch_fai.map { meta, fai -> fai }
         )
         ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions.first())
 
