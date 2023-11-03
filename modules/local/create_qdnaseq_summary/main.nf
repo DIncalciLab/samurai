@@ -9,7 +9,7 @@ process CREATE_QDNASEQ_SUMMARY{
         path "qdnaseq_summary.txt"
 
     output:
-        path "qdnaseq_summary_mqc.tsv"       , emit: qdnaseq_summary
+        path "qdnaseq_summary_mqc.tsv"       , emit: summary
         path "versions.yml"                  , emit: versions
 
     script:

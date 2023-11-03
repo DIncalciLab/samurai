@@ -9,7 +9,7 @@ process CREATE_ASCATSC_SUMMARY{
         path "ascatsc_summary.txt"
 
     output:
-        path "ascatsc_summary_mqc.tsv"       , emit: ascatsc_summary
+        path "ascatsc_summary_mqc.tsv"       , emit: summary
         path "versions.yml"                  , emit: versions
 
     script:
