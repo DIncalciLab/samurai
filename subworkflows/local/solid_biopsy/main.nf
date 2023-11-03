@@ -67,7 +67,7 @@ workflow SOLID_BIOPSY {
                                  skip: 1)
                     .set { ascatsc_summary }
 
-            ASCAT_SC.out.sig_file
+                ASCAT_SC.out.sig_file
                         .collectFile(storeDir: "${params.outdir}/ascat_sc/",
                                     name: 'segments_sig_extraction.seg',
                                     keepHeader: true,
