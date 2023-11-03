@@ -19,7 +19,7 @@ process REARRANGE_ICHORCNA_OUTPUT {
 
     """
     rearrange_ichorCNA_out.R \\
-        --seg_file ${segmentation_file} 
+        --seg_file ${segmentation_file}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
