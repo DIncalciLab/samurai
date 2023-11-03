@@ -109,7 +109,8 @@ res <- run_sc_sequencing(
 # create segmentation dataframe
 df_final <- as.data.frame(ifelse(args$predict_refit,
         res[["allProfiles.refitted.auto"]],
-        res[["allProfiles"]]))
+        res[["allProfiles"]])) %>%
+    mutate(sample = res$summary$allSols$samplename)
 df_final$sample <- res$summary$allSols$samplename
 df_summary <- as.data.frame(ifelse(args$predict_refit,
         res$summary$allSols.refitted,
