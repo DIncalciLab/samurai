@@ -22,7 +22,7 @@ parser <- add_argument(parser, "--cpus", type = "integer", default = 1,
 parser <- add_argument(parser, "--projectname", type = "string",
     default = "Signatures",
     help = "Flag to include in output file(s).")
-parser <- add_argument(parser, "--build", type = "string",
+parser <- add_argument(parser, "--genome", type = "string",
     default = "hg38",
     help = "Genome to use")
 args <- parse_args(parser)
