@@ -35,8 +35,8 @@ process ASCAT_SC {
         --tumor_bams ${bamfiles} \\
         --cpus "${task.cpus}" \\
         --projectname "${prefix}" \\
-        --binsize "${bins_bp}" \\
         --genome "${genome}" \\
+        ${bins_bp} \\
         ${gender} \\
         $args
 
