@@ -9,6 +9,8 @@ process ASCAT_SC {
 
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
+        val(binsize)
+        val(genome)
 
 
     output:
@@ -29,9 +31,11 @@ process ASCAT_SC {
 
     """
     run_ascatsc.R \\
-        --tumour_bams ${bamfiles} \\
+        --tumor_bams ${bamfiles} \\
         --cpus "${task.cpus}" \\
         --projectname "${prefix}" \\
+        --binsize "${binsize}" \\
+        --genome "${genome}" \\
         ${gender} \\
         $args
 

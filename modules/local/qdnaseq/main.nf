@@ -3,14 +3,15 @@ def VERSION = "1.3.0"
 process QDNASEQ {
 
     tag "${meta.id}"
-    label "process_high"
+    label "process_medium"
     stageInMode "link"
 
-    container "quay.io/dincalcilab/qdnaseq:1.30.0"
+    container "quay.io/dincalcilab/qdnaseq:1.30.0-a28ebc1"
 
     input:
         tuple val(meta), path(bamfiles), path(bamindex)
         val(binsize)
+        val(genome)
 
     output:
         path("*_bins.bed"),                       emit: bins, optional: true
@@ -27,20 +28,19 @@ process QDNASEQ {
 
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def binfile = binsize ? "--bin-data ${binsize}" : ''
 
     """
     run_qdnaseq.R \\
         --cpus "${task.cpus}" \\
-        ${binfile} \\
         --project-name "${prefix}" \\
         --paired-end \\
+        --bin-size ${binsize} \\
         $args \\
         --source ${bamfiles} \\
         -- \\
         ./
 
-    
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

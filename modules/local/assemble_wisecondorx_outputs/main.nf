@@ -11,7 +11,7 @@ process ASSEMBLE_WISECONDORX_OUTPUTS {
         path aberrations
     output:
         path "summary.xlsx"                  , emit: summary
-        path "wisecondorx_summary_mqc.txt"   
+        path "wisecondorx_summary_mqc.txt"
         path "wisecondorx_summary_mqc.tsv"   , emit: wisecondorx_summary
         path "all_aberrations.txt"           , emit: aberration_stats
         path "versions.yml"                  , emit: versions
@@ -58,6 +58,5 @@ process ASSEMBLE_WISECONDORX_OUTPUTS {
     END_VERSIONS
 
     """
-
 
 }

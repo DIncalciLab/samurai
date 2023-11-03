@@ -5,9 +5,9 @@ process BAMPE_FRAGMENTSIZE {
     container 'quay.io/biocontainers/deeptools:3.5.1--py_0'
 
     input:
-       val prefix
-       path(bamfiles)
-       path(bamindexes)
+        val prefix
+        path(bamfiles)
+        path(bamindexes)
     output:
         path "*_fragment_size_histogram.svg", emit: histogram
         path "*_fragment_size_table.txt", emit: table

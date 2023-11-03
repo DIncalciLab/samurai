@@ -9,18 +9,13 @@ import pandas as pd
 MAPPINGS = {
     "Copy number profile abnormality (CPA) score (doi: 10.1186/s13073-020-00735-4)": "cpa",
     "Median segment variance per bin (doi: 10.1093/nar/gky1263)": "msv",
-    "Number of reads": "reads"
+    "Number of reads": "reads",
 }
 
 
 def extract_data(record) -> pd.DataFrame:
-
     filename, source = record
-    source = (
-        source
-        .rename(index=MAPPINGS)
-        .squeeze()
-    )
+    source = source.rename(index=MAPPINGS).squeeze()
 
     samplename = filename.replace("_statistics.txt", "")
 
@@ -35,7 +30,6 @@ def extract_data(record) -> pd.DataFrame:
 
 
 def main() -> None:
-
     parser = argparse.ArgumentParser()
     parser.add_argument("source_files", nargs="+")
 
@@ -54,17 +48,12 @@ def main() -> None:
         names=["data"],
     )
 
-    final_df = pd.concat([extract_data(record)
-                          for record in source_data.items()])
+    final_df = pd.concat([extract_data(record) for record in source_data.items()])
 
-    final_df = (
-        final_df
-        .reset_index()
-        .sort_values(by="cpa", ascending=False)
-    )
+    final_df = final_df.reset_index().sort_values(by="cpa", ascending=False)
 
     final_df.to_excel("summary.xlsx", index=False)
-    final_df.to_csv("wisecondorx_summary_mqc.txt", sep='\t', index=False)
+    final_df.to_csv("wisecondorx_summary_mqc.txt", sep="\t", index=False)
 
 
 if __name__ == "__main__":

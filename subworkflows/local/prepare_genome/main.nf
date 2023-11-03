@@ -15,6 +15,20 @@ workflow PREPARE_GENOME {
 
         //TODO: Leverage more the igenomes machinery, avoid specifying parameters if not needed
 
+        switch(aligner) {
+            case "bwamem":
+                if (params.index_genome) {
+                    BWA_INDEX(
+                        fasta.map{
+                            it -> [[id:it[0].baseName], it] }
+                    )
+                    ch_versions = ch_versions.mix(BWA_INDEX.out.versions.first())
+                }
+
+                ch_index = params.fasta ? params.bwa ? Channel.value(file(params.bwa)).map{ it -> [[id:it[0].baseName], it] } : BWA_INDEX.out.index : Channel.value(file(params.genomes[params.genome].bwa)).collect()
+
+        }
+
         if (params.aligner == 'bwamem') { //if aligner is bwa-mem
 
             if (params.index_genome) {

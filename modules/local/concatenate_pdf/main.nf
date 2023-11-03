@@ -7,7 +7,7 @@ process CONCATENATE_PDF {
 
     input:
         path pdf_files
-        
+
     output:
         path("genome_plot.pdf"), emit: genome_plot
         path "versions.yml", emit: versions

@@ -18,10 +18,12 @@ workflow LIQUID_BIOPSY {
 
     take:
         bam_bai
+        analysis_type
 
     main:
 
         ch_versions = Channel.empty()
+        ch_bam_bai = bam_bai
 
         // If we want to build the normal panel
         if (params.build_pon) {
@@ -34,88 +36,107 @@ workflow LIQUID_BIOPSY {
                 pon_file = Channel.value(params.normal_panel)
             }
 
-        if (params.ichorcna) {
+        switch(analysis_type) {
+            case "liquid_biopsy_ichorcna":
 
-            gc_wig              = Channel.value(params.gc_wig)
-            map_wig             = Channel.value(params.map_wig)
-            centromere          = Channel.value(params.centromere)
-            reptime_file        = Channel.value(params.reptime_file)
-            // To generate Wig Files
-            HMMCOPY_READCOUNTER_ICHORCNA(bam_bai)
-            wigfiles = HMMCOPY_READCOUNTER_ICHORCNA.out.wig.map{it -> it[1]}
-            ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_ICHORCNA.out.versions)
+                gc_wig              = Channel.value(params.gc_wig)
+                map_wig             = Channel.value(params.map_wig)
+                centromere          = Channel.value(params.centromere)
+                reptime_file        = Channel.value(params.reptime_file)
 
-            RUN_ICHORCNA (
-                HMMCOPY_READCOUNTER_ICHORCNA.out.wig,
-                gc_wig,
-                map_wig,
-                pon_file,
-                centromere,
-                reptime_file)
-            ch_versions = ch_versions.mix(RUN_ICHORCNA.out.versions)
+                // Step 1: Generate coverage wig files
+                // To generate Wig Files
+                HMMCOPY_READCOUNTER_ICHORCNA(ch_bam_bai)
+                wigfiles = HMMCOPY_READCOUNTER_ICHORCNA.out.wig.map{it -> it[1]}
+                ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_ICHORCNA.out.versions)
 
-            called_segments     = RUN_ICHORCNA.out.cna_seg
-            genome_plot         = RUN_ICHORCNA.out.genome_plot
+                // Step 2: run ichorCNA
+                RUN_ICHORCNA (
+                    HMMCOPY_READCOUNTER_ICHORCNA.out.wig,
+                    gc_wig,
+                    map_wig,
+                    pon_file,
+                    centromere,
+                    reptime_file
+                )
+                ch_versions = ch_versions.mix(RUN_ICHORCNA.out.versions)
 
-            AGGREGATE_ICHORCNA_TABLE (
-                RUN_ICHORCNA.out.ichorcna_params.collect())
-            ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
+                called_segments     = RUN_ICHORCNA.out.cna_seg
+                genome_plot         = RUN_ICHORCNA.out.genome_plot
 
-            summary = AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary
+                // Step 3: produce an aggregate table of the results
+                AGGREGATE_ICHORCNA_TABLE (
+                    RUN_ICHORCNA.out.ichorcna_params.collect())
+                ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
 
-            CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
-            ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
+                summary = AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary
 
-            if (params.quantify_signatures) {
-                REARRANGE_ICHORCNA_OUTPUT(called_segments.map{meta,file -> file})
-                ch_versions = ch_versions.mix(REARRANGE_ICHORCNA_OUTPUT.out.versions)
+                // Step 4: Aggregate bin-level plots into a single file
+                CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
+                ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
 
-                REARRANGE_ICHORCNA_OUTPUT.out.sig_file
-                        .collectFile(storeDir: "${params.outdir}/ichorcna/",
-                                    name: 'all_seg_signatures.seg',
-                                    keepHeader: true,
-                                    skip: 1)
-                                    .set{all_seg_signatures}
-                                    
-                QUANTIFY_CIN_SIGNATURES(all_seg_signatures)
-                ch_versions = ch_versions.mix(QUANTIFY_CIN_SIGNATURES.out.versions)
-            }}
+                if (params.quantify_signatures) {
+                    REARRANGE_ICHORCNA_OUTPUT(called_segments.map{meta,file -> file})
+                    ch_versions = ch_versions.mix(REARRANGE_ICHORCNA_OUTPUT.out.versions)
 
-        if (params.wisecondorx) {
-            blacklist = params.blacklist ? file(params.blacklist, checkIfExists: true): []
+                    REARRANGE_ICHORCNA_OUTPUT.out.sig_file
+                            .collectFile(storeDir: "${params.outdir}/ichorcna/",
+                                        name: 'all_seg_signatures.seg',
+                                        keepHeader: true,
+                                        skip: 1)
+                                        .set{all_seg_signatures}
 
-            WISECONDORX_CONVERT(bam_bai)
-            ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions)
-            ch_npz = WISECONDORX_CONVERT.out.npz
+                    QUANTIFY_CIN_SIGNATURES(all_seg_signatures)
+                    ch_versions = ch_versions.mix(QUANTIFY_CIN_SIGNATURES.out.versions)
+                }
+                break
+
+            case "wisecondorx":
+                blacklist = params.blacklist ? file(params.blacklist, checkIfExists: true): []
 
 
-            WISECONDORX_PREDICT(ch_npz, blacklist, pon_file)
-            ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions)
+                WISECONDORX_CONVERT(ch_bam_bai)
+                ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions)
+                ch_npz = WISECONDORX_CONVERT.out.npz
 
-            CONVERT_GISTIC_SEG(WISECONDORX_PREDICT.out.segments,
-                       WISECONDORX_PREDICT.out.bins,
-                       WISECONDORX_PREDICT.out.calls)
-            ch_versions = ch_versions.mix(CONVERT_GISTIC_SEG.out.versions)
+                WISECONDORX_PREDICT(ch_npz, blacklist, pon_file)
+                ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions)
 
-            called_segments     = WISECONDORX_PREDICT.out.calls
+                CONVERT_GISTIC_SEG(WISECONDORX_PREDICT.out.segments,
+                        WISECONDORX_PREDICT.out.bins,
+                        WISECONDORX_PREDICT.out.calls)
+                ch_versions = ch_versions.mix(CONVERT_GISTIC_SEG.out.versions)
 
-            CONVERT_GISTIC_SEG.out.segfile
-                                   .map{meta, data -> data}
-                                   .collectFile(name: "all_segments.seg",
-                                                skip: 1,
-                                                storeDir: "${params.outdir}" )
-            ASSEMBLE_WISECONDORX_OUTPUTS(
-                        WISECONDORX_PREDICT.out.statistics.collect{meta, result -> result},
-                        WISECONDORX_PREDICT.out.calls.collect{meta, result -> result},)
-            ch_versions = ch_versions.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.versions)
+                called_segments     = WISECONDORX_PREDICT.out.calls
 
-            summary = ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary
+                CONVERT_GISTIC_SEG.out.segfile
+                                    .map{meta, data -> data}
+                                    .collectFile(name: "all_segments.seg",
+                                                    skip: 1,
+                                                    storeDir: "${params.outdir}" )
+                ASSEMBLE_WISECONDORX_OUTPUTS(
+                            WISECONDORX_PREDICT.out.statistics.collect{
+                                meta, result -> result
+                            },
+                            WISECONDORX_PREDICT.out.calls.collect{
+                                meta, result -> result
+                            },)
+                ch_versions = ch_versions.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.versions)
 
-            CONVERT_WISECONDORX_IMAGES(WISECONDORX_PREDICT.out.genome_plot.collect{meta, result -> result})
-            ch_versions = ch_versions.mix(CONVERT_WISECONDORX_IMAGES.out.versions)
+                summary = ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary
 
-            genome_plot         = CONVERT_WISECONDORX_IMAGES.out.genome_plot
-            }
+                CONVERT_WISECONDORX_IMAGES(
+                    WISECONDORX_PREDICT.out.genome_plot.collect{
+                        meta, result -> result
+                    }
+                )
+                ch_versions = ch_versions.mix(CONVERT_WISECONDORX_IMAGES.out.versions)
+
+                genome_plot = CONVERT_WISECONDORX_IMAGES.out.genome_plot
+                break
+            default:
+                error "Uknown / unsupported analysis type ${analysis_type}"
+        }
 
     emit:
 

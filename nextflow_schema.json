@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/swgscna/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/dincalcilab/swgscna/master/nextflow_schema.json",
     "title": "swgscna pipeline parameters",
     "description": "Workflow for the identification of CNV from sWGS",
     "type": "object",
@@ -62,6 +62,14 @@
                     "description": "Path to FASTA genome file.",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
+                },
+                "fai": {
+                    "type": "string",
+                    "description": "Path to the FASTA FAI index"
+                },
+                "dict": {
+                    "type": "string",
+                    "description": "Path to the FASTA sequence dictionary"
                 },
                 "igenomes_base": {
                     "type": "string",
@@ -263,6 +271,18 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "validationFailUnrecognisedParams": {
+                    "type": "boolean",
+                    "hidden": true
+                },
+                "validationLenientMode": {
+                    "type": "boolean",
+                    "hidden": true
+                },
+                "validationShowHiddenParams": {
+                    "type": "boolean",
+                    "hidden": true
                 }
             }
         },
@@ -272,33 +292,9 @@
             "description": "",
             "default": "",
             "properties": {
-                "aligner": {
-                    "type": "string",
-                    "default": "bwamem",
-                    "enum": ["bwamem", "bwamem2"]
-                },
-                "index_genome": {
-                    "type": "boolean"
-                },
-                "biopsy": {
-                    "type": "string",
-                    "default": "tissue"
-                },
                 "purity": {
                     "type": "integer",
                     "default": 1
-                },
-                "binsizes": {
-                    "type": "integer",
-                    "default": 30
-                },
-                "binfile": {
-                    "type": "string",
-                    "default": "None"
-                },
-                "fasta_fai": {
-                    "type": "string",
-                    "default": "None"
                 },
                 "size_selection": {
                     "type": "boolean"
@@ -312,10 +308,268 @@
                     "type": "integer",
                     "default": 400,
                     "hidden": true
+                }
+            }
+        },
+        "alignment_options": {
+            "title": "Alignment options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "aligner": {
+                    "type": "string",
+                    "default": "bwamem",
+                    "enum": ["bwamem", "bwamem2"],
+                    "description": "Aligner to use"
                 },
-                "qdnaseq": {
+                "bwa_index": {
+                    "type": "string",
+                    "description": "Path to the BWA-MEM index"
+                },
+                "bwamem2_index": {
+                    "type": "string",
+                    "description": "Path to the BWA-MEM2 index"
+                },
+                "index_genome": {
                     "type": "boolean",
-                    "description": "Run QDNAseq on the aligned data."
+                    "description": "Whether the current genome should be indexed or not"
+                },
+                "aligner_index": {
+                    "type": "string",
+                    "description": "Path to the aligner index basename (must be compatible)",
+                    "format": "directory-path"
+                }
+            }
+        },
+        "common_swgs_options": {
+            "title": "Common sWGS options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "binsize": {
+                    "type": "integer",
+                    "default": 500,
+                    "description": "Size of the genomic bins in kbp"
+                },
+                "caller": {
+                    "type": "string",
+                    "default": "qdnaseq",
+                    "enum": ["ichorcna", "wisecondorx", "ascat_sc", "qdnaseq"],
+                    "description": "Caller for sWGS"
+                },
+                "analysis_type": {
+                    "type": "string",
+                    "default": "solid_biopsy",
+                    "description": "Workflow to use (solid_biopsy or ctDNA)"
+                }
+            }
+        },
+        "qdnaseq_specific_options": {
+            "title": "QDNAseq specific options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "qdnaseq_bin_data": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream"
+                }
+            }
+        },
+        "common_liquid_biopsy_options": {
+            "title": "Common liquid biopsy options",
+            "type": "object",
+            "description": "Options common to all liquid biopsy workflows.",
+            "default": "",
+            "properties": {
+                "normal_panel": {
+                    "type": "string",
+                    "description": "Path to the panel of normals to be used"
+                },
+                "pon_path": {
+                    "type": "string",
+                    "description": "Path to BAM files to be used to build the panel of normals"
+                },
+                "pon_name": {
+                    "type": "string",
+                    "default": "PoN",
+                    "description": "Name of the panel of normals to build"
+                },
+                "build_pon": {
+                    "type": "boolean",
+                    "description": "Whether to build a panel of normals or not"
+                }
+            }
+        },
+        "ichorcna_options": {
+            "title": "ichorCNA options",
+            "type": "object",
+            "description": "ichorCNA specific options.",
+            "default": "",
+            "properties": {
+                "ichorcna_genome_style": {
+                    "type": "string",
+                    "default": "UCSC"
+                },
+                "ichorcna_readcounter_chrs": {
+                    "type": "string",
+                    "default": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22"
+                },
+                "ichorcna_readcounter_quality": {
+                    "type": "integer",
+                    "default": 20
+                },
+                "ichorcna_chrs_to_use": {
+                    "type": "string",
+                    "default": "paste0(\\'chr\\', c(1:22))"
+                },
+                "ichorcna_chrs_to_train": {
+                    "type": "string",
+                    "default": "paste0(\\'chr\\', c(1:22))"
+                },
+                "ichorcna_chrs_to_normalize": {
+                    "type": "string",
+                    "default": "paste0(\\'chr\\', c(1:22))"
+                },
+                "ichorcna_estimate_normal": {
+                    "type": "string",
+                    "default": "TRUE"
+                },
+                "ichorcna_fraction_reads_male": {
+                    "type": "number",
+                    "default": 0.3
+                },
+                "ichorcna_male_chrX_logR": {
+                    "type": "number",
+                    "default": 0.3
+                },
+                "ichorcna_min_map_score": {
+                    "type": "number",
+                    "default": 0.75
+                },
+                "ichorcna_max_frac_genome_subclone": {
+                    "type": "number",
+                    "default": 0.5
+                },
+                "ichorcna_max_frac_cna_subclone": {
+                    "type": "number",
+                    "default": 0.7
+                },
+                "ichorcna_min_segment_bins": {
+                    "type": "integer",
+                    "default": 50
+                },
+                "ichorcna_max_cn": {
+                    "type": "integer",
+                    "default": 5
+                },
+                "ichorcna_include_homd": {
+                    "type": "string",
+                    "default": "FALSE"
+                },
+                "ichorcna_txne": {
+                    "type": "number",
+                    "default": 0.9999
+                },
+                "ichorcna_alt_frac_threshold": {
+                    "type": "number",
+                    "default": 0.05
+                },
+                "ichorcna_trx_strength": {
+                    "type": "integer",
+                    "default": 10000
+                },
+                "ichorcna_plotfiletype": {
+                    "type": "string",
+                    "default": "pdf"
+                },
+                "ichorcna_plotylim": {
+                    "type": "string",
+                    "default": "c(-2,4)"
+                },
+                "ichorcna_estimate_sc": {
+                    "type": "boolean"
+                },
+                "ichorcna_estimate_ploidy": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "ichorcna_filter_bam_pon": {
+                    "type": "boolean"
+                },
+                "ichorcna_normal_states": {
+                    "type": "string",
+                    "default": "0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99"
+                }
+            }
+        },
+        "wisecondorx_options": {
+            "title": "WisecondorX options",
+            "type": "object",
+            "description": "WisecondorX specific options",
+            "default": "",
+            "properties": {
+                "wisecondorx_no_rm_dup": {
+                    "type": "boolean",
+                    "description": "Don't remove duplicates from BAM files"
+                },
+                "wisecondorx_yfrac": {
+                    "type": "number",
+                    "default": 0.4
+                },
+                "wisecondorx_zscore": {
+                    "type": "integer",
+                    "default": 5,
+                    "description": "Z-score threshold for copy number calling"
+                },
+                "wisecondorx_ylim": {
+                    "type": "string",
+                    "description": "Y axis limits for the generated plots"
+                }
+            }
+        },
+        "ascat_sc_options": {
+            "title": "ASCAT.sc options",
+            "type": "object",
+            "description": "ASCAT.sc specific options",
+            "default": "",
+            "properties": {
+                "ascat_sc_predict_refit": {
+                    "type": "string",
+                    "default": "TRUE",
+                    "description": "Perform refitting to select the optimal solution"
+                },
+                "ascat_sc_segmentation_alpha": {
+                    "type": "number",
+                    "default": 0.01,
+                    "description": "Alpha value to use for segmentation"
+                },
+                "ascat_sc_min_purity": {
+                    "type": "number",
+                    "default": 0.01,
+                    "description": "Minimum purity to use for prediction, in fractional units"
+                },
+                "ascat_sc_max_purity": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Maximum purits to use for prediction, in fractional units"
+                },
+                "ascat_sc_min_ploidy": {
+                    "type": "number",
+                    "default": 1.7,
+                    "description": "Minimum ploidy to consider"
+                },
+                "ascat_sc_max_ploidy": {
+                    "type": "integer",
+                    "default": 5,
+                    "description": "Maximum ploidy to consider"
+                },
+                "ascat_sc_max_tumor_ploidy": {
+                    "type": "integer",
+                    "default": 5
                 }
             }
         }
@@ -338,16 +592,33 @@
         },
         {
             "$ref": "#/definitions/workflow_specific_options"
+        },
+        {
+            "$ref": "#/definitions/alignment_options"
+        },
+        {
+            "$ref": "#/definitions/common_swgs_options"
+        },
+        {
+            "$ref": "#/definitions/qdnaseq_specific_options"
+        },
+        {
+            "$ref": "#/definitions/common_liquid_biopsy_options"
+        },
+        {
+            "$ref": "#/definitions/ichorcna_options"
+        },
+        {
+            "$ref": "#/definitions/wisecondorx_options"
+        },
+        {
+            "$ref": "#/definitions/ascat_sc_options"
         }
     ],
     "properties": {
-        "bwa": {
+        "schema_ignore_params": {
             "type": "string",
-            "default": "None"
-        },
-        "bwamem2": {
-            "type": "string",
-            "default": "None"
+            "default": "genomes"
         }
     }
 }

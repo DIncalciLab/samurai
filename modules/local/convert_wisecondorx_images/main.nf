@@ -18,7 +18,7 @@ process CONVERT_WISECONDORX_IMAGES {
 
         img2pdf ${images} \\
             --title "WisecondorX results" \\
-           -o genome_plots.pdf
+            -o genome_plots.pdf
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
