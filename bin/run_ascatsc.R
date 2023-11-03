@@ -44,10 +44,6 @@ parser <- add_argument(parser, "--predict_refit", type = "boolean",
     default = TRUE,
     help = "xgboost predictor to predict refitted ploidy \n
             and refit the profiles automatically")
-parser <- add_argument(parser, "--max_tumor_ploidy", type = "float",
-    default = 5,
-    help = "Maximum tumor ploidy above which solutions \n
-    will be masked")
 parser <- add_argument(parser, "--min-ploidy", type = "float",
     help = "Minimum ploidy to consider",
     default = 1.7)
