@@ -19,6 +19,7 @@ workflow SOLID_BIOPSY {
 
     main:
         ch_versions = Channel.empty()
+        ch_reports = Channel.empty()
 
         switch(caller) {
             case "qdnaseq":
@@ -33,7 +34,7 @@ workflow SOLID_BIOPSY {
                                          name: 'all_segments.seg',
                                          keepHeader: true,
                                          skip: 1)
-                            .set{ all_seg_ch }
+                            .set{ ch_segments }
                 QDNASEQ.out.summary_table
                             .collectFile(storeDir: "${params.outdir}/qdnaseq/",
                                          name: 'qdnaseq_summary.txt',
@@ -42,7 +43,7 @@ workflow SOLID_BIOPSY {
                             .set{ qdnaseq_summary }
                 CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
                 ch_versions = ch_versions.mix(CREATE_QDNASEQ_SUMMARY.out.versions)
-                summary_multiqc = CREATE_QDNASEQ_SUMMARY.out.qdnaseq_summary
+                ch_reports = ch_reports.mix(CREATE_QDNASEQ_SUMMARY.out.qdnaseq_summary)
                 //TODO: Generate the GISTIC output here? If not, remove the step from the module
                 break
             case "ascat_sc":
@@ -58,7 +59,7 @@ workflow SOLID_BIOPSY {
                                               name: 'all_segments.seg',
                                               keepHeader: true,
                                               skip: 1)
-                    .set{ all_seg_ch }
+                    .set{ ch_segments }
 
                 ASCAT_SC.out.summary_table
                     .collectFile(storeDir: "${params.outdir}/ascat_sc/",
@@ -75,6 +76,7 @@ workflow SOLID_BIOPSY {
                                     .set{signature_file}
 
                 CREATE_ASCATSC_SUMMARY(ascatsc_summary)
+                ch_reports = ch_reports.mix(CREATE_QDNASEQ_SUMMARY.out.qdnaseq_summary)
                 //TODO: Generate the GISTIC output here? If not, remove the step from the module
                 break
             default:
@@ -88,7 +90,7 @@ workflow SOLID_BIOPSY {
         }
 
     emit:
-        all_seg_ch      = all_seg_ch
-        summary         = summary_multiqc
+        ch_segments     = ch_segments
+        summary         = ch_reports
         versions        = ch_versions
 }
