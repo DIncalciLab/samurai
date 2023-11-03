@@ -76,7 +76,7 @@ workflow SOLID_BIOPSY {
                                     .set{signature_file}
 
                 CREATE_ASCATSC_SUMMARY(ascatsc_summary)
-                ch_reports = ch_reports.mix(CREATE_QDNASEQ_SUMMARY.out.qdnaseq_summary)
+                ch_reports = ch_reports.mix(CREATE_ASCATSC_SUMMARY.out.qdnaseq_summary)
                 //TODO: Generate the GISTIC output here? If not, remove the step from the module
                 break
             default:
