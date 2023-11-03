@@ -164,8 +164,7 @@ options("R.cache.rootPath" = "~/.Rcache")
 R.cache::getCacheRootPath()
 
 
-if (!is.null(args$bin_data)) {
-    print(paste("BINS", args$bin_data))
+if (!is.null(args$bin_data) || !is.na(args$bin_data)) {
     message("Custom bin annotations loaded. Overriding bin size parameters.")
     bins <- readRDS(args$bin_data)
 } else {
