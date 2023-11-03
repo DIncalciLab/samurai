@@ -22,7 +22,7 @@ parser <- add_argument(parser, "--cpus", type = "integer", default = 1,
 parser <- add_argument(parser, "--projectname", type = "string",
     default = "ASCATsc",
     help = "Flag to include in output file(s).")
-parser <- add_argument(parser, "--build", type = "string",
+parser <- add_argument(parser, "--genome", type = "string",
     default = "hg38",
     help = "Genome to use")
 parser <- add_argument(parser, "--outdir",
@@ -60,6 +60,10 @@ parser <- add_argument(parser, "--min-purity", type = "float",
 parser <- add_argument(parser, "--max-purity", type = "float",
     help = "Maximum purity to consider (fractional scale)",
     default = 1)
+    parser <- add_argument(parser, "--max-tumor-ploidy", type = "float",
+    help = "Maximum tumour ploidy above which solutions will be masked
+        (distance set to infinity in the grid search). Can reduce runtime.",
+    default = 5)
 
 args <- parse_args(parser)
 
@@ -97,7 +101,7 @@ res <- run_sc_sequencing(
     purs = purities,
     ploidies = ploidies,
     maxtumourpsi = args$max_tumor_ploidy,
-    build = args$build,
+    build = args$genome,
     MC.CORES = args$cpus,
     projectname = args$projectname,
     segmentation_alpha = args$segmentation_alpha,
