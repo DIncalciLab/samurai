@@ -45,7 +45,7 @@ class WorkflowMain {
         return summary_log
     }
 
-     //
+    //
     // Validate parameters and print summary to screen
     //
     public static void initialise(workflow, params, log) {
