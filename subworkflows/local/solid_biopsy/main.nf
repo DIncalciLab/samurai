@@ -23,7 +23,7 @@ workflow SOLID_BIOPSY {
             case "qdnaseq":
                 QDNASEQ(ch_bam_bai, binsize, genome)
                 ch_versions = ch_versions.mix(QDNASEQ.out.versions.first())
-                CONCATENATE_QDNASEQ_PLOTS(QDNASEQ.out.bin_plot.collect())
+                CONCATENATE_QDNASEQ_PLOTS(QDNASEQ.out.segment_plot.collect())
                 ch_versions = ch_versions.mix(CONCATENATE_QDNASEQ_PLOTS.out.versions)
                 all_seg_plot = CONCATENATE_QDNASEQ_PLOTS.out.genome_plot
 
