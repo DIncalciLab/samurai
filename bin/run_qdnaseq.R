@@ -122,8 +122,7 @@ parser <- add_argument(parser, "--cpus", type = "integer", default = 10,
 parser <- add_argument(parser, "--bin-size", type = "integer", default = 30,
     help = "Bin size in kbp (default: 30)")
 parser <- add_argument(parser, "--bin-data",
-    help = "Path to RDS containing bin data",
-    default = NULL)
+    help = "Path to RDS containing bin data")
 parser <- add_argument(parser, "--project-name", default = "sWGS",
     help = "Set the name for the collected data")
 parser <- add_argument(parser, "--min-mapq", type = "integer",
@@ -166,6 +165,7 @@ R.cache::getCacheRootPath()
 
 
 if (!is.null(args$bin_data)) {
+    print(paste("BINS", args$bin_data))
     message("Custom bin annotations loaded. Overriding bin size parameters.")
     bins <- readRDS(args$bin_data)
 } else {
