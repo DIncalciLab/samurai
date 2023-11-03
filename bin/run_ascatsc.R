@@ -111,14 +111,10 @@ df_final <- as.data.frame(ifelse(args$predict_refit,
         res[["allProfiles.refitted.auto"]],
         res[["allProfiles"]]))
 df_final$sample <- res$summary$allSols$samplename
+df_summary <- as.data.frame(ifelse(args$predict_refit,
+        res$summary$allSols.refitted,
+        res$summary$allSols))
 
-if (args$predict_refit == TRUE) {
-    df_final <- as.data.frame(res[["allProfiles.refitted.auto"]])
-    df_summary <- res$summary$allSols.refitted
-} else {
-    df_final <- res[["allProfiles"]]
-    df_summary <- as.data.frame(res$summary$allSols)
-}
 
 #save output files
 
