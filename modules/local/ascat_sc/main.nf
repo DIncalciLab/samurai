@@ -28,13 +28,14 @@ process ASCAT_SC {
     def args = task.ext.args ?: ''
     def gender = meta.gender ? "--sex ${meta.gender}": ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def bins_bp = binsize ? "--binsize ${binsize}000": "--binsize 30000"
 
     """
     run_ascatsc.R \\
         --tumor_bams ${bamfiles} \\
         --cpus "${task.cpus}" \\
         --projectname "${prefix}" \\
-        --binsize "${binsize}" \\
+        --binsize "${bins_bp}" \\
         --genome "${genome}" \\
         ${gender} \\
         $args

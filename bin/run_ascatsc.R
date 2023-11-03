@@ -56,7 +56,7 @@ parser <- add_argument(parser, "--min-purity", type = "float",
 parser <- add_argument(parser, "--max-purity", type = "float",
     help = "Maximum purity to consider (fractional scale)",
     default = 1)
-    parser <- add_argument(parser, "--max-tumor-ploidy", type = "float",
+parser <- add_argument(parser, "--max-tumor-ploidy", type = "float",
     help = "Maximum tumour ploidy above which solutions will be masked
         (distance set to infinity in the grid search). Can reduce runtime.",
     default = 5)
