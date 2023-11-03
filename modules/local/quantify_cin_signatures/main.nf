@@ -5,7 +5,7 @@ process QUANTIFY_CIN_SIGNATURES {
     tag "Extracting Signatures"
     label "process_single"
 
-    container "/home/sarap/cache_singularity/CINSigQuant.sif"
+    container "dincalcilab/ascat_sc:1.0.0"
 
     input:
         path(segmentation_file)
