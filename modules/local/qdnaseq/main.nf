@@ -3,7 +3,7 @@ def VERSION = "1.3.0"
 process QDNASEQ {
 
     tag "${meta.id}"
-    label "process_high"
+    label "process_medium"
     stageInMode "link"
 
     container "quay.io/dincalcilab/qdnaseq:1.30.0-a28ebc1"
