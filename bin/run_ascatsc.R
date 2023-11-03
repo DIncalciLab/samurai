@@ -107,6 +107,10 @@ res <- run_sc_sequencing(
 )
 
 # create segmentation dataframe
+df_final <- as.data.frame(ifelse(args$predict_refit,
+                          res[["allProfiles.refitted.auto"]],
+                          res[["allProfiles"]]))
+df_final$sample <- res$summary$allSols$samplename
 
 if (args$predict_refit == TRUE) {
     df_final <- as.data.frame(res[["allProfiles.refitted.auto"]])
@@ -124,7 +128,15 @@ readr::write_tsv(df_summary, file = paste0(args$project, "_summary.txt"),
     quote = "needed")
 readr::write_tsv(df_final, file = paste0(args$project, "_segments.seg"),
     quote = "needed")
+#Create df for Signature Extraction
+df_sig <- df_final %>%
+  dplyr::select(chromosome, start, end, total_copy_number_logr, sample) %>%
+  dplyr::rename(segVal = total_copy_number_logr) %>%
+   na.omit()
 
+readr::write_tsv(df_sig, file = paste0(args$project, "_df_signatures.seg"),
+                 quote = "needed")
+#Create df for GISTIC
 df_gistic <- df_final %>%
     dplyr::select(chromosome, start, end, num.mark, logr) %>%
     dplyr::mutate(logr = round(as.numeric(logr), 5))

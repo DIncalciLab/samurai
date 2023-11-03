@@ -19,6 +19,8 @@ process ASCAT_SC {
         path("*_summary.txt"),                    emit: summary_table
         path("*_segments.seg"),                   emit: segments
         path("*.rds"),                            emit: rds
+        path("*_df_signatures.seg"),              emit: sig_file
+        path("*.rds"),                            emit: ascat_rds
         path("versions.yml"),                     emit: versions
 
     script:

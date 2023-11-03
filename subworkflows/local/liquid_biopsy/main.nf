@@ -9,6 +9,8 @@ include { CONVERT_GISTIC_SEG                                  } from '../../../m
 include { ASSEMBLE_WISECONDORX_OUTPUTS                        } from '../../../modules/local/assemble_wisecondorx_outputs/main'
 include { CONVERT_WISECONDORX_IMAGES                          } from '../../../modules/local/convert_wisecondorx_images/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
+include { REARRANGE_ICHORCNA_OUTPUT                           } from '../../../modules/local/rearrange_ichorcna_output/main'
+include { QUANTIFY_CIN_SIGNATURES                             } from '../../../modules/local/quantify_cin_signatures/main'
 
 include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../modules/nf-core/hmmcopy/readcounter/main'
 
@@ -72,6 +74,21 @@ workflow LIQUID_BIOPSY {
                 // Step 4: Aggregate bin-level plots into a single file
                 CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
                 ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
+
+                if (params.quantify_signatures) {
+                    REARRANGE_ICHORCNA_OUTPUT(called_segments.map{meta,file -> file})
+                    ch_versions = ch_versions.mix(REARRANGE_ICHORCNA_OUTPUT.out.versions)
+
+                    REARRANGE_ICHORCNA_OUTPUT.out.sig_file
+                            .collectFile(storeDir: "${params.outdir}/ichorcna/",
+                                        name: 'all_seg_signatures.seg',
+                                        keepHeader: true,
+                                        skip: 1)
+                                        .set{all_seg_signatures}
+
+                    QUANTIFY_CIN_SIGNATURES(all_seg_signatures)
+                    ch_versions = ch_versions.mix(QUANTIFY_CIN_SIGNATURES.out.versions)
+                }
                 break
 
             case "wisecondorx":
