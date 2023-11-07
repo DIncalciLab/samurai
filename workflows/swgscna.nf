@@ -35,14 +35,6 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
-
-// Grab genomes from iGenomes if available
-if (!params.fasta && !params.igenomes_ignore) {
-    params.fasta   = WorkflowMain.getGenomeAttribute(params, 'fasta')
-    params.fai     = WorkflowMain.getGenomeAttribute(params, 'fai')
-    params.dict    = WorkflowMain.getGenomeAttribute(params, 'dict')
-}
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES

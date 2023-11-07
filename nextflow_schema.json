@@ -323,14 +323,6 @@
                     "enum": ["bwamem", "bwamem2"],
                     "description": "Aligner to use"
                 },
-                "bwa_index": {
-                    "type": "string",
-                    "description": "Path to the BWA-MEM index"
-                },
-                "bwamem2_index": {
-                    "type": "string",
-                    "description": "Path to the BWA-MEM2 index"
-                },
                 "index_genome": {
                     "type": "boolean",
                     "description": "Whether the current genome should be indexed or not"
@@ -619,6 +611,16 @@
         "schema_ignore_params": {
             "type": "string",
             "default": "genomes"
+        },
+        "quantify_signatures": {
+            "type": "boolean",
+            "description": "Quantify chromosomal instability signatures (Drews et al., 2022)"
+        },
+        "validationSkipDuplicateCheck": {
+            "type": "boolean"
+        },
+        "validationS3PathCheck": {
+            "type": "boolean"
         }
     }
 }
