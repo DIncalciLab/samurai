@@ -186,10 +186,22 @@ workflow SWGSCNA {
                 }
         )
 
+        ch_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam
+            .join(BAM_MARKDUPLICATES_PICARD.out.bai, by: [0], remainder: true)
+            .join(BAM_MARKDUPLICATES_PICARD.out.csi, by: [0], remainder: true)
+            .map {
+                meta, bam, bai, csi ->
+                    if (bai) {
+                        [ meta, bam, bai ]
+                    } else {
+                        [ meta, bam, csi ]
+                }
+        }
+
         // QC metrics about alignment (coverage, etc.)
         BAM_QC_PICARD(
             // sWGS has neither baits nor targets, 3rd and 4th args are thus empty
-            BAM_MARKDUPLICATES_PICARD.out.bam_bai.map {
+            ch_bam_bai.map {
                 meta, bam, bai -> [meta, bam, bai, [], []]
             },
             ch_fasta,
@@ -211,7 +223,6 @@ workflow SWGSCNA {
             }
         )
 
-        ch_bam_bai = BAM_MARKDUPLICATES_PICARD.out.bam_bai
     } else {
         ch_bam_bai = INPUT_CHECK.out.reads //TODO: switch to nf-validation
     }
