@@ -82,8 +82,8 @@
                     },
                     "picard/markduplicates": {
                         "branch": "master",
-                        "git_sha": "75027bf77472b1f4fd2cdd7e46f83119dfb0f2c6",
-                        "installed_by": ["bam_markduplicates_picard", "modules"]
+                        "git_sha": "8fc1d24c710ebe1d5de0f2447ec9439fd3d9d66a",
+                        "installed_by": ["modules", "bam_markduplicates_picard"]
                     },
                     "samtools/faidx": {
                         "branch": "master",
@@ -151,7 +151,7 @@
                 "nf-core": {
                     "bam_markduplicates_picard": {
                         "branch": "master",
-                        "git_sha": "ca2bf9212707e83717934ec6c5d4cab42b39ca69",
+                        "git_sha": "cfd937a668919d948f6fcbf4218e79de50c2f36f",
                         "installed_by": ["subworkflows"]
                     },
                     "bam_qc_picard": {
