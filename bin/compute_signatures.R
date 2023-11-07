@@ -14,7 +14,7 @@ create_pdf <- function(template, project) {
 
 parser <- arg_parser("Compute Signatures", hide.opts = TRUE)
 
-parser <- add_argument(parser, "--seg_file",
+parser <- add_argument(parser, "--seg-file",
     help = "Input segmentation file",
     nargs = Inf)
 parser <- add_argument(parser, "--cpus", type = "integer", default = 1,
