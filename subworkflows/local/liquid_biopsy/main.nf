@@ -17,8 +17,8 @@ include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../m
 workflow LIQUID_BIOPSY {
 
     take:
-        bam_bai
-        analysis_type
+        bam_bai // [meta, bam, bai]
+        caller
 
     main:
 
@@ -36,8 +36,8 @@ workflow LIQUID_BIOPSY {
                 pon_file = Channel.value(params.normal_panel)
             }
 
-        switch(analysis_type) {
-            case "liquid_biopsy_ichorcna":
+        switch(caller) {
+            case "ichorcna":
 
                 gc_wig              = Channel.value(params.gc_wig)
                 map_wig             = Channel.value(params.map_wig)
