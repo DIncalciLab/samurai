@@ -5,7 +5,7 @@ process QUANTIFY_CIN_SIGNATURES {
     tag "Extracting Signatures"
     label "process_single"
 
-    container "dincalcilab/ascat_sc:1.0.0"
+    container "dincalcilab/cinsignaturequantification:1.1.2"
 
     input:
         path(segmentation_file)
@@ -25,7 +25,7 @@ process QUANTIFY_CIN_SIGNATURES {
 
     """
     compute_signatures.R \\
-        --seg_file ${segmentation_file} \\
+        --seg-file ${segmentation_file} \\
         --cpus "${task.cpus}" \\
         $args
 
