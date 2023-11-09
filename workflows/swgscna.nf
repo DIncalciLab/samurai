@@ -127,7 +127,7 @@ workflow SWGSCNA {
             if(fastq2) {
                 [meta, [fastq1, fastq2]]
             } else {
-                [meta [fastq1, []]]
+                [meta, [fastq1]]
             }
     }
 
