@@ -123,7 +123,12 @@ workflow SWGSCNA {
     )
     //FIXME: Differentiate between BAM / FASTQ
     ch_input = Channel.fromSamplesheet("input").map {
-        meta, fastq1, fastq2 -> [meta, [fastq1, fastq2]]
+        meta, fastq1, fastq2 ->
+            if(fastq2) {
+                [meta, [fastq1, fastq2]]
+            } else {
+                [meta [fastq1, []]]
+            }
     }
 
     if (params.aligner) {
