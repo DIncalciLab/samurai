@@ -250,7 +250,7 @@ workflow SWGSCNA {
                 } else {
                     ch_analysis = ch_bam_bai
                 }
-            LIQUID_BIOPSY(ch_analysis, caller)
+            LIQUID_BIOPSY(ch_analysis, params.caller)
             ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
             ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
             break

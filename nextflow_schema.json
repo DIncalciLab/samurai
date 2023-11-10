@@ -354,6 +354,7 @@
                 "analysis_type": {
                     "type": "string",
                     "default": "solid_biopsy",
+                    "enum": ["liquid_biopsy", "solid_biopsy"],
                     "description": "Workflow to use (solid_biopsy or ctDNA)"
                 }
             }
