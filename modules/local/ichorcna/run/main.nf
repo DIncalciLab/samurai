@@ -17,7 +17,8 @@ process RUN_ICHORCNA {
 
     output:
         tuple val(meta), path("*.cna.seg")           , emit: cna_seg
-        tuple val(meta), path("*.seg")               , emit: bins
+        tuple val(meta), path("*.seg.txt")           , emit: bins
+        tuple val(meta), path("*.seg")      
         tuple val(meta), path("*.correctedDepth.txt"), emit: corrected_depth
         path("*.params.txt")                         , emit: ichorcna_params
         path "**/*genomeWide.pdf"                    , emit: genome_plot

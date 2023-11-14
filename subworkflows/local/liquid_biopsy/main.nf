@@ -10,7 +10,7 @@ include { ASSEMBLE_WISECONDORX_OUTPUTS                        } from '../../../m
 include { CONVERT_WISECONDORX_IMAGES                          } from '../../../modules/local/convert_wisecondorx_images/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
 include { REARRANGE_ICHORCNA_OUTPUT                           } from '../../../modules/local/rearrange_ichorcna_output/main'
-include { QUANTIFY_CIN_SIGNATURES                             } from '../../../modules/local/quantify_cin_signatures/main'
+include { CORRECT_LOGR_ICHORCNA                               } from '../../../modules/local/correct_logR_ichorcna/main'
 
 include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../modules/nf-core/hmmcopy/readcounter/main'
 
@@ -75,20 +75,27 @@ workflow LIQUID_BIOPSY {
                 CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
                 ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
 
-                if (params.quantify_signatures) {
-                    REARRANGE_ICHORCNA_OUTPUT(called_segments.map{meta,file -> file})
-                    ch_versions = ch_versions.mix(REARRANGE_ICHORCNA_OUTPUT.out.versions)
+                // Rearrange ichorCNA output 
+                REARRANGE_ICHORCNA_OUTPUT(called_segments.map{meta,file -> file})
+                ch_versions = ch_versions.mix(REARRANGE_ICHORCNA_OUTPUT.out.versions)
 
-                    REARRANGE_ICHORCNA_OUTPUT.out.sig_file
-                            .collectFile(storeDir: "${params.outdir}/ichorcna/",
-                                        name: 'all_seg_signatures.seg',
-                                        keepHeader: true,
-                                        skip: 1)
-                                        .set{all_seg_signatures}
+                REARRANGE_ICHORCNA_OUTPUT.out.sig_file
+                         .collectFile(storeDir: "${params.outdir}/ichorcna/",
+                                     name: 'all_segments_ichorcna_signatures.seg',
+                                     keepHeader: true,
+                                     skip: 1)
+                                     .set{signature_file}
 
-                    QUANTIFY_CIN_SIGNATURES(all_seg_signatures)
-                    ch_versions = ch_versions.mix(QUANTIFY_CIN_SIGNATURES.out.versions)
-                }
+                CORRECT_LOGR_ICHORCNA(RUN_ICHORCNA.out.bins, AGGREGATE_ICHORCNA_TABLE.out.ploidy_summary)
+                ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
+                                    
+                CORRECT_LOGR_ICHORCNA.out.gistic_file
+                                        .map{meta, data -> data}
+                                        .collectFile(name: "all_segments_ichorcna_gistic.seg",
+                                                    skip: 1,
+                                                    storeDir: "${params.outdir}/ichorcna/" )
+                                        .set{ gistic_file }
+                
                 break
 
             case "wisecondorx":
@@ -111,9 +118,10 @@ workflow LIQUID_BIOPSY {
 
                 CONVERT_GISTIC_SEG.out.segfile
                                     .map{meta, data -> data}
-                                    .collectFile(name: "all_segments.seg",
+                                    .collectFile(name: "all_segments_wisecondorx_gistic.seg",
                                                     skip: 1,
-                                                    storeDir: "${params.outdir}" )
+                                                    storeDir: "${params.outdir}/wisecondorx/" )
+                                    .set{ gistic_file }
                 ASSEMBLE_WISECONDORX_OUTPUTS(
                             WISECONDORX_PREDICT.out.statistics.collect{
                                 meta, result -> result
@@ -144,6 +152,8 @@ workflow LIQUID_BIOPSY {
         called_segments     = called_segments
         genome_plot         = genome_plot
         summary             = summary
+        gistic_file         = gistic_file
+        signature_file      = signature_file 
 
         versions            = ch_versions
 

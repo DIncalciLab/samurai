@@ -132,12 +132,23 @@ df_sig <- df_final %>%
 
 readr::write_tsv(df_sig, file = paste0(args$project, "_df_signatures.seg"),
     quote = "needed")
-#Create df for GISTIC
-df_gistic <- df_final %>%
-    dplyr::select(chromosome, start, end, num.mark, logr) %>%
-    dplyr::mutate(logr = round(as.numeric(logr), 5))
 
-readr::write_tsv(df_gistic, file = paste0(args$project, "_gistic.seg"),
-    quote = "needed")
+# TO DO: Conditional correction of logR
+#Create df for GISTIC
+############### adjusted logR (https://github.com/lima1/PureCN/issues/40)
+#Solution in:
+#https://github.com/maitnnguyen/Oseq_CNV_Paper/blob/main/src/pipeline/step4_CNVcall.R # nolint
+
+df_final$sample <- df_summary$samplename
+R <- 2^(df_final$logr) # nolint
+df_final$adj.seg <- (df_summary$purity * df_summary$ploidy * R + 2 * (1 - df_summary$purity) * (R - 1)) / # nolint
+                                    (df_summary$purity * df_summary$ploidy)
+df_final$sample <- df_summary$samplename
+df_gistic <- df_final %>%
+  dplyr::select(samplename, chromosome, start, end, num.mark, adj.seg) %>%
+  dplyr::rename(sample = samplename) %>%
+  na.omit()
+readr::write_tsv(df_gistic, file = paste0(args$projectname, "_gistic.seg"),
+                 quote = "needed")
 
 message("Complete.")

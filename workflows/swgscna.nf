@@ -61,6 +61,8 @@ include { PREPARE_GENOME             } from '../subworkflows/local/prepare_genom
 include { SOLID_BIOPSY               } from '../subworkflows/local/solid_biopsy/main'
 include { SIZE_SELECTION             } from '../subworkflows/local/size_selection/main'
 include { LIQUID_BIOPSY              } from '../subworkflows/local/liquid_biopsy/main'
+//include { COMPUTE_SIGNATURES         } from '../subworkflows/local/compute_signatures/main'
+include { RUN_GISTIC                 } from '../subworkflows/local/run_gistic/main'
 
 include { FASTA_INDEX_DNA            } from '../subworkflows/nf-core/fasta_index_dna/main'
 include { FASTQ_ALIGN_DNA            } from '../subworkflows/nf-core/fastq_align_dna/main'
@@ -78,6 +80,7 @@ include { BAM_QC_PICARD              } from '../subworkflows/nf-core/bam_qc_pica
 // MODULE: Installed directly from nf-core/modules
 //
 
+include { CIN_SIGNATURE_QUANTIFICATION} from '../modules/local/cin_signature_quantification/main'
 
 include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
@@ -256,6 +259,18 @@ workflow SWGSCNA {
             break
         default:
             error "Uknown / unsupported analysis ${analysis_type}"
+    }
+
+    // Compute CN Signatures if specified, default: false
+    if (params.compute_signatures) {
+        CIN_SIGNATURE_QUANTIFICATION(LIQUID_BIOPSY.out.signature_file)
+        ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
+    }
+
+    // Run GISTIC if specified, default: false
+    if (params.run_gistic) {
+        RUN_GISTIC(params.caller, LIQUID_BIOPSY.out.gistic_file)
+        ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
     }
 
     // Software versions
