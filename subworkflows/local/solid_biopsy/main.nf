@@ -5,7 +5,6 @@ include { CONCATENATE_PDF as CONCATENATE_QDNASEQ_PLOTS } from '../../../modules/
 include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS } from '../../../modules/local/concatenate_pdf/main'
 include { CREATE_QDNASEQ_SUMMARY                       } from '../../../modules/local/create_qdnaseq_summary/main'
 include { CREATE_ASCATSC_SUMMARY                       } from '../../../modules/local/create_ascatsc_summary/main'
-include { QUANTIFY_CIN_SIGNATURES                      } from '../../../modules/local/quantify_cin_signatures/main'
 
 // Workfow
 
@@ -55,36 +54,38 @@ workflow SOLID_BIOPSY {
                 all_seg_plot = CONCATENATE_ASCATSC_PLOTS.out.genome_plot
 
                 ASCAT_SC.out.segments
-                    .collectFile(storeDir: "${params.outdir}/ascat_sc/",
-                                              name: 'all_segments.seg',
-                                              keepHeader: true,
-                                              skip: 1)
-                    .set{ ch_segments }
+                            .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                                                      name: 'all_segments.seg',
+                                                      keepHeader: true,
+                                                      skip: 1)
+                            .set{ ch_segments }
 
                 ASCAT_SC.out.summary_table
-                    .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                            .collectFile(storeDir: "${params.outdir}/ascat_sc/",
                                  name: 'ascatsc_summary.txt',
                                  keepHeader: true,
                                  skip: 1)
-                    .set { ascatsc_summary }
+                            .set { ascatsc_summary }
 
                 ASCAT_SC.out.sig_file
-                        .collectFile(storeDir: "${params.outdir}/ascat_sc/",
-                                    name: 'segments_sig_extraction.seg',
+                            .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                                    name: 'all_segments_ascat_sc_signatures.seg',
                                     keepHeader: true,
                                     skip: 1)
-                                    .set{signature_file}
+                            .set{signature_file}
 
                 CREATE_ASCATSC_SUMMARY(ascatsc_summary)
                 ch_reports = ch_reports.mix(CREATE_ASCATSC_SUMMARY.out.summary)
-                //TODO: Generate the GISTIC output here? If not, remove the step from the module
+
+                ASCAT_SC.out.gistic_file
+                            .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                                    name: 'all_segments_ascat_sc_gistic.seg',
+                                    keepHeader: true,
+                                    skip: 1)
+                            .set{gistic_file}
                 break
             default:
                 error "Unknown CNV caller ${caller}"
-            if (params.quantify_signatures) {
-                QUANTIFY_CIN_SIGNATURES(signature_file)
-                ch_versions = ch_versions.mix( QUANTIFY_CIN_SIGNATURES.out.versions)
-            }
 
 
         }

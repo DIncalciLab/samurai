@@ -5,7 +5,7 @@ process REARRANGE_ICHORCNA_OUTPUT {
     tag "Rearranging IchorCNA Output"
     label "process_single"
 
-    container "/home/sarap/cache_singularity/dplyr_readr.sif"
+    container "/mnt/svgs/cache_singularity/dplyr_readr.sif"
 
     input:
         path(segmentation_file)
@@ -18,12 +18,12 @@ process REARRANGE_ICHORCNA_OUTPUT {
     script:
 
     """
-    rearrange_ichorCNA_out.R \\
-        --seg_file ${segmentation_file}
+    rearrange_ichorcna_output.R \\
+        --seg_file ${segmentation_file} 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        Rearrange Output: ${VERSION}
+        rearrange_ichorcna_output: ${VERSION}
     END_VERSIONS
     """
 
