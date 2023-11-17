@@ -2,29 +2,26 @@ def VERSION = "0.1"
 
 process CORRECT_LOGR_ICHORCNA {
 
-    tag "${meta.id}"
-    label "process_single"
+    tag "Correcting Log2 for GISTIC Analysis"
+    label "process_low"
 
     container "/home/sarap/cache_singularity/dplyr_readr.sif"
 
     input:
-        tuple val(meta), path(seg_file)
+        path(seg_file)
         path(ploidy_summary)
 
 
     output:
-        tuple val(meta), path("*.seg"),           emit: gistic_file
-        path("versions.yml"),                     emit: versions
+        path("*_logR_corrected_gistic.seg"),                            emit: gistic_file
+        path("versions.yml"),                                           emit: versions
         
     script:
-
-    def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     correct_logR_ichorcna.R \\
         --seg ${seg_file} \\
-        --ploidy ${ploidy_summary} \\
-        --project ${prefix} 
+        --ploidy ${ploidy_summary} 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

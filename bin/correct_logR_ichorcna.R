@@ -10,11 +10,11 @@ suppressPackageStartupMessages({
 parser <- arg_parser("Adjust logR.", hide.opts = TRUE)
 
 parser <- add_argument(parser, "--seg",
-                       help = "Segmentation file from which extract information.",
+                       help = "Segmentation file from which extract information.", #nolint
                        nargs = Inf)
 
 parser <- add_argument(parser, "--ploidy",
-                       help = "Ploidy Summary file from which extract information.",
+                       help = "Ploidy Summary file from which extract information.", #nolint
                        nargs = Inf)
 
 parser <- add_argument(parser, "--project",
@@ -23,25 +23,41 @@ parser <- add_argument(parser, "--project",
 args <- parse_args(parser)
 
 message("Adjusting log-Ratio...")
+
+
 # TO DO: Conditional correction of logR
-#Create df for Signature Extraction
-############### adjusted logR (https://github.com/lima1/PureCN/issues/40)
-#Solution in:
-#https://github.com/maitnnguyen/Oseq_CNV_Paper/blob/main/src/pipeline/step4_CNVcall.R # nolint
+
+# IMPORT TWO DATAFRAMES
 df <- read_tsv(args$seg)
 df_ploidy <- read_tsv(args$ploidy)
 
-df <- df %>%  rename(all_of(c(sample = "ID", chromosome = "chrom")))
-df_ploidy <- df_ploidy %>% 
-            rename(all_of(c(purity = "Tumor Fraction", ploidy = "Ploidy")))
+#RENAME COLUMNS
+
+df <- df %>%  rename(all_of(c(chromosome = "chrom", sample = "ID")))
+
+df_ploidy <- df_ploidy %>%
+  rename(all_of(c(purity = "Tumor Fraction",
+                  ploidy = "Ploidy",
+                  sample = "samplename")))
+
+# CREATE A TEMPORARY COMPLETE DF TO CORRECT LOGR
+df_tmp <- df %>% select(sample) %>% left_join(df_ploidy, by = 'sample') %>% select(-sample)
+df <- cbind(df, df_tmp)
+
+# adjusted logR (https://github.com/lima1/PureCN/issues/40)
+#Solution in:
+#https://github.com/maitnnguyen/Oseq_CNV_Paper/blob/main/src/pipeline/step4_CNVcall.R # nolint
 
 R <- 2^(df$seg.median.logR)
 
-df$adj.seg <- (df_ploidy$purity*df_ploidy$ploidy*R + 2*(1-df_ploidy$purity)*(R - 1))/(df_ploidy$purity*df_ploidy$ploidy)
+df$adj.seg <- (df$purity*df$ploidy*R + 2*(1-df$purity)*(R - 1))/(df$purity*df$ploidy) #nolint
 
+# FINAL DF WITH SELECTED COLUMNS
 df_gistic <- df %>%
-  dplyr::select(sample, chromosome, start, end, num.mark, adj.seg) %>%
-   na.omit()
+            dplyr::select(sample, chromosome, start, end, num.mark, adj.seg) %>%
+            rowwise %>%
+            filter(!is.infinite(adj.seg))
 
-readr::write_tsv(df_gistic, file = paste0(args$project, "_df_gistic.seg"),
-                 quote = "needed")
+readr::write_tsv(df_gistic,
+                file = "segments_logR_corrected_gistic.seg",
+                quote = "needed")
