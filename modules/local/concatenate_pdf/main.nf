@@ -1,7 +1,7 @@
 process CONCATENATE_PDF {
 
     tag "Concatenate_PDF"
-    label 'cpu_low'
+    label 'process_single'
 
     container 'docker.io/t0shy/qpdf-docker:11.3.0'
 

@@ -71,6 +71,17 @@ workflow LIQUID_BIOPSY {
 
                 summary = AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary
 
+                RUN_ICHORCNA.out.bins.map{meta, data -> data}
+                                     .collectFile(storeDir: "${params.outdir}/ichorcna/",
+                                                 name: 'all_segments_ichorcna_gistic.seg',
+                                                 keepHeader: true,
+                                                 skip: 1)
+                                                 .set{gistic_file}
+
+                CORRECT_LOGR_ICHORCNA(gistic_file, AGGREGATE_ICHORCNA_TABLE.out.ploidy_summary)
+                ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
+                
+                corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
                 // Step 4: Aggregate bin-level plots into a single file
                 CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
                 ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
@@ -86,15 +97,6 @@ workflow LIQUID_BIOPSY {
                                      skip: 1)
                                      .set{signature_file}
 
-                CORRECT_LOGR_ICHORCNA(RUN_ICHORCNA.out.bins, AGGREGATE_ICHORCNA_TABLE.out.ploidy_summary)
-                ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
-                                    
-                CORRECT_LOGR_ICHORCNA.out.gistic_file
-                                        .map{meta, data -> data}
-                                        .collectFile(name: "all_segments_ichorcna_gistic.seg",
-                                                    skip: 1,
-                                                    storeDir: "${params.outdir}/ichorcna/" )
-                                        .set{ gistic_file }
                 
                 break
 
@@ -143,18 +145,17 @@ workflow LIQUID_BIOPSY {
                 genome_plot = CONVERT_WISECONDORX_IMAGES.out.genome_plot
                 break
             default:
-                error "Uknown / unsupported analysis type ${analysis_type}"
+                error "Uknown / unsupported analysis type ${caller}"
         }
 
     emit:
 
-        normal_panel        = pon_file
-        called_segments     = called_segments
-        genome_plot         = genome_plot
-        summary             = summary
-        gistic_file         = gistic_file
-        signature_file      = signature_file 
-
-        versions            = ch_versions
-
+        normal_panel          = pon_file
+        called_segments       = called_segments
+        genome_plot           = genome_plot
+        summary               = summary
+        corrected_gistic_file = corrected_gistic_file
+        signature_file        = signature_file 
+        versions              = ch_versions
+  
 }
