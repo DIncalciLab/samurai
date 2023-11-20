@@ -4,7 +4,7 @@ process CIN_SIGNATURE_QUANTIFICATION {
 
     tag "Extracting Signatures"
     label "process_single"
-
+    //TO DO: Pull container from repository, to be added procps package
     container "/home/sarap/cache_singularity/CINSigQuant.sif"
 
     input:
@@ -25,8 +25,8 @@ process CIN_SIGNATURE_QUANTIFICATION {
 
     """
     compute_signatures.R \\
-        --seg_file ${segmentation_file} \\
-        --cpus ${task.cpus} \\
+        --seg_file '${segmentation_file}' \\
+        --cpus '${task.cpus}' \\
         $args
 
     cat <<-END_VERSIONS > versions.yml

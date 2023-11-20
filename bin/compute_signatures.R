@@ -16,16 +16,17 @@ create_pdf <- function(template, project) {
 parser <- arg_parser("Compute Signatures", hide.opts = TRUE)
 
 parser <- add_argument(parser, "--seg_file",
-    help = "Input segmentation file",
-    nargs = Inf)
-parser <- add_argument(parser, "--cpus", type = "integer", default = 1,
-    help = "Number of cores to use.")
-parser <- add_argument(parser, "--genome", type = "character",
-    default = "hg38",
-    help = "Genome to use")
-parser <- add_argument(parser, "--projectname", type = "character",
-    default = "signatures",
-    help = "Flag to include in output file(s).")
+                       help = "Input segmentation file",
+                       nargs = Inf)
+parser <- add_argument(parser, "--cpus",
+                       default = 1,
+                       help = "Number of cores to use.")
+parser <- add_argument(parser, "--genome",
+                       default = "hg38",
+                       help = "Genome to use")
+parser <- add_argument(parser, "--projectname",
+                       default = "signatures",
+                       help = "Flag to include in output file(s).")
 args <- parse_args(parser)
 
 message("Starting Signature Extraction...")
@@ -35,7 +36,7 @@ cnobj <- quantifyCNSignatures(object = segments,
     experimentName = args$projectname,
     method = "drews",
     cores = args$cpus,
-    build = args$build)
+    build = args$genome)
 
 message("Saving RDS dataset...")
 saveRDS(cnobj, paste0(args$project, "_signatures.rds"))
