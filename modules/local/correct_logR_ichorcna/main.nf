@@ -4,7 +4,7 @@ process CORRECT_LOGR_ICHORCNA {
 
     tag "Correcting Log2 for GISTIC Analysis"
     label "process_low"
-
+// TO DO: Create a container in the repository to be pulled 
     container "/home/sarap/cache_singularity/dplyr_readr.sif"
 
     input:

@@ -4,7 +4,7 @@ process REARRANGE_ICHORCNA_OUTPUT {
 
     tag "Rearranging IchorCNA Output"
     label "process_single"
-
+// TO DO: Create a container in the repository to be pulled 
     container "/mnt/svgs/cache_singularity/dplyr_readr.sif"
 
     input:
