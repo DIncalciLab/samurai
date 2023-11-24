@@ -1,8 +1,10 @@
 def VERSION="0.1"
-process RUN_GISTIC2 {
+process GISTIC2 {
 
     tag "Run Gistic2"
     label "process_low"
+
+    // TO DO: Create container on quay.io
     container '/mnt/svgs/cache_singularity/gistic.img'
 
     input:
@@ -24,34 +26,16 @@ process RUN_GISTIC2 {
     def args = task.ext.args ?: ''
     def ref_gene_file = params.genome == 'hg38' ? "-refgene '/opt/GISTIC/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'" : "-refgene '/opt/GISTIC/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
     
-    """ 
+    """     
     /usr/local/bin/gistic2 \\
         -seg '${seg_file}' \\
         ${ref_gene_file} \\
-        -ta ${params.gistic_ta} \\
-        -td ${params.gistic_td} \\
-        -rx ${params.gistic_rx} \\
+        -ta ${params.gistic_t_amp} \\
+        -td ${params.gistic_t_del} \\
+        -rx ${params.gistic_remove_x} \\
         -conf ${params.gistic_conf} \\
         -b ./
 
-    cat <<-MULTIQC_HEADER > mqc_amp_qplot.pdf
-    id: 'amplification_qplot'
-    section_name: 'GISTIC Amplification'
-    description: 'This plot shows amplified genes identified by GISTIC2.'
-    format: 'png'
-    MULTIQC_HEADER
-
-    cat amp_qplot.pdf >> mqc_amp_qplot.pdf
-    
-
-    cat <<-MULTIQC_HEADER > mqc_del_qplot.pdf
-    id: 'deletion_qplot'
-    section_name: 'GISTIC Deletion'
-    description: 'This plot shows deleted genes identified by GISTIC2.'
-    format: 'png'
-    MULTIQC_HEADER
-
-    cat del_qplot.pdf >> mqc_del_qplot.pdf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

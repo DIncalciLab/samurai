@@ -61,6 +61,7 @@ include { PREPARE_GENOME                } from '../subworkflows/local/prepare_ge
 include { SOLID_BIOPSY                  } from '../subworkflows/local/solid_biopsy/main'
 include { SIZE_SELECTION                } from '../subworkflows/local/size_selection/main'
 include { LIQUID_BIOPSY                 } from '../subworkflows/local/liquid_biopsy/main'
+include { RUN_GISTIC                    } from '../subworkflows/local/run_gistic/main'
 
 include { FASTA_INDEX_DNA               } from '../subworkflows/nf-core/fasta_index_dna/main'
 include { FASTQ_ALIGN_DNA               } from '../subworkflows/nf-core/fastq_align_dna/main'
@@ -79,7 +80,6 @@ include { BAM_QC_PICARD                 } from '../subworkflows/nf-core/bam_qc_p
 //
 
 include { CIN_SIGNATURE_QUANTIFICATION  } from '../modules/local/cin_signature_quantification/main'
-include { RUN_GISTIC2                   } from '../modules/local/gistic2/main'
 
 include { FASTQC                        } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
@@ -268,8 +268,8 @@ workflow SWGSCNA {
 
     // Run GISTIC if specified, default: false
     if (params.run_gistic) {
-        RUN_GISTIC2(LIQUID_BIOPSY.out.corrected_gistic_file)
-        ch_versions = ch_versions.mix(RUN_GISTIC2.out.versions)
+        RUN_GISTIC(LIQUID_BIOPSY.out.corrected_gistic_file)
+        ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
     }
 
     // Software versions

@@ -4,8 +4,8 @@ process CIN_SIGNATURE_QUANTIFICATION {
 
     tag "Extracting Signatures"
     label "process_single"
-    //TO DO: Pull container from repository, to be added procps package
-    container "/home/sarap/cache_singularity/CINSigQuant.sif"
+    //TO DO: Add procps package to the container
+    container "dincalcilab/cinsignaturequantification:1.1.2"
 
     input:
         file(segmentation_file)
