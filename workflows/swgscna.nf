@@ -270,6 +270,7 @@ workflow SWGSCNA {
     if (params.run_gistic) {
         RUN_GISTIC(LIQUID_BIOPSY.out.corrected_gistic_file)
         ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_lesions_mqc.collect())
     }
 
     // Software versions
