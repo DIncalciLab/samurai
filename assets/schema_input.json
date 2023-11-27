@@ -34,6 +34,20 @@
                         "maxLength": 0
                     }
                 ]
+            },
+            "sex": {
+                "errorMessage": "Sex must be either female or male",
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "enum": ["male", "female"]
+                    },
+                    {
+                        "type": "string",
+                        "maxLength": 0
+                    }
+                ],
+                "meta": ["sex"]
             }
         },
         "required": ["sample", "fastq_1"]
