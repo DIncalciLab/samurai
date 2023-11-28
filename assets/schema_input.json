@@ -35,7 +35,7 @@
                     }
                 ]
             },
-            "sex": {
+            "gender": {
                 "errorMessage": "Sex must be either female or male",
                 "anyOf": [
                     {
@@ -47,7 +47,7 @@
                         "maxLength": 0
                     }
                 ],
-                "meta": ["sex"]
+                "meta": ["gender"]
             }
         },
         "required": ["sample", "fastq_1"]
