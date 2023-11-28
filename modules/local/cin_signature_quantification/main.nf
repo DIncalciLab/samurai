@@ -4,8 +4,8 @@ process CIN_SIGNATURE_QUANTIFICATION {
 
     tag "Extracting Signatures"
     label "process_single"
-    //TO DO: Add procps package to the container
-    container "dincalcilab/cinsignaturequantification:1.1.2"
+
+    container "quay.io/dincalcilab/cinsignaturequantification:1.1.2"
 
     input:
         file(segmentation_file)
