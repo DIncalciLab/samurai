@@ -5,7 +5,7 @@ process CIN_SIGNATURE_QUANTIFICATION {
     tag "Extracting Signatures"
     label "process_single"
 
-    container "quay.io/dincalcilab/cinsignaturequantification:1.1.2"
+    container "quay.io/dincalcilab/cinsignaturequantification:1.1.2-af6117b"
 
     input:
         file(segmentation_file)

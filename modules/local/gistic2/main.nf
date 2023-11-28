@@ -23,7 +23,7 @@ process GISTIC2 {
     script:
 
     def args = task.ext.args ?: ''
-    def ref_gene_file = params.genome == 'hg38' ? "-refgene '/opt/GISTIC/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'" : "-refgene '/opt/GISTIC/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
+    def ref_gene_file = params.genome == 'hg38' ? "-refgene '/opt/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'" : "-refgene '/opt/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
 
     """
     gistic2 \\
