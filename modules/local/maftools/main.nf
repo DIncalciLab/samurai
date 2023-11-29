@@ -4,7 +4,7 @@ process MAFTOOLS {
     tag "Maftools Plot"
     label "process_low"
 
-    container "/home/sarap/cache_singularity/maftools_0.1.img"
+    container "quay.io/dincalcilab/maftools:2.17.0-ce17bf9"
 
     input:
         path(all_lesions)
