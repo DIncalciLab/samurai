@@ -26,7 +26,7 @@ parser <- add_argument(parser, "--genome",
                        help = "Genome to use")
 parser <- add_argument(parser, "--projectname",
                        default = "signatures",
-                       help = "Flag to include in output file(s).")
+                       help = "Prefix to include in output file(s).")
 args <- parse_args(parser)
 
 message("Starting Signature Extraction...")
@@ -47,7 +47,7 @@ df_activity <- df_activity %>%
     mutate(sample = rownames(df_activity)) %>%
     relocate((sample))
 
-readr::write_tsv(df_activity, file = paste0(args$project, "_activity.txt"),
+readr::write_tsv(df_activity, file = paste0(args$projectname, "_activity.txt"),
     quote = "needed")
 
 
@@ -55,11 +55,11 @@ message("Starting Platinum Clinical Prediction...")
 clin_pred <- clinPredictionPlatinum(object = cnobj)
 saveRDS(clin_pred, paste0(args$project, "_platinum_prediction.rds"))
 
-create_pdf("%s_plot_by_component.pdf", args$project)
+create_pdf("%s_plot_by_component.pdf", args$projectname)
 plotSampleByComponent(object = cnobj)
 dev.off()
 
-create_pdf("%s_plot_activities.pdf", args$project)
+create_pdf("%s_plot_activities.pdf", args$projectname)
 plotActivities(object = cnobj, type = "threshold")
 dev.off()
 
