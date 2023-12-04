@@ -142,13 +142,13 @@ readr::write_tsv(df_sig, file = paste0(args$project, "_df_signatures.seg"),
 df_final$sample <- df_summary$samplename
 R <- 2^(df_final$logr) # nolint
 df_final$adj.seg <- (df_summary$purity * df_summary$ploidy * R + 2 * (1 - df_summary$purity) * (R - 1)) / # nolint
-                                    (df_summary$purity * df_summary$ploidy)
+    (df_summary$purity * df_summary$ploidy)
 df_final$sample <- df_summary$samplename
 df_gistic <- df_final %>%
-  dplyr::select(samplename, chromosome, start, end, num.mark, adj.seg) %>%
-  dplyr::rename(sample = samplename) %>%
-  na.omit()
+    dplyr::select(samplename, chromosome, start, end, num.mark, adj.seg) %>%
+    dplyr::rename(sample = samplename) %>%
+    na.omit()
 readr::write_tsv(df_gistic, file = paste0(args$projectname, "_gistic.seg"),
-                 quote = "needed")
+    quote = "needed")
 
 message("Complete.")
