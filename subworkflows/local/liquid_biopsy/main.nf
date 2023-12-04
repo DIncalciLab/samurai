@@ -28,7 +28,7 @@ workflow LIQUID_BIOPSY {
         // If we want to build the normal panel
         if (params.build_pon) {
 
-            BUILD_PON(params.pon_path)
+            BUILD_PON(params.pon_path, caller)
             ch_versions = ch_versions.mix(BUILD_PON.out.versions)
             pon_file = BUILD_PON.out.normal_panel
 
@@ -80,13 +80,13 @@ workflow LIQUID_BIOPSY {
 
                 CORRECT_LOGR_ICHORCNA(gistic_file, AGGREGATE_ICHORCNA_TABLE.out.ploidy_summary)
                 ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
-                
+
                 corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
                 // Step 4: Aggregate bin-level plots into a single file
                 CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
                 ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
 
-                // Rearrange ichorCNA output 
+                // Rearrange ichorCNA output
                 REARRANGE_ICHORCNA_OUTPUT(called_segments.map{meta,file -> file})
                 ch_versions = ch_versions.mix(REARRANGE_ICHORCNA_OUTPUT.out.versions)
 
@@ -97,7 +97,7 @@ workflow LIQUID_BIOPSY {
                                      skip: 1)
                                      .set{signature_file}
 
-                
+
                 break
 
             case "wisecondorx":
@@ -155,7 +155,7 @@ workflow LIQUID_BIOPSY {
         genome_plot           = genome_plot
         summary               = summary
         corrected_gistic_file = corrected_gistic_file
-        signature_file        = signature_file 
+        signature_file        = signature_file
         versions              = ch_versions
-  
+
 }
