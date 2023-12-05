@@ -3,8 +3,7 @@ process ICHORCNA_GENERATE_PON {
 label "process_low"
 tag "Generate panel of normals"
 
-conda "bioconda::r-ichorcna=0.3.2"
-container "/mnt/svgs/cache_singularity/ichorCNA.img"
+container "quay.io/dincalcilab/ichorcna:0.4.0-2f8cfc8"
 
 input:
     path wigfiles
