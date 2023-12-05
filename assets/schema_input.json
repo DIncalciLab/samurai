@@ -36,7 +36,7 @@
                 ]
             },
             "gender": {
-                "errorMessage": "Sex must be either female or male",
+                "errorMessage": "Gender must be either female or male",
                 "anyOf": [
                     {
                         "type": "string",
