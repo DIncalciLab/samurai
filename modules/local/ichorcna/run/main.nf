@@ -18,7 +18,7 @@ process RUN_ICHORCNA {
     output:
         tuple val(meta), path("*.cna.seg")           , emit: cna_seg
         tuple val(meta), path("*.seg.txt")           , emit: bins
-        tuple val(meta), path("*.seg")      
+        tuple val(meta), path("*.seg")
         tuple val(meta), path("*.correctedDepth.txt"), emit: corrected_depth
         path("*.params.txt")                         , emit: ichorcna_params
         path "**/*genomeWide.pdf"                    , emit: genome_plot
@@ -33,13 +33,13 @@ process RUN_ICHORCNA {
         def pon = params.normal_panel ? "--normalPanel ${params.normal_panel}" : ''
         def centro = params.centromere ? "--centromere ${params.centromere}" : ''
         def reptime = params.reptime_file ? "--repTimeWig ${params.reptime_file}": ''
-        def ichorcna_script = "/usr/local/bin/runIchorCNA.R"
+        def ichorcna_script = "runIchorCNA.R"
         def gender = meta.gender ? "--sex ${meta.gender}": ''
 
         def VERSION = '0.3.2' // WARN: Version information not provided by tool on CLI.
 
         """
-        Rscript ${ichorcna_script} \\
+        ${ichorcna_script} \\
                 --id ${prefix} \\
                 --WIG $wigfile \\
                 --gcWig ${gc_wig} \\
