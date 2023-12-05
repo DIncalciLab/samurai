@@ -4,8 +4,7 @@ process RUN_ICHORCNA {
     label 'process_low'
 
     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
-    conda "bioconda::r-ichorcna=0.3.2"
-    container "/mnt/svgs/cache_singularity/ichorCNA.img"
+    container "quay.io/dincalcilab/ichorcna:0.4.0-2ab0be2"
 
     input:
         tuple val(meta), path(wigfile)

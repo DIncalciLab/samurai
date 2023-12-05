@@ -3,7 +3,7 @@ process ICHORCNA_GENERATE_PON {
 label "process_low"
 tag "Generate panel of normals"
 
-container "quay.io/dincalcilab/ichorcna:0.4.0-5f761e4 "
+container "quay.io/dincalcilab/ichorcna:0.4.0-2ab0be2"
 
 input:
     path wigfiles
