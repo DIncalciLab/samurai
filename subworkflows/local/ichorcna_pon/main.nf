@@ -23,6 +23,7 @@ workflow ICHORCNA_PON {
                         tuple(fmeta, file[0], file[1])
                     }
 
+        // FIXME: We shouldn't depend on parameters here
         if (params.filter_bam_pon) {
             SAMBAMBA_FILTER(bam_files)
             bam_for_pon = SAMBAMBA_FILTER.out.filtered_bam
