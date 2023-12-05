@@ -26,7 +26,7 @@ def args = task.ext.args ?: ''
 def prefix = task.ext.prefix ?: "PoN"
 def centro = params.centromere ? "--centromere ${params.centromere}" : ''
 def reptime = reptime_file ? "--repTimeWig ${reptime_file}": ''
-def ichorcna_script = "/usr/local/bin/createPanelOfNormals.R"
+def ichorcna_script = "createPanelOfNormals.R"
 
 def VERSION = '0.3.2' // Version information not provided by tool on CLI
 
@@ -34,7 +34,7 @@ def VERSION = '0.3.2' // Version information not provided by tool on CLI
 
 echo "${wigfiles.join("\n")}" > PoN_wigfiles.txt
 
-Rscript ${ichorcna_script}\\
+${ichorcna_script}\\
     --filelist PoN_wigfiles.txt \\
     --gcWig ${gc_wig} \\
     --mapWig ${map_wig} \\
