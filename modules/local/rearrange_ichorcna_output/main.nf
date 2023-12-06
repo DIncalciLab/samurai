@@ -4,8 +4,7 @@ process REARRANGE_ICHORCNA_OUTPUT {
 
     tag "Rearranging IchorCNA Output"
     label "process_single"
-// TO DO: Create a container in the repository to be pulled 
-    container "/mnt/svgs/cache_singularity/dplyr_readr.sif"
+    container "quay.io/dincalcilab/tidyverse:1.0.0-324c29b"
 
     input:
         path(segmentation_file)
@@ -19,7 +18,7 @@ process REARRANGE_ICHORCNA_OUTPUT {
 
     """
     rearrange_ichorcna_output.R \\
-        --seg_file ${segmentation_file} 
+        --seg_file ${segmentation_file}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
