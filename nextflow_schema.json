@@ -496,6 +496,30 @@
                 "ichorcna_normal_states": {
                     "type": "string",
                     "default": "0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99"
+                },
+                "ichorcna_gc_wig": {
+                    "type": "string",
+                    "description": "Path to a Wiggle file with GC content data for the specified genome.",
+                    "pattern": "^\\S+\\.wig$",
+                    "format": "file-path"
+                },
+                "ichorcna_map_wig": {
+                    "type": "string",
+                    "description": "Path to a Wiggle file with mappability scores for the specified genome.",
+                    "pattern": "^\\S+\\.wig$",
+                    "format": "file-path"
+                },
+                "ichorcna_reptime_wig": {
+                    "type": "string",
+                    "description": "Path to a Wiggle file with replication timing data for the specified genome.",
+                    "pattern": "^\\S+\\.wig$",
+                    "format": "file-path"
+                },
+                "ichorcna_centromere_file": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "Path to a file with centromere data for the specified genome.",
+                    "format": "file-path"
                 }
             }
         },
@@ -565,6 +589,38 @@
                     "default": 5
                 }
             }
+        },
+        "new_group_1": {
+            "title": "New Group 1",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_gistic": {
+                    "type": "boolean",
+                    "description": "Run GISTIC analysis."
+                },
+                "gistic_t_amp": {
+                    "type": "number",
+                    "default": 0.1,
+                    "description": "Default log2ratio threshold to call amplifications."
+                },
+                "gistic_t_del": {
+                    "type": "number",
+                    "default": 0.1,
+                    "description": "Default log2ratio threshold to call deletions."
+                },
+                "gistic_remove_x": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Whether to remove or not chrosome X from the analysis."
+                },
+                "gistic_conf": {
+                    "type": "number",
+                    "default": 0.99,
+                    "description": "GISTIC confidence level for calling recurrent altered regions."
+                }
+            }
         }
     },
     "allOf": [
@@ -606,6 +662,9 @@
         },
         {
             "$ref": "#/definitions/ascat_sc_options"
+        },
+        {
+            "$ref": "#/definitions/new_group_1"
         }
     ],
     "properties": {
@@ -613,15 +672,14 @@
             "type": "string",
             "default": "genomes"
         },
-        "quantify_signatures": {
-            "type": "boolean",
-            "description": "Quantify chromosomal instability signatures (Drews et al., 2022)"
-        },
         "validationSkipDuplicateCheck": {
             "type": "boolean"
         },
         "validationS3PathCheck": {
             "type": "boolean"
+        },
+        "compute_signatures": {
+            "type": "string"
         }
     }
 }

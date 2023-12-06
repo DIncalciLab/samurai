@@ -36,10 +36,10 @@ workflow BUILD_PON {
                     it ->
                     it[1]
                 }
-                gc_wig              = Channel.value(params.gc_wig)
-                map_wig             = Channel.value(params.map_wig)
-                centromere          = Channel.value(params.centromere)
-                reptime_file        = Channel.value(params.reptime_file)
+                gc_wig              = Channel.value(params.ichorcna_gc_wig)
+                map_wig             = Channel.value(params.ichorcna_map_wig)
+                reptime_file        = Channel.value(params.ichorcna_reptime_wig)
+                centromere          = Channel.value(params.ichorcna_centromere_file)
 
                 ICHORCNA_GENERATE_PON(wigfiles.collect(),
                                     gc_wig, map_wig, centromere, reptime_file)
