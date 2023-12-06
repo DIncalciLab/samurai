@@ -4,8 +4,8 @@ process CORRECT_LOGR_ICHORCNA {
 
     tag "Correcting Log2 for GISTIC Analysis"
     label "process_low"
-// TO DO: Create a container in the repository to be pulled 
-    container "/home/sarap/cache_singularity/dplyr_readr.sif"
+// TO DO: Create a container in the repository to be pulled
+    container "quay.io/dincalcilab/tidyverse:1.0.0-324c29b"
 
     input:
         path(seg_file)
@@ -15,13 +15,13 @@ process CORRECT_LOGR_ICHORCNA {
     output:
         path("*_logR_corrected_gistic.seg"),                            emit: gistic_file
         path("versions.yml"),                                           emit: versions
-        
+
     script:
 
     """
     correct_logR_ichorcna.R \\
         --seg ${seg_file} \\
-        --ploidy ${ploidy_summary} 
+        --ploidy ${ploidy_summary}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
