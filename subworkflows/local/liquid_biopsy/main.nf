@@ -23,6 +23,7 @@ workflow LIQUID_BIOPSY {
     main:
 
         ch_versions = Channel.empty()
+        ch_reports = Channel.empty()
         ch_bam_bai = bam_bai
 
         // If we want to build the normal panel
@@ -67,9 +68,9 @@ workflow LIQUID_BIOPSY {
                 // Step 3: produce an aggregate table of the results
                 AGGREGATE_ICHORCNA_TABLE (
                     RUN_ICHORCNA.out.ichorcna_params.collect())
-                ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
 
-                summary = AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary
+                ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
+                ch_reports = ch_reports.mix(AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
 
                 RUN_ICHORCNA.out.bins.map{meta, data -> data}
                                      .collectFile(storeDir: "${params.outdir}/ichorcna/",
@@ -78,7 +79,7 @@ workflow LIQUID_BIOPSY {
                                                  skip: 1)
                                                  .set{gistic_file}
 
-                CORRECT_LOGR_ICHORCNA(gistic_file, AGGREGATE_ICHORCNA_TABLE.out.ploidy_summary)
+                CORRECT_LOGR_ICHORCNA(gistic_file, AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
                 ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
 
                 corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
@@ -133,7 +134,7 @@ workflow LIQUID_BIOPSY {
                             },)
                 ch_versions = ch_versions.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.versions)
 
-                summary = ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary
+                ch_reports = ch_reports.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary)
 
                 CONVERT_WISECONDORX_IMAGES(
                     WISECONDORX_PREDICT.out.genome_plot.collect{
@@ -153,7 +154,7 @@ workflow LIQUID_BIOPSY {
         normal_panel          = pon_file
         called_segments       = called_segments
         genome_plot           = genome_plot
-        summary               = summary
+        summary               = ch_reports
         corrected_gistic_file = corrected_gistic_file
         signature_file        = signature_file
         versions              = ch_versions

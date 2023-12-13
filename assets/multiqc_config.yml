@@ -8,5 +8,194 @@ report_section_order:
     order: -1001
   "dincalcilab-swgscna-summary":
     order: -1002
+ 
+ 
+custom_data:
 
+  qdnaseq_summary:
+    id: qdnaseq_summary
+    section_name: "QDNAseq"
+    description: 'This table shows a summary table of QDNAseq analysis.'
+    format: 'txt'
+    plot_type: 'table'
+    pconfig:
+      id: qdnaseq_data_summary
+      namespace: "QDNAseq"
+    headers:
+      sample:
+        title: 'Sample ID'
+        placement: 1
+      nr_reads:
+        title: 'Number of Reads'
+        placement: 2
+      expected_var:
+        title: 'Expected Variance'
+        format: '{:,.4f}'
+        placement: 3
+        scale: False
+      expected_sd:
+        title: 'Expected Standard Deviation'
+        format: '{:,.4f}'
+        placement: 4
+        scale: False
+      binsize:
+        title: 'Size of bins'
+        format: '{:,.0f}'
+        placement: 5
+
+  ascatsc_summary:
+    id: ascat_sc_summary
+    section_name: "ASCAT.SC"
+    description: "This table shows purity and ploidy values computed by ASCAT.SC."
+    format: 'txt'
+    plot_type: 'table'
+    pconfig:
+      id: ascat_sc_data_summary
+      namespace: "ASCAT.SC"
+    headers: 
+      samplename:
+        title: 'Sample ID'
+        placement: 1
+      purity:
+        title: 'Purity'
+        format: '{:,.4f}'
+        placement: 2
+        scale: False
+      ploidy:
+        title: 'Ploidy'
+        format: '{:,.4f}'
+        placement: 3
+        scale: False
+
+  ascat_sc_plot_activities:
+    parent_id: cn_singatures
+    parent_name: "CN Signatures"
+    parent_description: "CINSignatureQuantification computes Copy-Number signatures."
+    section_name: "CN Signatures Activities plots"
+    description: "The image is a summary view of CN Signatures Activities from segmentation files, computed by the R Package CINSignatureQuantification."
+
+  wisecondorx_summary:
+    id: wisecondorx_summary
+    section_name: "WisecondorX"
+    description: "This table shows the Copy Number Score (CPA) and Median Segment Variance (MSV) computed by WisecondorX."
+    format: 'txt'
+    plot_type: 'table'
+    pconfig:
+      id: wisecondorx_data_summary
+      namespace: "WisecondorX"
+    headers: 
+      sample:
+        title: 'Sample ID'
+        placement: 1
+      reads:
+        title: 'Number of Reads'
+        placement: 2
+      cpa:
+        title: 'Copy number profile abnormality Score'
+        format: '{:,.4f}'
+        placement: 3
+        scale: False
+      msv:
+        title: 'Median segment variance'
+        format: '{:,.4f}'
+        placement: 4
+        scale: False
+
+  ichorcna_summary:
+    parent_id: IchorCNA
+    parent_name: "IchorCNA"
+    description: "This table shows the tumor fraction and ploidy estimates made by ichorCNA."
+    plot_type: 'table'
+    section_id: ichorcna_data_summary
+    section_name: "ichorCNA Summary"
+    headers:
+      samplename:
+        title: "Sample ID"
+        placement: 1
+      Ploidy:
+        title: 'Ploidy'
+        format: '{:,.0f}'
+        placement: 2
+        scale: False
+      'Tumor Fraction':
+        title: 'Tumor fraction'
+        format: '{:,.4f%}'
+        placement: 3
+        scale: False
+      'GC-Map correction MAD':
+        title: 'MAD'
+        format: '{:,.4f}'
+        scale: false
+        placement: 4
+        max: 0.5
+        cond_formatting_rules:
+          pass:
+            - lt: 0.15
+          warn:
+            - gt: 0.15
+          fail:
+            - gt: 0.25
+  
+  gistic_lesions:
+    parent_id: gistic_analysis
+    parent_name: "Gistic Analysis"
+    description: "This table shows significant lesions identified by GISTIC2 analysis. \n 
+                  Focal lesions are alterations which span less than 25% of a chromosomal arm. \n
+                  Broad lesions span more than 25% of the chromosomal arm, but less than a whole arm"
+    plot_type: 'table'
+    section_name: "GISTIC Results"
+    headers:
+      chromosome:
+        title: 'Chromosome'
+        placement: 1
+      cytoband:
+        title: 'Cytoband'
+        placement: 2
+      start:
+        title: 'Start'
+        placement: 3
+        format: '{:,.0f}'
+        scale: false
+      end:
+        title: 'End'
+        placement: 4
+        format: '{:,.0f}'
+        scale: false
+      length:
+        title: 'Length'
+        placement: 5
+        format: '{:,.0f}'
+        scale: false
+      kind:
+        title: 'CN Kind'
+        placement: 6
+        cond_formatting_rules:
+           pass:
+             - s_eq: 'Amp'
+           warn:
+             - s_eq: 'Neut'
+           fail:
+             - s_eq: 'Del'
+      frequency:
+        title: 'Lesion Frequency'
+        placement: 7
+        format: '{:,.2f}'
+        scale: false
+      counts:
+        title: 'Nr. of Samples'
+        placement: 8
+        format: '{:,.0f}'
+        scale: false
+      lesion_type:
+        title: 'Type of Lesion'
+        placement: 9
+
+  plot_gistic_chrom:
+    parent_id: gistic_analysis
+    parent_name: "Gistic Analysis"
+    section_id: maftools_plots
+    section_name: "MAFTOOLS"
+    description: "Maftools genomic plot with segments highlighting signififcant Amplifications and Deletion regions."
+  
 export_plots: true
+

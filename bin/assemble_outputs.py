@@ -49,7 +49,7 @@ def main():
     else:
         combined_df = combined_df.reset_index()
 
-    combined_df.to_csv("ploidy_summary_mqc.txt", sep="\t", index=False)
+    combined_df.to_csv("ichorcna_summary_mqc.txt", sep="\t", index=False)
     combined_df.to_excel("ichorCNA_summary.xlsx", sheet_name="Summary", index=False)
 
 

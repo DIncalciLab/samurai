@@ -50,16 +50,12 @@ df_activity <- df_activity %>%
 readr::write_tsv(df_activity, file = paste0(args$projectname, "_activity.txt"),
     quote = "needed")
 
-
-message("Starting Platinum Clinical Prediction...")
-clin_pred <- clinPredictionPlatinum(object = cnobj)
-saveRDS(clin_pred, paste0(args$project, "_platinum_prediction.rds"))
-
-create_pdf("%s_plot_by_component.pdf", args$projectname)
+png(filename="ascat_sc_plot_by_component.png")
 plotSampleByComponent(object = cnobj)
 dev.off()
 
-create_pdf("%s_plot_activities.pdf", args$projectname)
+
+png("ascat_plot_activities_mqc.png")
 plotActivities(object = cnobj, type = "threshold")
 dev.off()
 

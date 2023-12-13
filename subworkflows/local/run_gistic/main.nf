@@ -28,7 +28,8 @@ workflow RUN_GISTIC {
         // gistic_genes                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_genes NEED TO FIX THIS
         gistic_log_r                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_log_r
         gistic_cn_states            = ASSEMBLE_GISTIC_OUTPUT.out.gistic_cn_states
-        gistic_lesions_mqc          = ASSEMBLE_GISTIC_OUTPUT.out.gistic_lesions_mqc
+        gistic_lesions              = ASSEMBLE_GISTIC_OUTPUT.out.gistic_lesions
+        chrom_plot                  = MAFTOOLS.out.chrom_plot
         versions                    = ch_versions
 
 }

@@ -6,11 +6,6 @@ suppressPackageStartupMessages({
 }
 )
 
-create_pdf <- function(template, project) {
-    pdf_file <- sprintf(template, project)
-    pdf(paste(pdf_file, sep = "/"), width = 15, height = 10)
-}
-
 parser <- arg_parser("Run Maftools", hide.opts = TRUE)
 
 parser <- add_argument(parser, "--all_lesions",
@@ -33,10 +28,10 @@ gistic_obj <- readGistic(gisticAllLesionsFile = args$all_lesions,
                 gisticDelGenesFile = args$del_genes,
                 gisticScoresFile = args$gistic_scores)
 
-create_pdf("%s_gistic_chrom.pdf", "plot")
+png(filename="plot_gistic_chrom_mqc.png")
 gisticChromPlot(gistic = gistic_obj, markBands = "all")
 dev.off()
 
-create_pdf("%s_gistic_bubble.pdf", "plot")
+png(filename="plot_gistic_bubble.png")
 gisticBubblePlot(gistic = gistic_obj)
 dev.off()

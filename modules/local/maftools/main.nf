@@ -14,8 +14,8 @@ process MAFTOOLS {
 
 
     output:
-        path("*_gistic_chrom.pdf"),               emit: chrom_plot
-        path("*_gistic_bubble.pdf"),              emit: bubble_plot
+        path("plot_gistic_chrom_mqc.png"),        emit: chrom_plot
+        path("plot_gistic_bubble.png"),           emit: bubble_plot
         path("versions.yml"),                     emit: versions
 
     script:

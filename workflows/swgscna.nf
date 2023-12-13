@@ -261,16 +261,18 @@ workflow SWGSCNA {
     }
 
     // Compute CN Signatures if specified, default: false
-    if (params.compute_signatures) {
+    if (params.compute_signatures && params.caller == 'ascat_sc') {
         CIN_SIGNATURE_QUANTIFICATION(LIQUID_BIOPSY.out.signature_file)
         ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
     }
 
     // Run GISTIC if specified, default: false
     if (params.run_gistic) {
         RUN_GISTIC(LIQUID_BIOPSY.out.corrected_gistic_file)
         ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_lesions_mqc.collect())
+        ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_lesions)
+        ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.chrom_plot)
     }
 
     // Software versions
