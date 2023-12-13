@@ -4,7 +4,7 @@ process REARRANGE_ICHORCNA_OUTPUT {
 
     tag "Rearranging IchorCNA Output"
     label "process_single"
-    container "quay.io/dincalcilab/tidyverse:1.0.0-324c29b"
+    container "quay.io/dincalcilab/tidyverse:1.0.0-673997e"
 
     input:
         path(segmentation_file)

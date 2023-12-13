@@ -5,7 +5,7 @@ process CORRECT_LOGR_ICHORCNA {
     tag "Correcting Log2 for GISTIC Analysis"
     label "process_low"
 // TO DO: Create a container in the repository to be pulled
-    container "quay.io/dincalcilab/tidyverse:1.0.0-324c29b"
+    container "quay.io/dincalcilab/tidyverse:1.0.0-673997e"
 
     input:
         path(seg_file)
