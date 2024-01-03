@@ -22,7 +22,7 @@
                     },
                     {
                         "title": "Pipeline configuration",
-                        "value": "<% out << summary.collect{ k,v -> k == "hook_url" ? "_${k}_: (_hidden_)" : ( ( v.class.toString().contains('Path') || ( v.class.toString().contains('String') && v.contains('/') ) ) ? "_${k}_: `${v}`" : (v.class.toString().contains('DateTime') ? ("_${k}_: " + v.format(java.time.format.DateTimeFormatter.ofLocalizedDateTime(java.time.format.FormatStyle.MEDIUM))) : "_${k}_: ${v}") ) }.join(",\n") %>",
+                        "value": "<% out << summary.collect{ k,v -> k == "hook_url" ? "_${k}_: (_hidden_)" : ( ( v.class.toString().contains('Path') || ( v.class.toString().contains('String') && v.contains('/') ) ) ? "_${k}_: `${v}`" : (v.class.toString().contains('DateTime') ? ("_${k}_: " + v.format(java.time.format.DateTimeFormatter.ofLocalizedDateTime(java.time.format.FormatStyle.MEDIUM))) : "_${k}_: ${v}") ) }.join(", ") %>",
                         "short": false
                     }
                     <% }
