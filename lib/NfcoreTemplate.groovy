@@ -172,6 +172,7 @@ class NfcoreTemplate {
     public static void IM_notification(workflow, params, summary_params, projectDir, log) {
         def hook_url = params.hook_url
 
+
         def summary = [:]
         for (group in summary_params.keySet()) {
             summary << summary_params[group]
@@ -210,6 +211,7 @@ class NfcoreTemplate {
         def hf            = new File("$projectDir/assets/${json_path}")
         def json_template = engine.createTemplate(hf).make(msg_fields)
         def json_message  = json_template.toString()
+        log.warn(json_message)
 
         // POST
         def post = new URL(hook_url).openConnection();
