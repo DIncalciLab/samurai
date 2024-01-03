@@ -184,7 +184,8 @@ class NfcoreTemplate {
         misc_fields['scriptid']                             = workflow.scriptId
         if (workflow.repository) misc_fields['repository']  = workflow.repository
         if (workflow.commitId)   misc_fields['commitid']    = workflow.commitId
-        if (workflow.revision)   misc_fields['revision']    = workflow.revision
+        log.warn(workflow.revision)
+        //if (workflow.revision)   misc_fields['revision']    = workflow.revision
         misc_fields['nxf_version']                          = workflow.nextflow.version
         misc_fields['nxf_build']                            = workflow.nextflow.build
         misc_fields['nxf_timestamp']                        = workflow.nextflow.timestamp
