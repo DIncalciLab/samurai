@@ -184,8 +184,7 @@ class NfcoreTemplate {
         misc_fields['scriptid']                             = workflow.scriptId
         if (workflow.repository) misc_fields['repository']  = workflow.repository
         if (workflow.commitId)   misc_fields['commitid']    = workflow.commitId
-        log.warn(workflow.revision)
-        //if (workflow.revision)   misc_fields['revision']    = workflow.revision
+        if (workflow.revision)   misc_fields['revision']    = workflow.revision
         misc_fields['nxf_version']                          = workflow.nextflow.version
         misc_fields['nxf_build']                            = workflow.nextflow.build
         misc_fields['nxf_timestamp']                        = workflow.nextflow.timestamp
@@ -214,6 +213,8 @@ class NfcoreTemplate {
 
         // POST
         def post = new URL(hook_url).openConnection();
+        def myFile = new File('/home/incalci/lbeltrame/hook.json')
+        myFile.write(json_message)
         post.setRequestMethod("POST")
         post.setDoOutput(true)
         post.setRequestProperty("Content-Type", "application/json")
