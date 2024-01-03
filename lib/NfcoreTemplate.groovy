@@ -206,7 +206,7 @@ class NfcoreTemplate {
         def engine       = new groovy.text.GStringTemplateEngine()
         // Different JSON depending on the service provider
         // Defaults to "Adaptive Cards" (https://adaptivecards.io), except Slack which has its own format
-        def json_path     = hook_url.contains("hooks.slack.com") ? "slackreport.json" : "adaptivecard.json"
+        def json_path     = "slackreport.json"
         def hf            = new File("$projectDir/assets/${json_path}")
         def json_template = engine.createTemplate(hf).make(msg_fields)
         def json_message  = json_template.toString()
