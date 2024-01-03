@@ -197,7 +197,7 @@ class NfcoreTemplate {
         msg_fields['duration']     = workflow.duration
         msg_fields['exitStatus']   = workflow.exitStatus
         msg_fields['errorMessage'] = (workflow.errorMessage ?: 'None')
-        msg_fields['errorReport']  = (workflow.errorReport ?: 'None')
+        msg_fields['errorReport']  = (workflow.errorReport ?: 'None').replace(/\n/, "\\n")
         msg_fields['commandLine']  = workflow.commandLine.replaceFirst(/ +--hook_url +[^ ]+/, "")
         msg_fields['projectDir']   = workflow.projectDir
         msg_fields['summary']      = summary << misc_fields
