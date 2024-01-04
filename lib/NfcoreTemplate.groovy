@@ -220,8 +220,6 @@ class NfcoreTemplate {
         def postRC = post.getResponseCode();
         if (! postRC.equals(200)) {
             log.warn(post.getErrorStream().getText());
-            log.warn("REVISION!!!!!")
-            log.warn(workflow.revision)
         }
     }
 
