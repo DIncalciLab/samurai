@@ -213,8 +213,6 @@ class NfcoreTemplate {
 
         // POST
         def post = new URL(hook_url).openConnection();
-        def myFile = new File('/home/incalci/lbeltrame/hook.json')
-        myFile.write(json_message)
         post.setRequestMethod("POST")
         post.setDoOutput(true)
         post.setRequestProperty("Content-Type", "application/json")
