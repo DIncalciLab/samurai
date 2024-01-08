@@ -226,7 +226,6 @@ workflow SWGSCNA {
         ch_bam_bai = INPUT_CHECK.out.reads //TODO: switch to nf-validation
     }
 
-
     // CN Calling
 
     switch(params.analysis_type) {
@@ -255,6 +254,12 @@ workflow SWGSCNA {
             LIQUID_BIOPSY(ch_analysis, params.caller)
             ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
             ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
+            break
+        case "align_only":
+            // Do nothing - we just need the alignment
+            params.compute_signatures = false
+            params.run_gistic = false
+            params.caller = "none"
             break
         default:
             error "Uknown / unsupported analysis ${analysis_type}"

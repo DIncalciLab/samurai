@@ -52,7 +52,8 @@
                     "type": "string",
                     "description": "Name of iGenomes reference.",
                     "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details.",
+                    "default": "hg38"
                 },
                 "fasta": {
                     "type": "string",
@@ -301,7 +302,7 @@
                 },
                 "title": {
                     "type": "string",
-                    "default": "Fragment size distribution after size selection",
+                    "default": "Fragment size distribution",
                     "hidden": true
                 },
                 "max_fragmentsize": {
@@ -354,8 +355,8 @@
                 "analysis_type": {
                     "type": "string",
                     "default": "solid_biopsy",
-                    "enum": ["liquid_biopsy", "solid_biopsy"],
-                    "description": "Workflow to use (solid_biopsy or ctDNA)"
+                    "enum": ["liquid_biopsy", "solid_biopsy", "align_only"],
+                    "description": "Workflow to use (solid_biopsy, liquid_biopsy, align_only)"
                 }
             }
         },
@@ -368,7 +369,8 @@
                 "qdnaseq_bin_data": {
                     "type": "string",
                     "format": "file-path",
-                    "mimetype": "application/octet-stream"
+                    "mimetype": "application/octet-stream",
+                    "description": "Optional parameter to a RDS file containing bin annotations"
                 }
             }
         },
@@ -590,8 +592,8 @@
                 }
             }
         },
-        "new_group_1": {
-            "title": "New Group 1",
+        "gistic_specific_options": {
+            "title": "GISTIC specific options",
             "type": "object",
             "description": "",
             "default": "",
@@ -664,7 +666,7 @@
             "$ref": "#/definitions/ascat_sc_options"
         },
         {
-            "$ref": "#/definitions/new_group_1"
+            "$ref": "#/definitions/gistic_specific_options"
         }
     ],
     "properties": {
@@ -679,7 +681,7 @@
             "type": "boolean"
         },
         "compute_signatures": {
-            "type": "string"
+            "type": "boolean"
         }
     }
 }
