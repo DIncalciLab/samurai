@@ -35,6 +35,21 @@
                     }
                 ]
             },
+            "bam": {
+                "errorMessage": "BAM file cannot contain spaces and must have extension '.bam'",
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "pattern": "^\\S+\\.bam$",
+                        "format": "file-path",
+                        "exists": true
+                    },
+                    {
+                        "type": "string",
+                        "maxLength": 0
+                    }
+                ]
+            },
             "gender": {
                 "errorMessage": "Gender must be either female or male",
                 "anyOf": [
