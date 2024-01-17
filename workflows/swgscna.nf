@@ -56,6 +56,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 
+include { CIN_SIGNATURE_QUANTIFICATION  } from '../modules/local/cin_signature_quantification/main'
 include { INPUT_CHECK                   } from '../subworkflows/local/input_check'
 include { PREPARE_GENOME                } from '../subworkflows/local/prepare_genome/main'
 include { SOLID_BIOPSY                  } from '../subworkflows/local/solid_biopsy/main'
@@ -63,10 +64,6 @@ include { SIZE_SELECTION                } from '../subworkflows/local/size_selec
 include { LIQUID_BIOPSY                 } from '../subworkflows/local/liquid_biopsy/main'
 include { RUN_GISTIC                    } from '../subworkflows/local/run_gistic/main'
 
-include { FASTA_INDEX_DNA               } from '../subworkflows/nf-core/fasta_index_dna/main'
-include { FASTQ_ALIGN_DNA               } from '../subworkflows/nf-core/fastq_align_dna/main'
-include { BAM_MARKDUPLICATES_PICARD     } from '../subworkflows/nf-core/bam_markduplicates_picard/main'
-include { BAM_QC_PICARD                 } from '../subworkflows/nf-core/bam_qc_picard/main'
 
 
 /*
@@ -79,16 +76,18 @@ include { BAM_QC_PICARD                 } from '../subworkflows/nf-core/bam_qc_p
 // MODULE: Installed directly from nf-core/modules
 //
 
-include { CIN_SIGNATURE_QUANTIFICATION  } from '../modules/local/cin_signature_quantification/main'
-
 include { FASTQC                        } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
-
 include { CUSTOM_DUMPSOFTWAREVERSIONS   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 //
 // SUBWORKFLOWS nf-core
 //
+include { FASTQ_TRIM_FASTP_FASTQC       } from '../subworkflows/nf-core/fastq_trim_fastp_fastqc/main'
+include { FASTA_INDEX_DNA               } from '../subworkflows/nf-core/fasta_index_dna/main'
+include { FASTQ_ALIGN_DNA               } from '../subworkflows/nf-core/fastq_align_dna/main'
+include { BAM_MARKDUPLICATES_PICARD     } from '../subworkflows/nf-core/bam_markduplicates_picard/main'
+include { BAM_QC_PICARD                 } from '../subworkflows/nf-core/bam_qc_picard/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,10 +133,25 @@ workflow SWGSCNA {
     }
 
     if (params.aligner) {
-        FASTQC ( ch_input )
-        ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+        skip_fastp = params.run_fastp ? false: true
+
+        FASTQ_TRIM_FASTP_FASTQC(ch_input, [] /* adapters */, false /* save_trimmed_fail */,
+                                false /* save_merged */, false /* skip fastqc, */,
+                                skip_fastp /* skip fastp */)
+
+        ch_versions = ch_versions.mix(versions.first())
+        ch_multiqc_files = ch_multiqc_files.mix(
+            FASTQ_TRIM_FASTP_FASTQC.out.ch_fastqc_raw_zip.collect{it[1]}.ifEmpty([])
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(
+            FASTQ_TRIM_FASTP_FASTQC.out.trim_json.collect{it[1]}.ifEmpty([])
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(
+            FASTQ_TRIM_FASTP_FASTQC.out.ch_fastqc_trim_zip.collect{it[1]}.ifEmpty([])
+        )
+
+        ch_fasta = FASTQ_TRIM_FASTP_FASTQC.out.reads
 
         // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
