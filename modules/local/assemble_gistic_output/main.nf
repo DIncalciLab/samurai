@@ -4,8 +4,7 @@ process ASSEMBLE_GISTIC_OUTPUT {
 
     tag "Rearrange GISTIC2 output"
     label "process_single"
-    //TO DO: Create container in quay.io
-    container "/home/sarap/cache_singularity/rearrange_gistic_out.img"
+    container "quay.io/dincalcilab/gistic-cli:0.4.1-3e0259a"
 
     input:
         path gistic_file
@@ -18,7 +17,7 @@ process ASSEMBLE_GISTIC_OUTPUT {
         path("versions.yml"),                   emit: versions
 
     script:
-    
+
     """
     assemble_gistic_output.py -gistic_file ${gistic_file}
 
