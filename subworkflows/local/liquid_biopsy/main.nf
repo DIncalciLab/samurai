@@ -144,6 +144,7 @@ workflow LIQUID_BIOPSY {
                 genome_plot = CONVERT_WISECONDORX_IMAGES.out.genome_plot
                 // For compatibility with workflow output
                 corrected_gistic_file = gistic_file
+                signature_file = gistic_file
                 break
             default:
                 error "Uknown / unsupported analysis type ${caller}"
