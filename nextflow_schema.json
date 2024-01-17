@@ -547,6 +547,11 @@
                 "wisecondorx_ylim": {
                     "type": "string",
                     "description": "Y axis limits for the generated plots"
+                },
+                "wisecondor_blacklist": {
+                    "type": "string",
+                    "description": "Path to a blacklist of genomic regions to be filtered",
+                    "format": "file-path"
                 }
             }
         },

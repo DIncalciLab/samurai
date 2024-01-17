@@ -102,7 +102,7 @@ workflow LIQUID_BIOPSY {
                 break
 
             case "wisecondorx":
-                blacklist = params.blacklist ? file(params.blacklist, checkIfExists: true): []
+                blacklist = params.wisecondor_blacklist ? file(params.wisecondor_blacklist, checkIfExists: true): []
 
                 WISECONDORX_CONVERT(ch_bam_bai)
                 ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions)
