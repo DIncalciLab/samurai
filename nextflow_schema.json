@@ -628,6 +628,55 @@
                     "description": "GISTIC confidence level for calling recurrent altered regions."
                 }
             }
+        },
+        "fastq_trimming_specific_options": {
+            "title": "FASTQ Trimming specific options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_fastp": {
+                    "type": "boolean",
+                    "description": "Run fasp for quality and UMI trimming"
+                },
+                "fastp_min_read_length": {
+                    "type": "integer",
+                    "description": "Minimum length for a read to be kept after trimming"
+                },
+                "fastp_cut_window_size": {
+                    "type": "integer",
+                    "description": "Size of the sliding window used for quality trimming",
+                    "default": 4
+                },
+                "fastp_min_quality": {
+                    "type": "integer",
+                    "description": "Minimum Phred score to keep a base"
+                },
+                "fastp_umi_loc": {
+                    "type": "string",
+                    "enum": ["read1", "read2", "per_read"]
+                },
+                "fastp_umi_skip": {
+                    "type": "integer",
+                    "description": "How many bases to skip after a UMI"
+                },
+                "fastp_umi_length": {
+                    "type": "integer",
+                    "description": "Length of the UMI to trim"
+                },
+                "fastp_max_trimmed_pct": {
+                    "type": "number",
+                    "description": "Maximum percentage of trimmed bases before discarding a read"
+                },
+                "fastp_trim_poly_x": {
+                    "type": "boolean",
+                    "description": "Trim poly-X stretches in a read"
+                },
+                "fastp_trim_poly_g": {
+                    "type": "boolean",
+                    "description": "Trim poly-G stretches in a read (NextSeq sequencing artifacts)"
+                }
+            }
         }
     },
     "allOf": [
@@ -672,6 +721,9 @@
         },
         {
             "$ref": "#/definitions/gistic_specific_options"
+        },
+        {
+            "$ref": "#/definitions/fastq_trimming_specific_options"
         }
     ],
     "properties": {
