@@ -104,7 +104,6 @@ workflow LIQUID_BIOPSY {
             case "wisecondorx":
                 blacklist = params.blacklist ? file(params.blacklist, checkIfExists: true): []
 
-
                 WISECONDORX_CONVERT(ch_bam_bai)
                 ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions)
                 ch_npz = WISECONDORX_CONVERT.out.npz
@@ -133,7 +132,6 @@ workflow LIQUID_BIOPSY {
                                 meta, result -> result
                             },)
                 ch_versions = ch_versions.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.versions)
-
                 ch_reports = ch_reports.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary)
 
                 CONVERT_WISECONDORX_IMAGES(
@@ -144,6 +142,8 @@ workflow LIQUID_BIOPSY {
                 ch_versions = ch_versions.mix(CONVERT_WISECONDORX_IMAGES.out.versions)
 
                 genome_plot = CONVERT_WISECONDORX_IMAGES.out.genome_plot
+                // For compatibility with workflow output
+                corrected_gistic_file = gistic_file
                 break
             default:
                 error "Uknown / unsupported analysis type ${caller}"
