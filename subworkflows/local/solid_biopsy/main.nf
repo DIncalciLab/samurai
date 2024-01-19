@@ -5,6 +5,7 @@ include { CONCATENATE_PDF as CONCATENATE_QDNASEQ_PLOTS } from '../../../modules/
 include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS } from '../../../modules/local/concatenate_pdf/main'
 include { CREATE_QDNASEQ_SUMMARY                       } from '../../../modules/local/create_qdnaseq_summary/main'
 include { CREATE_ASCATSC_SUMMARY                       } from '../../../modules/local/create_ascatsc_summary/main'
+include { CIN_SIGNATURE_QUANTIFICATION                 } from '../../../modules/local/cin_signature_quantification/main'
 
 // Workfow
 
@@ -73,6 +74,11 @@ workflow SOLID_BIOPSY {
                                     keepHeader: true,
                                     skip: 1)
                             .set{signature_file}
+
+                if (params.compute_signatures) {
+                        CIN_SIGNATURE_QUANTIFICATION(signature_file)
+                        ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
+                }
 
                 //CREATE_ASCATSC_SUMMARY(ascatsc_summary)
                 ch_reports = ch_reports.mix(ascatsc_summary)
