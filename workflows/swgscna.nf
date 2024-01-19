@@ -134,21 +134,20 @@ workflow SWGSCNA {
 
     if (params.aligner) {
 
-        skip_fastp = params.run_fastp ? false: true
+        skip_fastp = params.run_fastp ? false : true
 
         FASTQ_TRIM_FASTP_FASTQC(ch_input, [] /* adapters */, false /* save_trimmed_fail */,
-                                false /* save_merged */, false /* skip fastqc, */,
-                                skip_fastp /* skip fastp */)
+                                false /* save_merged */, skip_fastp /* skip_fastp */, false /* skip_fastqc */)
 
-        ch_versions = ch_versions.mix(versions.first())
+        ch_versions = ch_versions.mix(FASTQ_TRIM_FASTP_FASTQC.out.versions.first())
         ch_multiqc_files = ch_multiqc_files.mix(
-            FASTQ_TRIM_FASTP_FASTQC.out.ch_fastqc_raw_zip.collect{it[1]}.ifEmpty([])
+            FASTQ_TRIM_FASTP_FASTQC.out.fastqc_raw_zip.collect{it[1]}.ifEmpty([])
         )
         ch_multiqc_files = ch_multiqc_files.mix(
             FASTQ_TRIM_FASTP_FASTQC.out.trim_json.collect{it[1]}.ifEmpty([])
         )
         ch_multiqc_files = ch_multiqc_files.mix(
-            FASTQ_TRIM_FASTP_FASTQC.out.ch_fastqc_trim_zip.collect{it[1]}.ifEmpty([])
+            FASTQ_TRIM_FASTP_FASTQC.out.fastqc_trim_zip.collect{it[1]}.ifEmpty([])
         )
 
         ch_fasta = FASTQ_TRIM_FASTP_FASTQC.out.reads
@@ -279,12 +278,12 @@ workflow SWGSCNA {
             error "Uknown / unsupported analysis ${analysis_type}"
     }
 
-    // Compute CN Signatures if specified, default: false
-    if (params.compute_signatures && params.caller == 'ascat_sc') {
-        CIN_SIGNATURE_QUANTIFICATION(LIQUID_BIOPSY.out.signature_file)
-        ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
-    }
+    // Compute CN Signatures if specified, default: false --> Tried to include into solid_biopsy wf
+    // if (params.compute_signatures && params.caller == 'ascat_sc') {
+    //     CIN_SIGNATURE_QUANTIFICATION(SOLID_BIOPSY.out.signature_file)
+    //     ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
+    //     ch_multiqc_files = ch_multiqc_files.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
+    // }
 
     // Run GISTIC if specified, default: false
     if (params.run_gistic) {
