@@ -636,7 +636,7 @@
             "properties": {
                 "run_fastp": {
                     "type": "boolean",
-                    "description": "Run fasp for quality and UMI trimming"
+                    "description": "Run fastp for quality and UMI trimming"
                 },
                 "fastp_min_read_length": {
                     "type": "integer",
