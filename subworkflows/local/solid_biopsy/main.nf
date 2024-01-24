@@ -1,11 +1,12 @@
 // Import modules
-include { QDNASEQ                                      } from '../../../modules/local/qdnaseq/main'
-include { ASCAT_SC                                     } from '../../../modules/local/ascat_sc/main'
-include { CONCATENATE_PDF as CONCATENATE_QDNASEQ_PLOTS } from '../../../modules/local/concatenate_pdf/main'
-include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS } from '../../../modules/local/concatenate_pdf/main'
-include { CREATE_QDNASEQ_SUMMARY                       } from '../../../modules/local/create_qdnaseq_summary/main'
-include { CREATE_ASCATSC_SUMMARY                       } from '../../../modules/local/create_ascatsc_summary/main'
-include { CIN_SIGNATURE_QUANTIFICATION                 } from '../../../modules/local/cin_signature_quantification/main'
+include { QDNASEQ                                               } from '../../../modules/local/qdnaseq/main'
+include { ASCAT_SC                                              } from '../../../modules/local/ascat_sc/main'
+include { CONCATENATE_PDF as CONCATENATE_QDNASEQ_PLOTS          } from '../../../modules/local/concatenate_pdf/main'
+include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS          } from '../../../modules/local/concatenate_pdf/main'
+include { CONCATENATE_PDF as CONCATENATE_ASCATSC_REFITTED_PLOTS } from '../../../modules/local/concatenate_pdf/main'
+include { CREATE_QDNASEQ_SUMMARY                                } from '../../../modules/local/create_qdnaseq_summary/main'
+include { CREATE_ASCATSC_SUMMARY                                } from '../../../modules/local/create_ascatsc_summary/main'
+include { CIN_SIGNATURE_QUANTIFICATION                          } from '../../../modules/local/cin_signature_quantification/main'
 
 // Workfow
 
@@ -50,9 +51,15 @@ workflow SOLID_BIOPSY {
                 ASCAT_SC(ch_bam_bai, binsize, genome)
                 ch_versions = ch_versions.mix(ASCAT_SC.out.versions)
 
-                CONCATENATE_ASCATSC_PLOTS(ASCAT_SC.out.profiles_plot.collect())
-                ch_versions = ch_versions.mix(CONCATENATE_ASCATSC_PLOTS.out.versions)
-                all_seg_plot = CONCATENATE_ASCATSC_PLOTS.out.genome_plot
+                if (params.ascat_sc_predict_refit) {
+                    CONCATENATE_ASCATSC_REFITTED_PLOTS(ASCAT_SC.out.profiles_refitted.collect())
+                    ch_versions = ch_versions.mix(CONCATENATE_ASCATSC_REFITTED_PLOTS.out.versions)
+                    all_seg_plot = CONCATENATE_ASCATSC_REFITTED_PLOTS.out.genome_plot
+
+                } else {
+                    CONCATENATE_ASCATSC_PLOTS(ASCAT_SC.out.profiles_plot.collect())
+                    ch_versions = ch_versions.mix(CONCATENATE_ASCATSC_PLOTS.out.versions)
+                    all_seg_plot = CONCATENATE_ASCATSC_PLOTS.out.genome_plot}
 
                 ASCAT_SC.out.segments
                             .collectFile(storeDir: "${params.outdir}/ascat_sc/",
@@ -83,12 +90,12 @@ workflow SOLID_BIOPSY {
                 //CREATE_ASCATSC_SUMMARY(ascatsc_summary)
                 ch_reports = ch_reports.mix(ascatsc_summary)
 
-                ASCAT_SC.out.gistic_file
-                            .collectFile(storeDir: "${params.outdir}/ascat_sc/",
-                                    name: 'all_segments_ascat_sc_gistic.seg',
-                                    keepHeader: true,
-                                    skip: 1)
-                            .set{gistic_file}
+                //ASCAT_SC.out.gistic_file
+                //            .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                //                    name: 'all_segments_ascat_sc_gistic.seg',
+                //                    keepHeader: true,
+                //                    skip: 1)
+                //            .set{gistic_file}
                 break
             default:
                 error "Unknown CNV caller ${caller}"

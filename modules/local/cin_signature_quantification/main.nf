@@ -15,7 +15,6 @@ process CIN_SIGNATURE_QUANTIFICATION {
         path("*_plot_by_component.png"),          emit: signatures_heatmap
         path("*_plot_activities_mqc.png"),        emit: sig_activity_plot
         path("*_signatures.rds"),                 emit: signature_rds
-        path("*_platinum_prediction.rds"),        emit: platinum_prediction
         path("*_activity.txt"),                   emit: sig_activity_file
         path("versions.yml"),                     emit: versions
 
