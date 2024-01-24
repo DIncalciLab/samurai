@@ -150,7 +150,7 @@ workflow SWGSCNA {
             FASTQ_TRIM_FASTP_FASTQC.out.fastqc_trim_zip.collect{it[1]}.ifEmpty([])
         )
 
-        ch_fasta = FASTQ_TRIM_FASTP_FASTQC.out.reads
+        ch_input = FASTQ_TRIM_FASTP_FASTQC.out.reads
 
         // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
