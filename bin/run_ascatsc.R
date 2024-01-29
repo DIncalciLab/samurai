@@ -106,18 +106,18 @@ res <- run_sc_sequencing(
     outdir = args$outdir
 )
 
+message("Creation of final segmentation dataframe...")
 # create segmentation dataframe
 df_final <- as.data.frame(ifelse(args$predict_refit,
         res[["allProfiles.refitted.auto"]],
         res[["allProfiles"]])) %>%
-    mutate(sample = res$summary$allSols$samplename)
+    mutate(samplename = res$summary$allSols$samplename)
 
-df_summary <- as.data.frame(ifelse(args$predict_refit,
-        res$summary$allSols.refitted,
-        res$summary$allSols))
+message("Creation of summary df with purity and ploidy")
+df_summary <- as.data.frame(res$summary$allSols) #purity and ploidy are the same in refitted and non-refitted
 
 #save output files
-
+message("Saving output into rds...")
 saveRDS(res, paste0(args$project, "_ASCAT.rds"))
 
 readr::write_tsv(df_summary, file = paste0(args$project, "_summary.txt"),
@@ -125,9 +125,11 @@ readr::write_tsv(df_summary, file = paste0(args$project, "_summary.txt"),
 readr::write_tsv(df_final, file = paste0(args$project, "_segments.seg"),
     quote = "needed")
 #Create df for Signature Extraction
+message("Creating dataframe for signature extraction...")
 df_sig <- df_final %>%
-    dplyr::select(chromosome, start, end, total_copy_number_logr, sample) %>%
-    dplyr::rename(segVal = total_copy_number_logr) %>%
+    dplyr::select(chromosome, start, end, total_copy_number_logr, samplename) %>%
+    dplyr::rename(segVal = total_copy_number_logr,
+                  sample = samplename) %>%
     na.omit()
 
 readr::write_tsv(df_sig, file = paste0(args$project, "_df_signatures.seg"),
@@ -139,14 +141,16 @@ readr::write_tsv(df_sig, file = paste0(args$project, "_df_signatures.seg"),
 #Solution in:
 #https://github.com/maitnnguyen/Oseq_CNV_Paper/blob/main/src/pipeline/step4_CNVcall.R # nolint
 
-df_final$sample <- df_summary$samplename
-R <- 2^(df_final$logr) # nolint
-df_final$adj.seg <- (df_summary$purity * df_summary$ploidy * R + 2 * (1 - df_summary$purity) * (R - 1)) / # nolint
-    (df_summary$purity * df_summary$ploidy)
-df_final$sample <- df_summary$samplename
+message("Creating df for GISTIC Analysis...")
+message("Setting logR column to numeric value")
+df_final$logr <-as.numeric(df_final$logr)
+message("Computing R value...")
+R <- 2^(df_final$logr)
+message("Adding column with adjusted logR values...")
+df_final$adj.seg <- (df_summary$purity * df_summary$ploidy * R + 2 * (1 - df_summary$purity) * (R - 1)) / (df_summary$purity * df_summary$ploidy)
+message("Creating final GISTIC df...")
 df_gistic <- df_final %>%
     dplyr::select(samplename, chromosome, start, end, num.mark, adj.seg) %>%
-    dplyr::rename(sample = samplename) %>%
     na.omit()
 readr::write_tsv(df_gistic, file = paste0(args$projectname, "_gistic.seg"),
     quote = "needed")
