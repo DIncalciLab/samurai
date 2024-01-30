@@ -122,7 +122,6 @@ workflow SWGSCNA {
     ch_liftover = Channel.value(
         [["id": "liftover"], []]
     )
-    //FIXME: Differentiate between BAM / FASTQ
     ch_input = Channel.fromSamplesheet("input").map {
         meta, fastq1, fastq2, bam ->
             if(fastq2) {
