@@ -1,8 +1,6 @@
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-
-**dincalcilab/swgscna** is a bioinformatics best-practice analysis pipeline for .
+**dincalcilab/swgscna** is a bioinformatics best-practice analysis pipeline for the analysis of shallow whole genome sequencing (sWGS) data for the identification of copy number alterations (CNAs). It supports a number of workflows depending on the nature of the samples (coming from tissues or other biological fluids like plasma). While it was developed with cancer studies in mind, it is applicable to any field where DNA alterations need to be studied.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -12,14 +10,20 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+2. (Optional) Trim reaads based on quality scores and extract unique molecular identifiers (UMIs) if applicable ([`fastp`]())
+3. Align reads to the reference genome ([`BWA`]())
+4. Run quality control checks on the aligned reads ([`Picard`]())
+5. Perform copy number alteration identification for tissue samples([`QDNAseq`](), [`ASCAT.sc`]())
+6. (Optional) Perform size selection on samples from liquid biopsies([`sambamba`]())
+7. Perform copy number alteration identification for liquid biopsy samples([`ichorCNA`](), [`WisecondorX`]())
+8. (Optional) Extract copy number instability signatures ([`CINSignatureQuantification`]())
+9. (Optional) Identify recurrent altered regions in the sample population ([`GISTIC`]())
+10. Present QC for each sep of the pipeline ([`MultiQC`](http://multiqc.info/))
 
 ## Quick Start
 
-1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=22.10.1`)
+1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=23.10.1`)
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
 
