@@ -42,7 +42,7 @@ message("Saving RDS dataset...")
 saveRDS(cnobj, paste0(args$project, "_signatures.rds"))
 
 # Extract df with norm. expr. of signatures
-df_activity <- as.data.frame(cnobj@activities[["thresholdAct2"]])
+df_activity <- as.data.frame(getActivities(cnobj, type = "threshold"))
 df_activity <- df_activity %>%
     mutate(sample = rownames(df_activity)) %>%
     relocate((sample))
