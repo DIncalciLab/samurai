@@ -396,6 +396,11 @@
                 "build_pon": {
                     "type": "boolean",
                     "description": "Whether to build a panel of normals or not"
+                },
+                "selection_maxsize": {
+                    "type": "integer",
+                    "default": 150,
+                    "description": "Maximum insert size in bp to be included for size selection"
                 }
             }
         },
