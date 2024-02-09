@@ -1,6 +1,16 @@
+# SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline
+
+<quote>
+戦の勝負は、将と士卒の気によるのみなり。
+
+(The outcome of the battle depends on the spirit of the commander and the men.)
+
+Minamoto no Yoshitsune (1159-1189)
+</quote>
+
 ## Introduction
 
-**dincalcilab/swgscna** is a bioinformatics best-practice analysis pipeline for the analysis of shallow whole genome sequencing (sWGS) data for the identification of copy number alterations (CNAs). It supports a number of workflows depending on the nature of the samples (coming from tissues or other biological fluids like plasma). While it was developed with cancer studies in mind, it is applicable to any field where DNA alterations need to be studied.
+**SAMURAI** is a bioinformatics best-practice analysis pipeline for the analysis of shallow whole genome sequencing (sWGS) data for the identification of copy number alterations (CNAs). It supports a number of workflows depending on the nature of the samples (coming from tissues or other biological fluids like plasma). While it was developed with cancer studies in mind, it is applicable to any field where DNA alterations need to be studied.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
