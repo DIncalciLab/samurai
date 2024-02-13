@@ -21,21 +21,25 @@ workflow BUILD_PON {
                             fmeta.id = meta
                             tuple(fmeta, file[0], file[1])
                         }
-        if (params.filter_bam_pon) {
-                SAMBAMBA_FILTER(ch_bam_files)
-                ch_bam_for_pon = SAMBAMBA_FILTER.out.filtered_bam
-            } else {
-                // Remove the BAM index for compatibility with the ReadCounter workflow
-                ch_bam_for_pon = ch_bam_files
-        }
 
         switch(caller) {
             case "ichorcna":
+
+                 // FIXME: We shouldn't depend on parameters here
+                if (params.filter_bam_pon) {
+                    SAMBAMBA_FILTER(ch_bam_files)
+                    ch_bam_for_pon = SAMBAMBA_FILTER.out.filtered_bam
+                } else {
+                // Remove the BAM index for compatibility with the ReadCounter workflow
+                ch_bam_for_pon = ch_bam_files
+                }
+
                 HMMCOPY_READCOUNTER_PON(ch_bam_for_pon)
                 wigfiles = HMMCOPY_READCOUNTER_PON.out.wig.map {
                     it ->
                     it[1]
                 }
+
                 gc_wig              = Channel.value(params.ichorcna_gc_wig)
                 map_wig             = Channel.value(params.ichorcna_map_wig)
                 reptime_file        = Channel.value(params.ichorcna_reptime_wig)
