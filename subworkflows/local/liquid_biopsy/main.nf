@@ -40,10 +40,10 @@ workflow LIQUID_BIOPSY {
         switch(caller) {
             case "ichorcna":
 
-                gc_wig              = Channel.value(params.gc_wig)
-                map_wig             = Channel.value(params.map_wig)
-                centromere          = Channel.value(params.centromere)
-                reptime_file        = Channel.value(params.reptime_file)
+                gc_wig              = Channel.value(params.ichorcna_gc_wig)
+                map_wig             = Channel.value(params.ichorcna_map_wig)
+                centromere          = Channel.value(params.ichorcna_centromere_file)
+                reptime_file        = Channel.value(params.ichorcna_reptime_wig)
 
                 // Step 1: Generate coverage wig files
                 // To generate Wig Files

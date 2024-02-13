@@ -55,7 +55,7 @@
                 "anyOf": [
                     {
                         "type": "string",
-                        "enum": ["male", "female"]
+                        "enum": ["male", "female", "M", "F"]
                     },
                     {
                         "type": "string",

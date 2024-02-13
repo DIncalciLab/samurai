@@ -10,6 +10,7 @@ report_section_order:
     order: -1002
 
 title: "SAMURAI Results"
+subtitle: "SAMURAI's analysis results of Copy Number Alterations from shallow whole genome sequencing."
 
 extra_fn_clean_exts:
   - type: remove
@@ -21,6 +22,7 @@ custom_logo_title: "SAMURAI"
 top_modules:
 - "fastqc"
 - "picard"
+- "samtools"
 - "custom_data"
 
 custom_data:

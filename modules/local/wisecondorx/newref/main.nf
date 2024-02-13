@@ -3,7 +3,7 @@ def VERSION = "1.2.4"
 process WISECONDORX_NEWREF {
 
     tag "reference"
-    label "process_high_core_low_mem"
+    label "process_high"
     container "quay.io/biocontainers/wisecondorx:1.2.5--pyh5e36f6f_0"
 
     input:
