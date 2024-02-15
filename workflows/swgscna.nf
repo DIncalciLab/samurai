@@ -241,12 +241,11 @@ workflow SWGSCNA {
                 meta, metrics -> metrics
             }
         )
-
     } else {
+        // Just index the files and we're good to go
         SAMTOOLS_INDEX(ch_input)
         ch_bam_bai = ch_input
-            .join(
-                SAMTOOLS_INDEX.out.bai, by: [0], remainder: true)
+            .join(SAMTOOLS_INDEX.out.bai, by: [0], remainder: true)
             .join(SAMTOOLS_INDEX.out.csi, by: [0], remainder: true)
             .map{meta, bam, bai, csi ->
                 if (bai) [ meta, bam, bai ]
