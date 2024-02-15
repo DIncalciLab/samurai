@@ -238,7 +238,7 @@ workflow SWGSCNA {
         )
 
     } else {
-        // FIXME: This doesn't check we have bam files!
+        // FIXME: This doesn't check if we have bam files!
         SAMTOOLS_INDEX(ch_input)
         ch_bam_bai = ch_input
             .join(
