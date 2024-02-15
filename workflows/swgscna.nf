@@ -79,6 +79,7 @@ include { RUN_GISTIC                    } from '../subworkflows/local/run_gistic
 include { FASTQC                        } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { SAMTOOLS_INDEX                } from '../modules/nf-core/samtools/index/main'
 
 //
 // SUBWORKFLOWS nf-core
@@ -237,7 +238,17 @@ workflow SWGSCNA {
         )
 
     } else {
-        ch_bam_bai = INPUT_CHECK.out.reads //TODO: switch to nf-validation
+        // FIXME: This doesn't check we have bam files!
+        SAMTOOLS_INDEX(ch_input)
+        ch_bam_bai = ch_input
+            .join(
+                SAMTOOLS_INDEX.out.bai, by: [0], remainder: true)
+            .join(SAMTOOLS_INDEX.out.csi, by: [0], remainder: true)
+            .map{meta, bam, bai, csi ->
+                if (bai) [ meta, bam, bai ]
+                else [ meta, bam, csi ]
+        }
+
     }
 
     // CN Calling
