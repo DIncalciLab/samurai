@@ -5,75 +5,66 @@
     "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {
-        "oneOf": [
-            {
-                "type": "object",
-                "properties": {
-                    "sample": {
-                        "type": "string",
-                        "pattern": "^\\S+$",
-                        "errorMessage": "Sample name must be provided and cannot contain spaces",
-                        "meta": ["id"]
-                    },
-                    "fastq_1": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["id"]
+            },
+            "fastq_1": {
+                "type": "string",
+                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+                "format": "file-path",
+                "exists": true
+            },
+            "fastq_2": {
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+                "anyOf": [
+                    {
                         "type": "string",
                         "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                        "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
                         "format": "file-path",
                         "exists": true
                     },
-                    "gender": {
-                        "errorMessage": "Gender must be either female or male",
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "enum": ["male", "female", "M", "F"]
-                            },
-                            {
-                                "type": "string",
-                                "maxLength": 0
-                            }
-                        ],
-                        "meta": ["gender"]
-                    }
-                },
-                "required": ["sample", "fastq_1"],
-                "additionalProperties": false
-            },
-            {
-                "type": "object",
-                "properties": {
-                    "sample": {
+                    {
                         "type": "string",
-                        "pattern": "^\\S+$",
-                        "errorMessage": "Sample name must be provided and cannot contain spaces",
-                        "meta": ["id"]
-                    },
-                    "bam": {
+                        "maxLength": 0
+                    }
+                ]
+            },
+            "bam": {
+                "errorMessage": "BAM file cannot contain spaces and must have extension '.bam'",
+                "anyOf": [
+                    {
                         "type": "string",
                         "pattern": "^\\S+\\.bam$",
-                        "errorMessage": "BAM file cannot contain spaces and must have extension '.bam'",
                         "format": "file-path",
                         "exists": true
                     },
-                    "gender": {
-                        "errorMessage": "Gender must be either female or male",
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "enum": ["male", "female", "M", "F"]
-                            },
-                            {
-                                "type": "string",
-                                "maxLength": 0
-                            }
-                        ],
-                        "meta": ["gender"]
+                    {
+                        "type": "string",
+                        "maxLength": 0
                     }
-                },
-                "required": ["sample", "bam"],
-                "additionalProperties": false
+                ]
+            },
+            "gender": {
+                "errorMessage": "Gender must be either female or male",
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "enum": ["male", "female", "M", "F"]
+                    },
+                    {
+                        "type": "string",
+                        "maxLength": 0
+                    }
+                ],
+                "meta": ["gender"]
             }
-        ]
+        },
+        "anyOf": [{ "required": ["sample", "fastq_1"] }, { "required": ["sample", "bam"] }]
     }
 }
