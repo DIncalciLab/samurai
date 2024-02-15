@@ -123,8 +123,14 @@ workflow SWGSCNA {
     ch_liftover = Channel.value(
         [["id": "liftover"], []]
     )
+
+    // The schema *does not* check if we have both fastq and bam
+
     ch_input = Channel.fromSamplesheet("input").map {
         meta, fastq1, fastq2, bam ->
+            if (fastq1 && bam) {
+                error "Specify either FASTQ files or BAM"
+            }
             if(fastq2) {
                 [meta, [fastq1, fastq2]]
             } else if (fastq1) {
@@ -238,7 +244,6 @@ workflow SWGSCNA {
         )
 
     } else {
-        // FIXME: This doesn't check if we have bam files!
         SAMTOOLS_INDEX(ch_input)
         ch_bam_bai = ch_input
             .join(
