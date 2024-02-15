@@ -65,6 +65,6 @@
                 "meta": ["gender"]
             }
         },
-        "oneOf": [{ "required": ["sample", "fastq_1"] }, { "required": ["sample", "bam"] }]
+        "anyOf": [{ "required": ["sample", "fastq_1"] }, { "required": ["sample", "bam"] }]
     }
 }
