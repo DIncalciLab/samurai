@@ -124,12 +124,11 @@ workflow SWGSCNA {
         [["id": "liftover"], []]
     )
 
-    // The schema *does not* check if we have both fastq and bam
-
     ch_input = Channel.fromSamplesheet("input").map {
         meta, fastq1, fastq2, bam ->
+            // Poor man's check to make sure a BAM and a FASTQ aren't put together
             if (fastq1 && bam) {
-                error "Specify either FASTQ files or BAM"
+                error "Input validation error: specify either FASTQ files or BAM"
             }
             if(fastq2) {
                 [meta, [fastq1, fastq2]]
