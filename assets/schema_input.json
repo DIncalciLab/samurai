@@ -64,15 +64,15 @@
                 ],
                 "meta": ["gender"]
             }
+        }
+    },
+    "required": ["sample"],
+    "oneOf": [
+        {
+            "required": ["fastq_1"]
         },
-        "required": ["sample"],
-        "oneOf": [
-            {
-                "required": ["fastq_1"]
-            },
-            {
-                "required": ["bam"]
-            }
-        ]
-    }
+        {
+            "required": ["bam"]
+        }
+    ]
 }
