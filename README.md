@@ -1,9 +1,11 @@
-# SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline
+# SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline <img src="https://github.com/DIncalciLab/swgscna/assets/71792548/7e842710-6fa6-4f0e-997d-33f95693158a" width="150" height="150" align="right">
 
 <quote>
 戦の勝負は、将と士卒の気によるのみなり。
 
-(The outcome of the battle depends on the spirit of the commander and the men.)
+(The outcome of the battle depends on the spirit of the commander and the men.)   
+
+
 
 Minamoto no Yoshitsune (1159-1189)
 </quote>
