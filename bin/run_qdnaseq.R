@@ -134,8 +134,8 @@ parser <- add_argument(parser, "--purity", type = "integer",
 parser <- add_argument(parser, "--genome", default = "hg38",
     help = "Genome to use")
 parser <- add_argument(parser, "--paired-end",
-    help = "Whether reads are paired or not",
-    flag = TRUE)
+    help = "Whether reads are paired or not", type="boolean",
+    default = TRUE)
 parser <- add_argument(parser, "--source",
     help = "Source BAM files (one or more)",
     nargs = Inf)
@@ -176,8 +176,6 @@ read_counts <- binReadCounts(bins, bamfiles = bamfiles,
     cache = TRUE,
     minMapq = args$min_mapq,
     pairedEnds = args$paired_end,
-    isPaired = TRUE,
-    isProperPair = TRUE,
     chunkSize = TRUE
 )
 

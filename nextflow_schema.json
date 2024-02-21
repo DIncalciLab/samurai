@@ -371,6 +371,10 @@
                     "format": "file-path",
                     "mimetype": "application/octet-stream",
                     "description": "Optional parameter to a RDS file containing bin annotations"
+                },
+                "qdnaseq_paired_ends": {
+                    "type": "boolean",
+                    "description": "Whether reads are paired or not"
                 }
             }
         },

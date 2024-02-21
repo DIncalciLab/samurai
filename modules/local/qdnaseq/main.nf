@@ -33,7 +33,7 @@ process QDNASEQ {
     run_qdnaseq.R \\
         --cpus "${task.cpus}" \\
         --project-name "${prefix}" \\
-        --paired-end \\
+        --paired-end ${params.qdnaseq_paired_ends} \\
         --bin-size ${binsize} \\
         $args \\
         --source ${bamfiles} \\
