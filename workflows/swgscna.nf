@@ -259,6 +259,7 @@ workflow SWGSCNA {
     switch(params.analysis_type) {
         case "solid_biopsy":
             SOLID_BIOPSY(ch_bam_bai, params.caller, binsize, Channel.value(params.genome))
+            gistic_file = SOLID_BIOPSY.out.gistic_file
             ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
             ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
             break
@@ -280,6 +281,7 @@ workflow SWGSCNA {
                     ch_analysis = ch_bam_bai
                 }
             LIQUID_BIOPSY(ch_analysis, params.caller)
+            gistic_file = LIQUID_BIOPSY.out.corrected_gistic_file
             ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
             ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
             break
@@ -302,7 +304,7 @@ workflow SWGSCNA {
 
     // Run GISTIC if specified, default: false
     if (params.run_gistic) {
-        RUN_GISTIC(LIQUID_BIOPSY.out.corrected_gistic_file)
+        RUN_GISTIC(gistic_file)
         ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_lesions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.chrom_plot)

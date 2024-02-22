@@ -45,7 +45,7 @@ workflow SOLID_BIOPSY {
                 //CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
                 //ch_versions = ch_versions.mix(CREATE_QDNASEQ_SUMMARY.out.versions)
                 ch_reports = ch_reports.mix(qdnaseq_summary)
-                //TODO: Generate the GISTIC output here? If not, remove the step from the module
+                gistic_file = ch_segments
                 break
             case "ascat_sc":
                 ASCAT_SC(ch_bam_bai, binsize, genome)
@@ -90,12 +90,12 @@ workflow SOLID_BIOPSY {
                 //CREATE_ASCATSC_SUMMARY(ascatsc_summary)
                 ch_reports = ch_reports.mix(ascatsc_summary)
 
-                //ASCAT_SC.out.gistic_file
-                //            .collectFile(storeDir: "${params.outdir}/ascat_sc/",
-                //                    name: 'all_segments_ascat_sc_gistic.seg',
-                //                    keepHeader: true,
-                //                    skip: 1)
-                //            .set{gistic_file}
+                ASCAT_SC.out.gistic_file
+                            .collectFile(storeDir: "${params.outdir}/ascat_sc/",
+                                    name: 'all_segments_ascat_sc_gistic.seg',
+                                    keepHeader: true,
+                                    skip: 1)
+                            .set{gistic_file}
                 break
             default:
                 error "Unknown CNV caller ${caller}"
@@ -106,5 +106,6 @@ workflow SOLID_BIOPSY {
     emit:
         ch_segments     = ch_segments
         summary         = ch_reports
+        gistic_file     = gistic_file
         versions        = ch_versions
 }
