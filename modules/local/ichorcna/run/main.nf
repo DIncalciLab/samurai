@@ -30,8 +30,8 @@ process RUN_ICHORCNA {
         def prefix = task.ext.prefix ?: "${meta.id}"
 
         def pon = params.normal_panel ? "--normalPanel ${params.normal_panel}" : ''
-        def centro = params.centromere ? "--centromere ${params.centromere}" : ''
-        def reptime = params.reptime_file ? "--repTimeWig ${params.reptime_file}": ''
+        def centro = params.ichorcna_centromere_file ? "--centromere ${params.ichorcna_centromere_file}" : ''
+        def reptime = params.ichorcna_reptime_wig ? "--repTimeWig ${params.ichorcna_reptime_wig}": ''
         def ichorcna_script = "runIchorCNA.R"
         def gender = meta.gender ? "--sex ${meta.gender}": ''
 

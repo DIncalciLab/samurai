@@ -24,8 +24,8 @@ script:
 
 def args = task.ext.args ?: ''
 def prefix = task.ext.prefix ?: "PoN"
-def centro = params.centromere ? "--centromere ${params.centromere}" : ''
-def reptime = reptime_file ? "--repTimeWig ${reptime_file}": ''
+def centro = params.ichorcna_centromere_file ? "--centromere ${params.ichorcna_centromere_file}" : ''
+def reptime = params.ichorcna_reptime_wig ? "--repTimeWig ${params.ichorcna_reptime_wig}": ''
 def ichorcna_script = "createPanelOfNormals.R"
 
 def VERSION = '0.3.2' // Version information not provided by tool on CLI
