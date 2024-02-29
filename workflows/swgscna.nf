@@ -57,7 +57,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 
 include { CIN_SIGNATURE_QUANTIFICATION  } from '../modules/local/cin_signature_quantification/main'
-include { INPUT_CHECK                   } from '../subworkflows/local/input_check'
 include { PREPARE_GENOME                } from '../subworkflows/local/prepare_genome/main'
 include { SOLID_BIOPSY                  } from '../subworkflows/local/solid_biopsy/main'
 include { SIZE_SELECTION                } from '../subworkflows/local/size_selection/main'
