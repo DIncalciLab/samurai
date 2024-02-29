@@ -1,12 +1,12 @@
 {
-    "text": "## Pipeline report for *swgscna*",
+    "text": "## Pipeline report for *samurai*",
     "attachments": [
         {
             "fallback": "Plain-text summary of the attachment.",
             "color": "<% if (success) { %>good<% } else { %>danger<%} %>",
-            "author_name": "swgscna v${version} - ${runName}",
+            "author_name": "samurai v${version} - ${runName}",
             "author_icon": "https://www.nextflow.io/docs/latest/_static/favicon.ico",
-            "text": "## Pipeline report for swgscna\\n<% if (success) { %>Pipeline completed successfully!<% } else { %>Pipeline completed with errors<% } %>",
+            "text": "## Pipeline report for samurai\\n<% if (success) { %>Pipeline completed successfully!<% } else { %>Pipeline completed with errors<% } %>",
             "fields": [
                 {
                     "title": "Command used to launch the workflow",

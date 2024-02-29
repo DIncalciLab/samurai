@@ -1,4 +1,4 @@
-# dincalcilab/swgscna: Output
+# dincalcilab/samurai: Output
 
 ## Introduction
 

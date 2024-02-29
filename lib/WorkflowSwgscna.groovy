@@ -1,5 +1,5 @@
 //
-// This file holds several functions specific to the workflow/swgscna.nf in the dincalcilab/swgscna pipeline
+// This file holds several functions specific to the workflow/samurai.nf in the dincalcilab/samurai pipeline
 //
 
 import groovy.text.SimpleTemplateEngine

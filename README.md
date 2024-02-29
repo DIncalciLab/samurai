@@ -1,4 +1,4 @@
-# SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline <img src="https://github.com/DIncalciLab/swgscna/assets/71792548/7e842710-6fa6-4f0e-997d-33f95693158a" width="150" height="150" align="right">
+# SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline <img src="https://github.com/DIncalciLab/samurai/assets/71792548/7e842710-6fa6-4f0e-997d-33f95693158a" width="150" height="150" align="right">
 
 <quote>
 戦の勝負は、将と士卒の気によるのみなり。
@@ -42,7 +42,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
    ```bash
-   nextflow run dincalcilab/swgscna -profile test,YOURPROFILE --outdir <OUTDIR>
+   nextflow run dincalcilab/samurai -profile test,YOURPROFILE --outdir <OUTDIR>
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -57,12 +57,12 @@ On release, automated continuous integration tests run the pipeline on a full-si
    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
 
    ```bash
-   nextflow run dincalcilab/swgscna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run dincalcilab/samurai --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
    ```
 
 ## Credits
 
-dincalcilab/swgscna was originally written by Sara Potente and Luca Beltrame.
+dincalcilab/samurai was originally written by Sara Potente and Luca Beltrame.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
@@ -75,7 +75,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  dincalcilab/swgscna for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use  dincalcilab/samurai for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 

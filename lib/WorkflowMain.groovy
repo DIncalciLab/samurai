@@ -1,5 +1,5 @@
 //
-// This file holds several functions specific to the main.nf workflow in the dincalcilab/swgscna pipeline
+// This file holds several functions specific to the main.nf workflow in the dincalcilab/samurai pipeline
 //
 
 import nextflow.Nextflow

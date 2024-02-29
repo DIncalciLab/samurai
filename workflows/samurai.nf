@@ -98,7 +98,7 @@ include { BAM_QC_PICARD                 } from '../subworkflows/nf-core/bam_qc_p
 // Info required for completion email and summary
 def multiqc_report = []
 
-workflow SWGSCNA {
+workflow SAMURAI {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()

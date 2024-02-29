@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    dincalcilab/swgscna
+    dincalcilab/samurai
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/dincalcilab/swgscna
+    Github : https://github.com/dincalcilab/samurai
 ----------------------------------------------------------------------------------------
 */
 
@@ -34,13 +34,13 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SWGSCNA } from './workflows/swgscna'
+include { SAMURAI } from './workflows/samurai'
 
 //
-// WORKFLOW: Run main dincalcilab/swgscna analysis pipeline
+// WORKFLOW: Run main dincalcilab/samurai analysis pipeline
 //
-workflow DINCALCILAB_SWGSCNA {
-    SWGSCNA ()
+workflow DINCALCILAB_SAMURAI {
+    SAMURAI ()
 }
 
 /*
@@ -54,7 +54,7 @@ workflow DINCALCILAB_SWGSCNA {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    DINCALCILAB_SWGSCNA ()
+    DINCALCILAB_SAMURAI ()
 }
 
 /*

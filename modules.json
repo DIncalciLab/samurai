@@ -1,6 +1,6 @@
 {
-    "name": "dincalcilab/swgscna",
-    "homePage": "https://github.com/dincalcilab/swgscna",
+    "name": "dincalcilab/samurai",
+    "homePage": "https://github.com/dincalcilab/samurai",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
