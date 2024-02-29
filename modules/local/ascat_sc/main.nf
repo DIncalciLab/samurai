@@ -16,7 +16,7 @@ process ASCAT_SC {
     output:
         path("profiles_${meta.id}.pdf"),                       emit: profiles_plot
         path("profiles_${meta.id}_refitted.pdf"),              emit: profiles_refitted
-        //path("*_gistic.seg"),                     emit: gistic_file
+        path("*_gistic.seg"),                     emit: gistic_file
         path("*_summary.txt"),                    emit: summary_table
         path("*_segments.seg"),                   emit: segments
         path("*.rds"),                            emit: rds
