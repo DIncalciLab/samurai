@@ -294,13 +294,6 @@ workflow SAMURAI {
             error "Uknown / unsupported analysis ${analysis_type}"
     }
 
-    // Compute CN Signatures if specified, default: false --> Tried to include into solid_biopsy wf
-    // if (params.compute_signatures && params.caller == 'ascat_sc') {
-    //     CIN_SIGNATURE_QUANTIFICATION(SOLID_BIOPSY.out.signature_file)
-    //     ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
-    //     ch_multiqc_files = ch_multiqc_files.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
-    // }
-
     // Run GISTIC if specified, default: false
     if (params.run_gistic) {
         RUN_GISTIC(gistic_file)

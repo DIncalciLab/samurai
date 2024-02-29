@@ -21,6 +21,7 @@ process RUN_ICHORCNA {
         tuple val(meta), path("*.correctedDepth.txt"), emit: corrected_depth
         path("*.params.txt")                         , emit: ichorcna_params
         path "**/*genomeWide.pdf"                    , emit: genome_plot
+        path "**/*_genomeWide_all_sols.pdf"
         path "*.RData"
         path "versions.yml"                          , emit: versions
 

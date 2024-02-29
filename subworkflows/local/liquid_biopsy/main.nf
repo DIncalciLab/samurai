@@ -9,7 +9,6 @@ include { CONVERT_GISTIC_SEG                                  } from '../../../m
 include { ASSEMBLE_WISECONDORX_OUTPUTS                        } from '../../../modules/local/assemble_wisecondorx_outputs/main'
 include { CONVERT_WISECONDORX_IMAGES                          } from '../../../modules/local/convert_wisecondorx_images/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
-include { REARRANGE_ICHORCNA_OUTPUT                           } from '../../../modules/local/rearrange_ichorcna_output/main'
 include { CORRECT_LOGR_ICHORCNA                               } from '../../../modules/local/correct_logR_ichorcna/main'
 
 include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../modules/nf-core/hmmcopy/readcounter/main'
@@ -87,18 +86,6 @@ workflow LIQUID_BIOPSY {
                 CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
                 ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
 
-                // Rearrange ichorCNA output
-                REARRANGE_ICHORCNA_OUTPUT(called_segments.map{meta,file -> file})
-                ch_versions = ch_versions.mix(REARRANGE_ICHORCNA_OUTPUT.out.versions)
-
-                REARRANGE_ICHORCNA_OUTPUT.out.sig_file
-                         .collectFile(storeDir: "${params.outdir}/ichorcna/",
-                                     name: 'all_segments_ichorcna_signatures.seg',
-                                     keepHeader: true,
-                                     skip: 1)
-                                     .set{signature_file}
-
-
                 break
 
             case "wisecondorx":
@@ -157,7 +144,6 @@ workflow LIQUID_BIOPSY {
         genome_plot           = genome_plot
         summary               = ch_reports
         corrected_gistic_file = corrected_gistic_file
-        signature_file        = signature_file
         versions              = ch_versions
 
 }
