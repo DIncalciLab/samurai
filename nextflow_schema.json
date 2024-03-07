@@ -374,7 +374,8 @@
                 },
                 "qdnaseq_paired_ends": {
                     "type": "boolean",
-                    "description": "Whether reads are paired or not"
+                    "description": "Whether reads are paired or not",
+                    "default": "TRUE"
                 }
             }
         },
@@ -405,6 +406,10 @@
                     "type": "integer",
                     "default": 150,
                     "description": "Maximum insert size in bp to be included for size selection"
+                },
+                "plot_fragment_distribution": {
+                    "type": "boolean",
+                    "description": "Whether to plot fragment size distributions during size selection (slow)"
                 }
             }
         },
@@ -444,7 +449,7 @@
                 },
                 "ichorcna_fraction_reads_male": {
                     "type": "number",
-                    "default": 0.3
+                    "default": 0.001
                 },
                 "ichorcna_male_chrX_logR": {
                     "type": "number",
@@ -746,7 +751,8 @@
             "type": "boolean"
         },
         "compute_signatures": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Compute chromosomal instability signatures (Drews et al., 2022)"
         }
     }
 }
