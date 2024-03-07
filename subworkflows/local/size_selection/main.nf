@@ -16,7 +16,7 @@ workflow SIZE_SELECTION {
     main:
         ch_versions = Channel.empty()
 
-        SAMTOOLS_STATS_PRE(ch_bam_bai, [])
+        SAMTOOLS_STATS_PRE(ch_bam_bai, ch_fasta)
         ch_versions = ch_versions.mix(SAMTOOLS_STATS_PRE.out.versions)
 
         bam_bai_pre = ch_bam_bai
@@ -38,7 +38,7 @@ workflow SIZE_SELECTION {
 
         ch_filtered = SAMTOOLS_VIEW.out.bam.join(SAMTOOLS_INDEX_SIZE_SELECTION.out.bai)
 
-        SAMTOOLS_STATS_POST(ch_filtered, [])
+        SAMTOOLS_STATS_POST(ch_filtered, ch_fasta)
         ch_versions = ch_versions.mix(SAMTOOLS_STATS_POST.out.versions)
 
         ch_fragment = ch_filtered
