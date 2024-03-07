@@ -30,6 +30,7 @@ workflow SIZE_SELECTION {
             BAMPE_FRAGMENTSIZE_PRE(Channel.value("prefiltering"),
                                     bam_bai_pre.bam.collect(),
                                     bam_bai_pre.bai.collect())
+            ch_versions = ch_versions.mix(BAMPE_FRAGMENTSIZE_PRE.out.versions)
         }
 
         SAMTOOLS_VIEW(ch_bam_bai, ch_fasta, []) // size selection
@@ -54,17 +55,15 @@ workflow SIZE_SELECTION {
             BAMPE_FRAGMENTSIZE_POST(Channel.value("postfiltering"),
                                     ch_fragment.bam.collect(),
                                     ch_fragment.bai.collect())
+            ch_versions = ch_versions.mix(BAMPE_FRAGMENTSIZE_POST.out.versions)
         }
 
-        ch_versions = ch_versions.mix(BAMPE_FRAGMENTSIZE_POST.out.versions)
+
 
     emit:
         bam            = SAMTOOLS_VIEW.out.bam
         bai            = SAMTOOLS_INDEX_SIZE_SELECTION.out.bai
         stats_pre      = SAMTOOLS_STATS_PRE.out.stats
         stats_post     = SAMTOOLS_STATS_POST.out.stats
-        histogram      = BAMPE_FRAGMENTSIZE_POST.out.histogram
-        size_table     = BAMPE_FRAGMENTSIZE_POST.out.table
-        size_raw_table = BAMPE_FRAGMENTSIZE_POST.out.raw_table
         versions       = ch_versions
 }
