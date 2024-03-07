@@ -12,7 +12,7 @@ workflow SIZE_SELECTION {
 
     take:
         ch_bam_bai
-        fasta
+        ch_fasta
     main:
         ch_versions = Channel.empty()
 
@@ -30,8 +30,7 @@ workflow SIZE_SELECTION {
                         bam_bai_pre.bam.collect(),
                         bam_bai_pre.bai.collect())
 
-       SAMTOOLS_VIEW(ch_bam_bai.map{ it -> [[id:it[1].baseName], it[1], it[2]]},
-                            fasta.map{ it -> [[id:it[0].baseName], it] }, []) // size selection
+        SAMTOOLS_VIEW(ch_bam_bai, ch_fasta, []) // size selection
         ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
 
         SAMTOOLS_INDEX_SIZE_SELECTION(SAMTOOLS_VIEW.out.bam)
