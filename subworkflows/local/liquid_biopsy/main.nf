@@ -33,16 +33,16 @@ workflow LIQUID_BIOPSY {
             pon_file = BUILD_PON.out.normal_panel
 
             } else {
-                pon_file = Channel.value(params.normal_panel)
+                pon_file = file(params.normal_panel, checkIfExists: true)
             }
 
         switch(caller) {
             case "ichorcna":
 
-                gc_wig              = Channel.value(params.ichorcna_gc_wig)
-                map_wig             = Channel.value(params.ichorcna_map_wig)
-                centromere          = Channel.value(params.ichorcna_centromere_file)
-                reptime_file        = Channel.value(params.ichorcna_reptime_wig)
+                gc_wig              = file(params.ichorcna_gc_wig, checkIfExists: true)
+                map_wig             = file(params.ichorcna_map_wig, checkIfExists: true)
+                centromere          = file(params.ichorcna_centromere_file, checkIfExists: true)
+                reptime_file        = params.ichorcna_reptime_wig ? file(params.ichorcna_reptime_wig, checkIfExists: true): []
 
                 // Step 1: Generate coverage wig files
                 // To generate Wig Files
