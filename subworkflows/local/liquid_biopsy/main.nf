@@ -47,7 +47,7 @@ workflow LIQUID_BIOPSY {
                 // Step 1: Generate coverage wig files
                 // To generate Wig Files
                 HMMCOPY_READCOUNTER_ICHORCNA(ch_bam_bai)
-                wigfiles = HMMCOPY_READCOUNTER_ICHORCNA.out.wig.map{it -> it[1]}
+                // wigfiles = HMMCOPY_READCOUNTER_ICHORCNA.out.wig.map{it -> it[1]}
                 ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_ICHORCNA.out.versions)
 
                 // Step 2: run ichorCNA
