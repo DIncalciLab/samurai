@@ -30,7 +30,7 @@ def main():
     # The gene table is 'None', but it exists if I run the function on same data with the container alone
     # all_genes_table = gistic_data.all_genes_table 
 
-    all_lesions.to_csv("gistic_lesions_mqc.txt", sep="\t", index=False)
+    all_lesions.to_csv("gistic_summary_mqc.txt", sep="\t", index=False)
     # all_genes_table.to_csv("gistic_genes.txt", sep="\t", index=False)
     log_r_table.to_csv("gistic_log2R.txt", sep="\t", index=False)
     cn_states.to_csv("gistic_cn_states.txt", sep="\t", index=False)

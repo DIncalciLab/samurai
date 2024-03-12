@@ -10,7 +10,7 @@ process ASSEMBLE_GISTIC_OUTPUT {
         path gistic_file
 
     output:
-        path("gistic_lesions_mqc.txt"),             emit: gistic_lesions
+        path("gistic_summary_mqc.txt"),             emit: gistic_lesions
         // path("gistic_genes.txt"),               emit: gistic_genes NEED TO FIX THIS
         path("gistic_log2R.txt"),               emit: gistic_log_r
         path("gistic_cn_states.txt"),           emit: gistic_cn_states

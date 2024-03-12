@@ -28,10 +28,10 @@ gistic_obj <- readGistic(gisticAllLesionsFile = args$all_lesions,
                 gisticDelGenesFile = args$del_genes,
                 gisticScoresFile = args$gistic_scores)
 
-png(filename="plot_gistic_chrom_mqc.png")
+png(filename="maftools_summary_mqc.png")
 gisticChromPlot(gistic = gistic_obj, markBands = "all")
 dev.off()
 
-png(filename="plot_gistic_bubble.png")
+png(filename="maftools_bubble.png")
 gisticBubblePlot(gistic = gistic_obj)
 dev.off()

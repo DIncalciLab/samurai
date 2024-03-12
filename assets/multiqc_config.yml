@@ -205,7 +205,7 @@ custom_data:
         title: 'Type of Lesion'
         placement: 9
 
-  plot_gistic_chrom:
+  maftools_summary:
     id: "maftools"
     section_name: "Gistic Analysis"
     description: "Maftools genomic plot with segments highlighting signififcant Amplifications and Deletions."
