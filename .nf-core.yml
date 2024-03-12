@@ -2,9 +2,8 @@ repository_type: pipeline
 lint:
   files_exist:
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-samurai_logo_light.png
-    - docs/images/nf-core-samurai_logo_light.png
-    - docs/images/nf-core-samurai_logo_dark.png
+    - assets/samurai_logo.png
+    - docs/images/samurai_logo.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
