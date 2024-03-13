@@ -111,12 +111,13 @@ message("Creation of final segmentation dataframe...")
 df_final <- as.data.frame(ifelse(args$predict_refit,
         res[["allProfiles.refitted.auto"]],
         res[["allProfiles"]])) %>%
-    mutate(samplename = res$summary$allSols$samplename)
+    mutate(samplename = res$summary$allSols$samplename,
+           logr = as.numeric(logr))
 
 message("Creation of summary df with purity and ploidy")
-df_summary <- as.data.frame(res$summary$allSols) #purity and ploidy are the same in refitted and non-refitted
+df_summary <- as.data.frame(res$summary$allSols) # Purity and ploidy are the same in refitted and non-refitted
 
-#save output files
+# save output files
 message("Saving output into rds...")
 saveRDS(res, paste0(args$project, "_ASCAT.rds"))
 
@@ -124,7 +125,8 @@ readr::write_tsv(df_summary, file = paste0(args$project, "_summary.txt"),
     quote = "needed")
 readr::write_tsv(df_final, file = paste0(args$project, "_segments.seg"),
     quote = "needed")
-#Create df for Signature Extraction
+
+# Create df for Signature Extraction
 message("Creating dataframe for signature extraction...")
 df_sig <- df_final %>%
     dplyr::select(chromosome, start, end, total_copy_number_logr, samplename) %>%
@@ -135,19 +137,19 @@ df_sig <- df_final %>%
 readr::write_tsv(df_sig, file = paste0(args$project, "_df_signatures.seg"),
     quote = "needed")
 
-# TO DO: Conditional correction of logR
-#Create df for GISTIC
+# TODO: Conditional correction of logR
+# Create df for GISTIC
 ############### adjusted logR (https://github.com/lima1/PureCN/issues/40)
-#Solution in:
+# Solution in:
 #https://github.com/maitnnguyen/Oseq_CNV_Paper/blob/main/src/pipeline/step4_CNVcall.R # nolint
 
 message("Creating df for GISTIC Analysis...")
-message("Setting logR column to numeric value")
-df_final$logr <-as.numeric(df_final$logr)
 message("Computing R value...")
 R <- 2^(df_final$logr)
+
 message("Adding column with adjusted logR values...")
-df_final$adj.seg <- (df_summary$purity * df_summary$ploidy * R + 2 * (1 - df_summary$purity) * (R - 1)) / (df_summary$purity * df_summary$ploidy)
+df_final$adj.seg <- (df_summary$purity * df_summary$ploidy * R + 2 * (1 - df_summary$purity) * (R - 1)) /
+                     (df_summary$purity * df_summary$ploidy)
 message("Creating final GISTIC df...")
 df_gistic <- df_final %>%
     dplyr::select(samplename, chromosome, start, end, num.mark, adj.seg) %>%
