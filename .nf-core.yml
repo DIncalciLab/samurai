@@ -23,5 +23,5 @@ lint:
     - report_comment
   readme:
     - nextflow_badge
-  schema_params:
-    - filter_bam_pon
+  schema_params: false
+  subworkflow_changes: false
