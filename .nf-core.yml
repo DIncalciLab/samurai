@@ -15,6 +15,7 @@ lint:
   files_unchanged:
     - .github/workflows/ci.yml
     - .github/workflows/branch.yml
+    - lib/NfcoreTemplate.groovy
   nextflow_config:
     - manifest.name
     - manifest.homePage
@@ -22,3 +23,5 @@ lint:
     - report_comment
   readme:
     - nextflow_badge
+  schema_params:
+    - filter_bam_pon
