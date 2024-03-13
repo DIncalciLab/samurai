@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/dincalcilab/samurai/master/nextflow_schema.json",
-    "title": "samurai pipeline parameters",
-    "description": "Workflow for the identification of CNV from sWGS",
+    "title": "dincalcilab/samurai pipeline parameters",
+    "description": "SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline",
     "type": "object",
     "definitions": {
         "input_output_options": {
