@@ -50,12 +50,12 @@ df_activity <- df_activity %>%
 readr::write_tsv(df_activity, file = paste0(args$projectname, "_activity.txt"),
     quote = "needed")
 
-png(filename="ascat_sc_plot_by_component.png", res = 300)
+png(filename="ascat_sc_plot_by_component.png")
 plotSampleByComponent(object = cnobj)
 dev.off()
 
 
-png("ascat_plot_activities_mqc.png", res = 300)
+png("signatures_summary_mqc.png")
 plotActivities(object = cnobj, type = "threshold")
 dev.off()
 

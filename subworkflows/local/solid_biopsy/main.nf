@@ -85,10 +85,12 @@ workflow SOLID_BIOPSY {
                 if (params.compute_signatures) {
                         CIN_SIGNATURE_QUANTIFICATION(signature_file)
                         ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
+                        ch_reports = ch_reports.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
                 }
 
                 //CREATE_ASCATSC_SUMMARY(ascatsc_summary)
                 ch_reports = ch_reports.mix(ascatsc_summary)
+
 
                 ASCAT_SC.out.gistic_file
                             .collectFile(storeDir: "${params.outdir}/ascat_sc/",
