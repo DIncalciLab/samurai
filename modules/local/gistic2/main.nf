@@ -18,11 +18,13 @@ process GISTIC2 {
         path("raw_copy_number.pdf"),              emit: raw_copy_number
         path("amp_qplot.pdf"),                    emit: amp_score_qplot
         path("del_qplot.pdf"),                    emit: del_score_qplot
+        path("gistic_results", type: "dir"),      emit: gistic_results_dir
         path("versions.yml"),                     emit: versions
 
     script:
 
     def args = task.ext.args ?: ''
+    // Inside the container
     def ref_gene_file = params.genome == 'hg38' ? "-refgene '/opt/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'" : "-refgene '/opt/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
 
     """
@@ -35,6 +37,8 @@ process GISTIC2 {
         -conf ${params.gistic_conf} \\
         -b ./
 
+    mkdir -p gistic_results
+    cp all_lesions.conf* {amp,del}_genes.conf* scores.gistic *.pdf  gistic_results/
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

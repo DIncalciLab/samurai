@@ -5,13 +5,12 @@ include { MAFTOOLS                  } from '../../../modules/local/maftools/main
 workflow RUN_GISTIC {
 
     take:
-        segmentation_file
+        gistic_results_dir
 
     main:
         ch_versions = Channel.empty()
-        seg_file = segmentation_file
 
-        GISTIC2(seg_file)
+        GISTIC2(gistic_results_dir)
         ch_versions = ch_versions.mix(GISTIC2.out.versions)
 
         ASSEMBLE_GISTIC_OUTPUT(GISTIC2.out.all_lesions)
@@ -25,7 +24,7 @@ workflow RUN_GISTIC {
 
     emit:
         gistic_lesions              = ASSEMBLE_GISTIC_OUTPUT.out.gistic_lesions
-        // gistic_genes                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_genes NEED TO FIX THIS
+        gistic_genes                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_genes
         gistic_log_r                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_log_r
         gistic_cn_states            = ASSEMBLE_GISTIC_OUTPUT.out.gistic_cn_states
         gistic_lesions              = ASSEMBLE_GISTIC_OUTPUT.out.gistic_lesions
