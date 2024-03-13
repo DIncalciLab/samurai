@@ -2,7 +2,7 @@ repository_type: pipeline
 lint:
   files_exist:
     - CODE_OF_CONDUCT.md
-    - assets/samurai_logo.png
+    - assets/samurai_logo_mqc.png
     - docs/images/samurai_logo.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
