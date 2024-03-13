@@ -4,7 +4,7 @@
 
 import groovy.text.SimpleTemplateEngine
 
-class WorkflowSwgscna {
+class WorkflowSamurai {
 
     //
     // Check and validate parameters
