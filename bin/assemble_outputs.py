@@ -10,7 +10,9 @@ from natsort import natsort_keygen
 def parse_output(filename):
     # The rows past the third and up to the 17th contain the information
     # we require
-    dataframe = pd.read_table(filename, skiprows=3, nrows=14, sep=r":\t|:\s+", engine="python")
+    dataframe = pd.read_table(
+        filename, skiprows=3, nrows=14, sep=r":\t|:\s+", engine="python"
+    )
 
     dataframe = dataframe.loc[["Tumor Fraction", "Ploidy", "GC-Map correction MAD"]]
 
@@ -25,11 +27,15 @@ def main():
 
     sources = options.source_files
 
-    combined_df = pd.concat([parse_output(item) for item in sources], axis=1).transpose()
+    combined_df = pd.concat(
+        [parse_output(item) for item in sources], axis=1
+    ).transpose()
     combined_df.index.name = "samplename"
 
     if options.samplesheet is not None:
-        samplesheet = pd.read_csv(options.samplesheet, index_col=["samplename"]).select_columns(["patient", "type"])
+        samplesheet = pd.read_csv(
+            options.samplesheet, index_col=["samplename"]
+        ).select_columns(["patient", "type"])
         # Avoid casts to other types, which will cause silent merge failures
         samplesheet.index = samplesheet.index.astype("str")
         combined_df = (
@@ -43,7 +49,16 @@ def main():
             .transform_column("tumor_fraction", lambda x: x.mul(100), elementwise=False)
             .sort_values(by=["patient", "samplename"], key=natsort_keygen())
             .rename_column("patient", "patient_name")
-            .reorder_columns(["samplename", "patient_name", "type", "ploidy", "tumor_fraction", "mad"])
+            .reorder_columns(
+                [
+                    "samplename",
+                    "patient_name",
+                    "type",
+                    "ploidy",
+                    "tumor_fraction",
+                    "mad",
+                ]
+            )
         )
 
     else:

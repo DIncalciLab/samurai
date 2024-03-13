@@ -23,7 +23,9 @@ def main() -> None:
 
     source_data = read_csvs(options.source_files, sep="\t", separate_df=True)
 
-    final_df = pd.concat([extract_data(str(filename), df) for filename, df in source_data.items()])
+    final_df = pd.concat(
+        [extract_data(str(filename), df) for filename, df in source_data.items()]
+    )
 
     final_df.to_csv("all_aberrations.txt", index=False, sep="\t")
 

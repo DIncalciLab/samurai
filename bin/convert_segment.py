@@ -12,28 +12,36 @@ def add_sample_data(dataframe: pd.DataFrame, sample_id: str) -> pd.DataFrame:
     dataframe = (
         dataframe.add_column("id", sample_id)
         .reorder_columns(["id"])
-        .reorder_columns(["id", "chrom", "start", "end", "num.mark", "seg.mean.adj", "call"])
+        .reorder_columns(
+            ["id", "chrom", "start", "end", "num.mark", "seg.mean.adj", "call"]
+        )
     )
 
     return dataframe
 
 
 def convert_to_seg(
-    segments: pd.DataFrame, bins: pd.DataFrame, aberrations: pd.DataFrame, sample: Optional[str] = None
+    segments: pd.DataFrame,
+    bins: pd.DataFrame,
+    aberrations: pd.DataFrame,
+    sample: Optional[str] = None,
 ) -> pd.DataFrame:
     segments_bed = BedTool.from_dataframe(segments)
     bins_bed = BedTool.from_dataframe(bins)
     aberrations_bed = BedTool.from_dataframe(aberrations)
 
     result = segments_bed.intersect(bins_bed, F=1, c=True).to_dataframe(
-        disable_auto_names=True, names=["chrom", "start", "end", "seg.mean", "zscore", "num.mark"]
+        disable_auto_names=True,
+        names=["chrom", "start", "end", "seg.mean", "zscore", "num.mark"],
     )
 
     if aberrations.empty:
         # No alterations, return segments with zeroed log2ratios
         result = result.transform_column("seg.mean", lambda x: 0)
         result = (
-            result.reorder_columns(["chrom", "start", "end", "num.mark", "seg.mean", "zscore"])
+            result.reorder_columns(
+                ["chrom", "start", "end", "num.mark", "seg.mean", "zscore"]
+            )
             .rename_column("seg.mean", "seg.mean.adj")
             .remove_columns("zscore")
             .add_column("call", "neut")
@@ -44,7 +52,9 @@ def convert_to_seg(
 
         return result
 
-    result = BedTool.from_dataframe(result.remove_columns("zscore")).intersect(aberrations_bed, loj=True)
+    result = BedTool.from_dataframe(result.remove_columns("zscore")).intersect(
+        aberrations_bed, loj=True
+    )
 
     result = (
         result.to_dataframe(
@@ -63,10 +73,15 @@ def convert_to_seg(
                 "call",
             ],
         )
-        .process_text("call", string_function="replace", pat=".", repl="neut", regex=False)
+        .process_text(
+            "call", string_function="replace", pat=".", repl="neut", regex=False
+        )
         .select_columns(["chrom", "start", "end", "num.mark", "seg.mean", "call"])
         #  Zero logR if the call is neutral
-        .join_apply(lambda x: 0 if x.call == "neut" else x["seg.mean"], new_column_name="seg.mean.adj")
+        .join_apply(
+            lambda x: 0 if x.call == "neut" else x["seg.mean"],
+            new_column_name="seg.mean.adj",
+        )
         .remove_columns(["seg.mean"])
     )
 
@@ -78,7 +93,9 @@ def convert_to_seg(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--id", metavar="SAMPLEID", help="Add SAMPLEID to the converted file")
+    parser.add_argument(
+        "--id", metavar="SAMPLEID", help="Add SAMPLEID to the converted file"
+    )
     parser.add_argument("segments", help="File containing segments")
     parser.add_argument("bins", help="File containing bins")
     parser.add_argument("aberrations", help="File containing aberration calls")
