@@ -31,6 +31,9 @@ jobs:
       - name: Disk space cleanup
         uses: jlumbroso/free-disk-space@v1.3.1
 
+      - name: Run pipeline config and test for syntax errors
+        run: |
+          nextflow config -flat .
       - name: Run pipeline and test for syntax errors
         run: |
-          nextflow run DIncalciLab/samurai --help
+          nextflow run main.nf --help
