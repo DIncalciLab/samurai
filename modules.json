@@ -27,8 +27,8 @@
                     },
                     "bwamem2/index": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules", "fasta_index_dna"]
+                        "git_sha": "7081e04c18de9480948d34513a1c1e2d0fa9126d",
+                        "installed_by": ["fasta_index_dna", "modules"]
                     },
                     "bwamem2/mem": {
                         "branch": "master",
