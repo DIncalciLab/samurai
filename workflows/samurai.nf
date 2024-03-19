@@ -20,7 +20,6 @@ include { getGenomeAttribute     } from '../subworkflows/local/utils_samurai_pip
 //
 
 include { CIN_SIGNATURE_QUANTIFICATION  } from '../modules/local/cin_signature_quantification/main'
-include { PREPARE_GENOME                } from '../subworkflows/local/prepare_genome/main'
 include { SOLID_BIOPSY                  } from '../subworkflows/local/solid_biopsy/main'
 include { SIZE_SELECTION                } from '../subworkflows/local/size_selection/main'
 include { LIQUID_BIOPSY                 } from '../subworkflows/local/liquid_biopsy/main'
