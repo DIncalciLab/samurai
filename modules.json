@@ -12,7 +12,7 @@
                     },
                     "bowtie2/build": {
                         "branch": "master",
-                        "git_sha": "516189e968feb4ebdd9921806988b4c12b4ac2dc",
+                        "git_sha": "1fea64f5132a813ec97c1c6d3a74e0aee7142b6d",
                         "installed_by": ["fasta_index_dna"]
                     },
                     "bwa/index": {
