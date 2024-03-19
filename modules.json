@@ -77,12 +77,12 @@
                     },
                     "picard/collectmultiplemetrics": {
                         "branch": "master",
-                        "git_sha": "516189e968feb4ebdd9921806988b4c12b4ac2dc",
+                        "git_sha": "20b0918591d4ba20047d7e13e5094bcceba81447",
                         "installed_by": ["bam_qc_picard"]
                     },
                     "picard/collectwgsmetrics": {
                         "branch": "master",
-                        "git_sha": "516189e968feb4ebdd9921806988b4c12b4ac2dc",
+                        "git_sha": "20b0918591d4ba20047d7e13e5094bcceba81447",
                         "installed_by": ["bam_qc_picard"]
                     },
                     "picard/markduplicates": {
@@ -92,7 +92,7 @@
                     },
                     "samtools/faidx": {
                         "branch": "master",
-                        "git_sha": "371eff7748d769c2ddc8bd593773523a364a52fe",
+                        "git_sha": "aeb02a39d4c463598bfdcb2d964dbb7acbcf1298",
                         "installed_by": ["modules"]
                     },
                     "samtools/flagstat": {
