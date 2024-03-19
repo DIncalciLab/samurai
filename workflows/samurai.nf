@@ -134,6 +134,7 @@ workflow SAMURAI {
         FASTQ_ALIGN_DNA (
             ch_input,
             ch_index,
+            ch_fasta,
             params.aligner,
             true // sort_bam
         )
