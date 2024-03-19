@@ -147,7 +147,7 @@
                     },
                     "wisecondorx/predict": {
                         "branch": "master",
-                        "git_sha": "1ee4e6cb8f49fcb4a1982cb3888b6f7cfa9f7a99",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     }
                 }
