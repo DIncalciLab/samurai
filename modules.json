@@ -37,7 +37,7 @@
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "de45447d060b8c8b98575bc637a4a575fd0638e1",
                         "installed_by": ["modules"]
                     },
                     "dragmap/align": {
