@@ -4,48 +4,11 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
-include { fromSamplesheet } from 'plugin/nf-validation'
-
-def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-def summary_params = paramsSummaryMap(workflow)
-
-// Print parameter summary log to screen
-log.info logo + paramsSummaryLog(workflow) + citation
-
-// Validate input parameters
-WorkflowSamurai.initialise(params, log)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE INPUTS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-def checkPathParamList = [ params.input,
-                           params.multiqc_config,
-                           params.fasta,
-                           params.fai,
-                           params.dict,
-                           params.qdnaseq_bin_data
-                           ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
+include { paramsSummaryMap       } from 'plugin/nf-validation'
+include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_samurai_pipeline'
+include { getGenomeAttribute     } from '../subworkflows/local/utils_samurai_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,7 +25,6 @@ include { SOLID_BIOPSY                  } from '../subworkflows/local/solid_biop
 include { SIZE_SELECTION                } from '../subworkflows/local/size_selection/main'
 include { LIQUID_BIOPSY                 } from '../subworkflows/local/liquid_biopsy/main'
 include { RUN_GISTIC                    } from '../subworkflows/local/run_gistic/main'
-
 
 
 /*
@@ -89,6 +51,7 @@ include { FASTQ_ALIGN_DNA               } from '../subworkflows/nf-core/fastq_al
 include { BAM_MARKDUPLICATES_PICARD     } from '../subworkflows/nf-core/bam_markduplicates_picard/main'
 include { BAM_QC_PICARD                 } from '../subworkflows/nf-core/bam_qc_picard/main'
 
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -99,6 +62,11 @@ include { BAM_QC_PICARD                 } from '../subworkflows/nf-core/bam_qc_p
 def multiqc_report = []
 
 workflow SAMURAI {
+
+    take:
+    ch_input // channel: samplesheet read in from --input
+
+    main:
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
@@ -123,27 +91,17 @@ workflow SAMURAI {
         [["id": "liftover"], []]
     )
 
-    ch_input = Channel.fromSamplesheet("input").map {
-        meta, fastq1, fastq2, bam ->
-            // Poor man's check to make sure a BAM and a FASTQ aren't put together
-            if (fastq1 && bam) {
-                error "Input validation error: specify either FASTQ files or BAM"
-            }
-            if(fastq2) {
-                [meta, [fastq1, fastq2]]
-            } else if (fastq1) {
-                [meta, [fastq1]]
-            } else {
-                [meta, [bam]]
-            }
-    }
-
     if (params.aligner) {
 
         skip_fastp = params.run_fastp ? false : true
 
-        FASTQ_TRIM_FASTP_FASTQC(ch_input, [] /* adapters */, false /* save_trimmed_fail */,
-                                false /* save_merged */, skip_fastp /* skip_fastp */, false /* skip_fastqc */)
+        FASTQ_TRIM_FASTP_FASTQC(
+            ch_input, [] /* adapters */,
+            false /* save_trimmed_fail */,
+            false /* save_merged */,
+            skip_fastp /* skip_fastp */,
+            false /* skip_fastqc */
+        )
 
         ch_versions = ch_versions.mix(FASTQ_TRIM_FASTP_FASTQC.out.versions.first())
         ch_multiqc_files = ch_multiqc_files.mix(
@@ -166,9 +124,11 @@ workflow SAMURAI {
             ch_versions = ch_versions.mix(FASTA_INDEX_DNA.out.versions.first())
         } else {
             if (!params.aligner_index && !params.igenomes_ignore) {
-                ch_index = [["id": "aligner"], file(WorkflowMain.getGenomeAttribute(params, params.aligner))]
+                ch_index = [["id": "aligner"],
+                    file(getGenomeAttribute(params.aligner))]
             } else {
-                ch_index = [["id": "aligner"], file(params.aligner_index)]
+                ch_index = [["id": "aligner"],
+                    file(params.aligner_index)]
             }
         }
 
@@ -294,31 +254,39 @@ workflow SAMURAI {
             error "Uknown / unsupported analysis ${analysis_type}"
     }
 
-    // Run GISTIC if specified, default: false
+    // Run GISTIC if specified
     if (params.run_gistic) {
-        RUN_GISTIC(gistic_file)
+        // RUN_GISTIC(gistic_file)
         ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_lesions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.chrom_plot)
     }
 
-    // Software versions
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
+    //
+    // Collate and save software versions
+    //
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_pipeline_software_mqc_versions.yml', sort: true, newLine: true)
+        .set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowSamurai.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
+
+    ch_multiqc_config                     = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    ch_multiqc_custom_config              = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
+    ch_multiqc_logo                       = params.multiqc_logo ? Channel.fromPath(params.multiqc_logo, checkIfExists: true) : Channel.empty()
+    summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
 
     methods_description    = WorkflowSamurai.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
     ch_methods_description = Channel.value(methods_description)
 
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+    ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files                      = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false))
 
     MULTIQC (
         ch_multiqc_files.collect(),
@@ -326,24 +294,10 @@ workflow SAMURAI {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    multiqc_report = MULTIQC.out.report.toList()
-}
 
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
+    emit:
+    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*
