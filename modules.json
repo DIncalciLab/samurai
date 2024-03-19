@@ -57,7 +57,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "f4ae1d942bd50c5c0b9bd2de1393ce38315ba57c",
                         "installed_by": ["fastq_trim_fastp_fastqc", "modules"]
                     },
                     "hmmcopy/readcounter": {
