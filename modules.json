@@ -72,7 +72,7 @@
                     },
                     "picard/collecthsmetrics": {
                         "branch": "master",
-                        "git_sha": "516189e968feb4ebdd9921806988b4c12b4ac2dc",
+                        "git_sha": "20b0918591d4ba20047d7e13e5094bcceba81447",
                         "installed_by": ["bam_qc_picard"]
                     },
                     "picard/collectmultiplemetrics": {
