@@ -122,7 +122,7 @@
                     },
                     "samtools/view": {
                         "branch": "master",
-                        "git_sha": "3ffae3598260a99e8db3207dead9f73f87f90d1f",
+                        "git_sha": "0bd7d2333a88483aa0476acea172e9f5f6dd83bb",
                         "installed_by": ["modules"]
                     },
                     "snapaligner/align": {
