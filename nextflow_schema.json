@@ -733,16 +733,6 @@
         }
     ],
     "properties": {
-        "schema_ignore_params": {
-            "type": "string",
-            "default": "genomes"
-        },
-        "validationSkipDuplicateCheck": {
-            "type": "boolean"
-        },
-        "validationS3PathCheck": {
-            "type": "boolean"
-        },
         "compute_signatures": {
             "type": "boolean",
             "description": "Compute chromosomal instability signatures (Drews et al., 2022)"
