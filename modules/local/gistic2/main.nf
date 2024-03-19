@@ -1,4 +1,4 @@
-def VERSION="0.1"
+def VERSION = "0.1"
 process GISTIC2 {
 
     tag "Run Gistic2"
@@ -18,7 +18,7 @@ process GISTIC2 {
         path("raw_copy_number.pdf"),              emit: raw_copy_number
         path("amp_qplot.pdf"),                    emit: amp_score_qplot
         path("del_qplot.pdf"),                    emit: del_score_qplot
-        path("gistic_results", type: "dir"),      emit: gistic_results_dir
+        path("gistic_results"),                   emit: gistic_results_dir
         path("versions.yml"),                     emit: versions
 
     script:
