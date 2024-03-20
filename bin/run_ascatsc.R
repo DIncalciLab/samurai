@@ -112,10 +112,11 @@ df_final <- as.data.frame(ifelse(args$predict_refit,
         res[["allProfiles.refitted.auto"]],
         res[["allProfiles"]])) %>%
     mutate(samplename = res$summary$allSols$samplename,
-           logr = as.numeric(logr))
+        logr = as.numeric(logr))
 
 message("Creation of summary df with purity and ploidy")
-df_summary <- as.data.frame(res$summary$allSols) # Purity and ploidy are the same in refitted and non-refitted
+# Purity and ploidy are the same in refitted and non-refitted cases
+df_summary <- as.data.frame(res$summary$allSols)
 
 # save output files
 message("Saving output into rds...")
@@ -148,8 +149,14 @@ message("Computing R value...")
 R <- 2^(df_final$logr)
 
 message("Adding column with adjusted logR values...")
-df_final$adj.seg <- (df_summary$purity * df_summary$ploidy * R + 2 * (1 - df_summary$purity) * (R - 1)) /
-                     (df_summary$purity * df_summary$ploidy)
+
+df_final <- df_final %>%
+    mutate(adj.seg = (df_summary$purity * df_summary$ploidy * R +
+                      2 * (1 - df_summary$purity) * (R - 1)) /
+                      (df_summary$purity * df_summary$ploidy)
+)
+
+
 message("Creating final GISTIC df...")
 df_gistic <- df_final %>%
     dplyr::select(samplename, chromosome, start, end, num.mark, adj.seg) %>%

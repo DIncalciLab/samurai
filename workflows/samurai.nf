@@ -279,7 +279,7 @@ workflow SAMURAI {
     summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
     ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
 
-    methods_description    = WorkflowSamurai.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
+    methods_description    = WorkflowSamurai.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
     ch_methods_description = Channel.value(methods_description)
 
     ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
