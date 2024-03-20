@@ -13,7 +13,7 @@ workflow RUN_GISTIC {
         GISTIC2(gistic_results_dir)
         ch_versions = ch_versions.mix(GISTIC2.out.versions)
 
-        ASSEMBLE_GISTIC_OUTPUT(GISTIC2.out.all_lesions)
+        ASSEMBLE_GISTIC_OUTPUT(GISTIC2.out.gistic_results_dir)
         ch_versions = ch_versions.mix(ASSEMBLE_GISTIC_OUTPUT.out.versions)
 
         MAFTOOLS(GISTIC2.out.all_lesions,
