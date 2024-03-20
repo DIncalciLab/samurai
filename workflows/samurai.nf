@@ -296,7 +296,7 @@ workflow SAMURAI {
 
     // Run GISTIC if specified, default: false
     if (params.run_gistic) {
-        RUN_GISTIC(gistic_file)
+        RUN_GISTIC(gistic_file, Channel.value(params.genome))
         ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_lesions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.chrom_plot)

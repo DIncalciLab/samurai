@@ -8,6 +8,7 @@ process GISTIC2 {
 
     input:
         path(seg_file)
+        val(genome)
 
 
     output:
@@ -25,16 +26,22 @@ process GISTIC2 {
 
     def args = task.ext.args ?: ''
     // Inside the container
-    def ref_gene_file = params.genome == 'hg38' ? "-refgene '/opt/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'" : "-refgene '/opt/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
+    switch(genome) {
+        case "hg38":
+            def ref_gene_file = "-refgene '/opt/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'"
+            break
+        case "hg19":
+            def ref_gene_file = "-refgene '/opt/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
+            break
+        default:
+            error "Unsupported genome ${genome}"
+    }
 
     """
     gistic2 \\
         -seg '${seg_file}' \\
         ${ref_gene_file} \\
-        -ta ${params.gistic_t_amp} \\
-        -td ${params.gistic_t_del} \\
-        -rx ${params.gistic_remove_x} \\
-        -conf ${params.gistic_conf} \\
+        ${args} \\
         -b ./
 
     mkdir -p gistic_results

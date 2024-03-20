@@ -6,11 +6,12 @@ workflow RUN_GISTIC {
 
     take:
         gistic_results_dir
+        genome // value: genome
 
     main:
         ch_versions = Channel.empty()
 
-        GISTIC2(gistic_results_dir)
+        GISTIC2(gistic_results_dir, genome)
         ch_versions = ch_versions.mix(GISTIC2.out.versions)
 
         ASSEMBLE_GISTIC_OUTPUT(GISTIC2.out.gistic_results_dir)
