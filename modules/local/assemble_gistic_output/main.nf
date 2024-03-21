@@ -33,9 +33,8 @@ process ASSEMBLE_GISTIC_OUTPUT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        Assemble Gistic Output: ${VERSION}
+        gistic-cli: \$(gistic --version | cut -d ' ' -f2)
     END_VERSIONS
     """
-
 
 }
