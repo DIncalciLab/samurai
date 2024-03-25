@@ -10,6 +10,7 @@ process CONVERT_GISTIC_SEG {
         tuple val(meta), path(aberrations)
     output:
         tuple val(meta), path("*.seg"), emit: segfile
+        tuple val(meta), path("*_gistic.seg"), emit: gistic_file
         path "versions.yml",           emit: versions
 
     when:
@@ -25,7 +26,8 @@ process CONVERT_GISTIC_SEG {
         ${segments} \\
         ${bins} \\
         ${aberrations} \\
-        ${prefix}.seg
+        ${prefix}.seg \\
+        ${prefix}_gistic.seg
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

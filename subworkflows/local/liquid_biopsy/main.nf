@@ -105,11 +105,11 @@ workflow LIQUID_BIOPSY {
 
                 called_segments     = WISECONDORX_PREDICT.out.calls
 
-                CONVERT_GISTIC_SEG.out.segfile
+                CONVERT_GISTIC_SEG.out.gistic_file
                                     .map{meta, data -> data}
                                     .collectFile(name: "all_segments_wisecondorx_gistic.seg",
-                                                    skip: 1,
-                                                    storeDir: "${params.outdir}/wisecondorx/" )
+                                    skip:1,
+                                    storeDir: "${params.outdir}/wisecondorx/" )
                                     .set{ gistic_file }
                 ASSEMBLE_WISECONDORX_OUTPUTS(
                             WISECONDORX_PREDICT.out.statistics.collect{

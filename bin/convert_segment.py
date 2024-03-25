@@ -100,16 +100,23 @@ def main() -> None:
     parser.add_argument("bins", help="File containing bins")
     parser.add_argument("aberrations", help="File containing aberration calls")
     parser.add_argument("destination", help="File to save results to")
+    parser.add_argument("destination_gistic", help="File to save results to")
 
     options = parser.parse_args()
     segments = pd.read_table(options.segments)
     bins = pd.read_table(options.bins)
     aberrations = pd.read_table(options.aberrations)
     destination = options.destination
+    destination_gistic = options.destination_gistic
 
     converted_df = convert_to_seg(segments, bins, aberrations, sample=options.id)
 
     converted_df.to_csv(destination, sep="\t", index=False)
+
+    # Remove the 'call' column
+    gistic_df = converted_df.remove_columns("call").rename_column("seg.mean.adj", "seg.mean")
+
+    gistic_df.to_csv(destination_gistic, sep="\t", index=False)
 
 
 if __name__ == "__main__":
