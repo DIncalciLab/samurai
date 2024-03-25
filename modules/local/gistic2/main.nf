@@ -41,14 +41,7 @@ process GISTIC2 {
     }
 
 
-    """
-    export MCR_CACHE_ROOT=/tmp/mcr_cache 
-
-    LANG=C.uft8
-    LANGUAGE=C.utf8
-    LC_CTYPE="C.utf8"
-    LC_ALL=C.utf8
-    
+    """   
     gistic2 \\
         -seg '${seg_file}' \\
         ${ref_gene_file} \\
