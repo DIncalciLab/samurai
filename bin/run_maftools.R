@@ -20,18 +20,23 @@ parser <- add_argument(parser, "--del_genes",
 parser <- add_argument(parser, "--gistic_scores",
     help = "Paths to the GISTIC scores file.",
     nargs = Inf)
+parser <- add_argument(parser, "--ref_build",
+    help = "Reference genome build", default="hg38")
 
 args <- parse_args(parser)
 
 gistic_obj <- readGistic(gisticAllLesionsFile = args$all_lesions,
-    gisticAmpGenesFile = args$amp_genes,
-    gisticDelGenesFile = args$del_genes,
-    gisticScoresFile = args$gistic_scores)
+                        gisticAmpGenesFile = args$amp_genes,
+                        gisticDelGenesFile = args$del_genes,
+                        gisticScoresFile = args$gistic_scores)
 
-png(filename="maftools_summary_mqc.png")
-gisticChromPlot(gistic = gistic_obj, markBands = "all")
+png(filename="maftools_summary_mqc.png", width = 800, height = 480, res=90)
+par(srt = 30, xpd = TRUE)
+gisticChromPlot(gistic = gistic_obj, 
+                markBands = "all", 
+                ref.build = args$ref_build, cytobandOffset = 0.4, txtSize = 0.9, cytobandTxtSize = 0.5)
 dev.off()
 
-png(filename="maftools_bubble.png")
+png(filename="maftools_bubble.png", width = 2000, height = 600, units = "px", res=150)
 gisticBubblePlot(gistic = gistic_obj)
 dev.off()

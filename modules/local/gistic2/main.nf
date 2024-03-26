@@ -25,19 +25,23 @@ process GISTIC2 {
     script:
 
     def args = task.ext.args ?: ''
+    
     // Inside the container
+    def ref_gene_file // Because it was only declared inside the scope of 'switch' statement and it was not accessible outside of that block
+
     switch(genome) {
         case "hg38":
-            def ref_gene_file = "-refgene '/opt/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'"
+            ref_gene_file = "-refgene '/opt/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'"
             break
         case "hg19":
-            def ref_gene_file = "-refgene '/opt/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
+            ref_gene_file = "-refgene '/opt/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
             break
         default:
             error "Unsupported genome ${genome}"
     }
 
-    """
+
+    """   
     gistic2 \\
         -seg '${seg_file}' \\
         ${ref_gene_file} \\
