@@ -57,9 +57,6 @@ include { BAM_QC_PICARD                 } from '../subworkflows/nf-core/bam_qc_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Info required for completion email and summary
-def multiqc_report = []
-
 workflow SAMURAI {
 
     take:
