@@ -47,7 +47,7 @@ workflow DINCALCILAB_SAMURAI {
 
     main:
 
-    SAMURAI (samplesheet)
+    SAMURAI(samplesheet)
 
     emit:
     multiqc_report = SAMURAI.out.multiqc_report
