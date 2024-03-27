@@ -1,0 +1,39 @@
+name: SAMURAI CI
+# This workflow is triggered on pushes and PRs to the repository.
+# It runs the `nf-core lint` and markdown lint tests to ensure
+# that the code meets the nf-core guidelines.
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+
+env:
+  NXF_ANSI_LOG: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  nf-core:
+    name: Checks CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v4
+
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v1
+        with:
+          version: "23.10.1"
+
+      - name: Disk space cleanup
+        uses: jlumbroso/free-disk-space@v1.3.1
+
+      - name: Run pipeline config and test for syntax errors
+        run: |
+          nextflow config -flat .
+      - name: Run pipeline and test for syntax errors
+        run: |
+          nextflow run main.nf --help

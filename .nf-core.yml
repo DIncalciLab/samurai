@@ -25,3 +25,4 @@ lint:
     - nextflow_badge
   schema_params: false
   subworkflow_changes: false
+  actions_ci: false

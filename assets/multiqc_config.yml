@@ -28,64 +28,63 @@ extra_fn_clean_exts:
     pattern: "^markdup."
 
 top_modules:
-- "fastqc"
-- "picard"
-- "samtools"
-- "custom_data"
+  - "fastqc"
+  - "picard"
+  - "samtools"
+  - "custom_data"
 
 custom_data:
-
   qdnaseq_summary:
     id: "qdnaseq"
     section_name: "QDNAseq Summary"
-    description: 'This table shows a summary table of QDNAseq analysis.'
-    format: 'txt'
-    plot_type: 'table'
+    description: "This table shows a summary table of QDNAseq analysis."
+    format: "txt"
+    plot_type: "table"
     pconfig:
-      col1_header: 'Sample ID'
+      col1_header: "Sample ID"
     headers:
       sample:
-        title: 'Sample ID'
+        title: "Sample ID"
         placement: 1
       nr_reads:
-        title: 'Number of Reads'
+        title: "Number of Reads"
         placement: 2
-        format: '{:,.0f}'
+        format: "{:,.0f}"
       expected_var:
-        title: 'Expected Variance'
-        format: '{:,.4f}'
+        title: "Expected Variance"
+        format: "{:,.4f}"
         placement: 3
         scale: False
       expected_sd:
-        title: 'Expected Standard Deviation'
-        format: '{:,.4f}'
+        title: "Expected Standard Deviation"
+        format: "{:,.4f}"
         placement: 4
         scale: False
       binsize:
-        title: 'Size of bins'
-        format: '{:,.0f}'
+        title: "Size of bins"
+        format: "{:,.0f}"
         placement: 5
 
   ascatsc_summary:
     id: "ascatsc"
     section_name: "ASCAT.sc Summary"
     description: "This table shows purity and ploidy values computed by ASCAT.sc."
-    format: 'txt'
-    plot_type: 'table'
+    format: "txt"
+    plot_type: "table"
     pconfig:
-      col1_header: 'Sample ID'
+      col1_header: "Sample ID"
     headers:
       samplename:
-        title: 'Sample ID'
+        title: "Sample ID"
         placement: 1
       purity:
-        title: 'Purity'
-        format: '{:,.4f}'
+        title: "Purity"
+        format: "{:,.4f}"
         placement: 2
         scale: False
       ploidy:
-        title: 'Ploidy'
-        format: '{:,.4f}'
+        title: "Ploidy"
+        format: "{:,.4f}"
         placement: 3
         scale: False
 
@@ -93,27 +92,27 @@ custom_data:
     id: "wisecondorx"
     section_name: "WisecondorX Summary"
     description: "This table shows the Copy Number Score (CPA) and Median Segment Variance (MSV) computed by WisecondorX."
-    format: 'txt'
-    plot_type: 'table'
+    format: "txt"
+    plot_type: "table"
     pconfig:
-      col1_header: 'Sample ID'
+      col1_header: "Sample ID"
     headers:
       sample:
-        title: 'Sample ID'
+        title: "Sample ID"
         placement: 1
       reads:
-        title: 'Number of Reads'
+        title: "Number of Reads"
         placement: 2
-        format: '{:,.0f}'
+        format: "{:,.0f}"
         scale: False
       cpa:
-        title: 'Copy number profile abnormality Score'
-        format: '{:,.4f}'
+        title: "Copy number profile abnormality Score"
+        format: "{:,.4f}"
         placement: 3
         scale: False
       msv:
-        title: 'Median segment variance'
-        format: '{:,.4f}'
+        title: "Median segment variance"
+        format: "{:,.4f}"
         placement: 4
         scale: False
 
@@ -121,26 +120,26 @@ custom_data:
     id: "ichorcna"
     section_name: "IchorCNA"
     description: "This table shows the tumor fraction and ploidy estimates made by ichorCNA."
-    plot_type: 'table'
+    plot_type: "table"
     pconfig:
-      col1_header: 'Sample ID'
+      col1_header: "Sample ID"
     headers:
       samplename:
         title: "Sample ID"
         placement: 1
       Ploidy:
-        title: 'Ploidy'
-        format: '{:,.0f}'
+        title: "Ploidy"
+        format: "{:,.0f}"
         placement: 2
         scale: False
       Tumor Fraction:
-        title: 'Tumor fraction'
-        format: '{:,.4f%}'
+        title: "Tumor fraction"
+        format: "{:,.4f%}"
         placement: 3
         scale: False
       GC-Map correction MAD:
-        title: 'MAD'
-        format: '{:,.4f}'
+        title: "MAD"
+        format: "{:,.4f}"
         placement: 4
         max: 0.5
         cond_formatting_rules:
@@ -155,55 +154,55 @@ custom_data:
     id: "gistic"
     section_name: "Gistic Analysis Summary"
     description: "This table shows significant lesions identified by GISTIC2 analysis. \n
-                  Focal lesions are alterations which span less than 25% of a chromosomal arm. \n
-                  Broad lesions span more than 25% of the chromosomal arm, but less than a whole arm"
-    plot_type: 'table'
+      Focal lesions are alterations which span less than 25% of a chromosomal arm. \n
+      Broad lesions span more than 25% of the chromosomal arm, but less than a whole arm"
+    plot_type: "table"
     pconfig:
-      col1_header: 'Chromosome'
+      col1_header: "Chromosome"
     headers:
       chromosome:
-        title: 'Chromosome'
+        title: "Chromosome"
         placement: 1
       cytoband:
-        title: 'Cytoband'
+        title: "Cytoband"
         placement: 2
       start:
-        title: 'Start'
+        title: "Start"
         placement: 3
-        format: '{:,.0f}'
+        format: "{:,.0f}"
         scale: False
       end:
-        title: 'End'
+        title: "End"
         placement: 4
-        format: '{:,.0f}'
+        format: "{:,.0f}"
         scale: False
       length:
-        title: 'Length'
+        title: "Length"
         placement: 5
-        format: '{:,.0f}'
+        format: "{:,.0f}"
         scale: False
       kind:
-        title: 'CN Kind'
+        title: "CN Kind"
         placement: 6
         cond_formatting_rules:
-           pass:
-             - s_eq: 'Amp'
-           warn:
-             - s_eq: 'Neut'
-           fail:
-             - s_eq: 'Del'
+          pass:
+            - s_eq: "Amp"
+          warn:
+            - s_eq: "Neut"
+          fail:
+            - s_eq: "Del"
       frequency:
-        title: 'Lesion Frequency'
+        title: "Lesion Frequency"
         placement: 7
-        format: '{:,.2f}'
+        format: "{:,.2f}"
         scale: False
       counts:
-        title: 'Nr. of Samples'
+        title: "Nr. of Samples"
         placement: 8
-        format: '{:,.0f}'
+        format: "{:,.0f}"
         scale: False
       lesion_type:
-        title: 'Type of Lesion'
+        title: "Type of Lesion"
         placement: 9
 
   maftools_summary:

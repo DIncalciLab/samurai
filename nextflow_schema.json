@@ -66,11 +66,13 @@
                 },
                 "fai": {
                     "type": "string",
-                    "description": "Path to the FASTA FAI index"
+                    "description": "Path to the FASTA FAI index",
+                    "help_text": "A path to a FASTA index file. If not available, will be automatically searched."
                 },
                 "dict": {
                     "type": "string",
-                    "description": "Path to the FASTA sequence dictionary"
+                    "description": "Path to the FASTA sequence dictionary",
+                    "help_text": "A path to a FASTA dictionary file. If not available, will be automatically searched."
                 },
                 "igenomes_base": {
                     "type": "string",
@@ -265,18 +267,6 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "validationFailUnrecognisedParams": {
-                    "type": "boolean",
-                    "hidden": true
-                },
-                "validationLenientMode": {
-                    "type": "boolean",
-                    "hidden": true
-                },
-                "validationShowHiddenParams": {
-                    "type": "boolean",
-                    "hidden": true
                 }
             }
         },
@@ -291,12 +281,15 @@
                     "default": 1
                 },
                 "size_selection": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "help_text": "Whether to perform ctDNA size selection (including only fragments between 90 and 150bp; Mouliere et al., 2018) or not.",
+                    "description": "Perform ctDNA size selection (true) or not (false)"
                 },
                 "title": {
                     "type": "string",
                     "default": "Fragment size distribution",
-                    "hidden": true
+                    "hidden": true,
+                    "description": "Title for the plot of the fragment size distribution"
                 },
                 "max_fragmentsize": {
                     "type": "integer",
@@ -315,7 +308,8 @@
                     "type": "string",
                     "default": "bwamem",
                     "enum": ["bwamem", "bwamem2"],
-                    "description": "Aligner to use"
+                    "description": "Aligner to use",
+                    "help_text": "The aligner to use, either \"bwamem\" or \"bwamem\"."
                 },
                 "index_genome": {
                     "type": "boolean",
@@ -414,31 +408,38 @@
             "properties": {
                 "ichorcna_genome_style": {
                     "type": "string",
-                    "default": "UCSC"
+                    "default": "UCSC",
+                    "description": "Genome style to be used by ichorCNA (NCBI or UCSC)"
                 },
                 "ichorcna_readcounter_chrs": {
                     "type": "string",
-                    "default": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22"
+                    "default": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22",
+                    "description": "Chromosomes to used by ichorCNA"
                 },
                 "ichorcna_readcounter_quality": {
                     "type": "integer",
-                    "default": 20
+                    "default": 20,
+                    "description": "Minimum read count quality to keep in ichorCNA"
                 },
                 "ichorcna_chrs_to_use": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))"
+                    "default": "paste0(\\'chr\\', c(1:22))",
+                    "description": "Chromosomes to use for ichorCNA"
                 },
                 "ichorcna_chrs_to_train": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))"
+                    "default": "paste0(\\'chr\\', c(1:22))",
+                    "description": "Chromosomes to use for training during an ichorCNA run"
                 },
                 "ichorcna_chrs_to_normalize": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))"
+                    "default": "paste0(\\'chr\\', c(1:22))",
+                    "description": "Chromosomes to use for normalization during an ichorCNA run"
                 },
                 "ichorcna_estimate_normal": {
                     "type": "string",
-                    "default": "TRUE"
+                    "default": "TRUE",
+                    "description": "Whether ichorCNA should estimate normal contamination or not"
                 },
                 "ichorcna_fraction_reads_male": {
                     "type": "number",
@@ -450,7 +451,8 @@
                 },
                 "ichorcna_min_map_score": {
                     "type": "number",
-                    "default": 0.75
+                    "default": 0.75,
+                    "description": "Minimum mapping score for reads to be used by ichorCNA"
                 },
                 "ichorcna_max_frac_genome_subclone": {
                     "type": "number",
@@ -466,11 +468,13 @@
                 },
                 "ichorcna_max_cn": {
                     "type": "integer",
-                    "default": 5
+                    "default": 5,
+                    "description": "Maximum copy number to be considered by ichorCNA"
                 },
                 "ichorcna_include_homd": {
                     "type": "string",
-                    "default": "FALSE"
+                    "default": "FALSE",
+                    "description": "Call also homozygous deletions in ichorCNA"
                 },
                 "ichorcna_txne": {
                     "type": "number",
@@ -493,18 +497,21 @@
                     "default": "c(-2,4)"
                 },
                 "ichorcna_estimate_sc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Estimate copy number subclonality in ichorCNA"
                 },
                 "ichorcna_estimate_ploidy": {
                     "type": "boolean",
-                    "default": true
+                    "default": true,
+                    "description": "Estimate ploidy in ichorCNA"
                 },
                 "ichorcna_filter_bam_pon": {
                     "type": "boolean"
                 },
                 "ichorcna_normal_states": {
                     "type": "string",
-                    "default": "0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99"
+                    "default": "0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99",
+                    "description": "Fraction of normal copy number states used in ichorCNA"
                 },
                 "ichorcna_gc_wig": {
                     "type": "string",
@@ -540,7 +547,8 @@
             "properties": {
                 "wisecondorx_blacklist": {
                     "type": "string",
-                    "format": "file-path"
+                    "format": "file-path",
+                    "description": "Path to a BED file including loci not to be included in the WisecondorX analysis"
                 },
                 "wisecondorx_no_rm_dup": {
                     "type": "boolean",
@@ -660,7 +668,8 @@
                 },
                 "fastp_umi_loc": {
                     "type": "string",
-                    "enum": ["read1", "read2", "per_read"]
+                    "enum": ["read1", "read2", "per_read"],
+                    "description": "Location of UMIs in the read"
                 },
                 "fastp_umi_skip": {
                     "type": "integer",
@@ -733,16 +742,6 @@
         }
     ],
     "properties": {
-        "schema_ignore_params": {
-            "type": "string",
-            "default": "genomes"
-        },
-        "validationSkipDuplicateCheck": {
-            "type": "boolean"
-        },
-        "validationS3PathCheck": {
-            "type": "boolean"
-        },
         "compute_signatures": {
             "type": "boolean",
             "description": "Compute chromosomal instability signatures (Drews et al., 2022)"

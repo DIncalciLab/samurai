@@ -11,38 +11,24 @@ nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+include { SAMURAI } from './workflows/samurai'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_samurai_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_samurai_pipeline'
+include { getGenomeAttribute      } from './subworkflows/local/utils_samurai_pipeline'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     GENOME PARAMETER VALUES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-params.fasta   = WorkflowMain.getGenomeAttribute(params, 'fasta')
-params.fai     = WorkflowMain.getGenomeAttribute(params, 'fai')
-params.dict    = WorkflowMain.getGenomeAttribute(params, 'dict')
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE & PRINT PARAMETER SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-include { validateParameters; paramsHelp } from 'plugin/nf-validation'
-
-// Print help message if needed
-if (params.help) {
-    def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-    def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-    def String command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv --genome hg38 -profile docker"
-    log.info logo + paramsHelp(command) + citation + NfcoreTemplate.dashedLine(params.monochrome_logs)
-    System.exit(0)
-}
-
-// Validate input parameters
-if (params.validate_params) {
-    validateParameters()
-}
-
-WorkflowMain.initialise(workflow, params, log, args)
+params.fasta   = getGenomeAttribute('fasta')
+params.fai     = getGenomeAttribute('fai')
+params.dict    = getGenomeAttribute('dict')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,13 +36,21 @@ WorkflowMain.initialise(workflow, params, log, args)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { SAMURAI } from './workflows/samurai'
 
 //
 // WORKFLOW: Run main dincalcilab/samurai analysis pipeline
 //
 workflow DINCALCILAB_SAMURAI {
-    SAMURAI ()
+
+    take:
+    samplesheet
+
+    main:
+
+    SAMURAI(samplesheet)
+
+    emit:
+    multiqc_report = SAMURAI.out.multiqc_report
 }
 
 /*
@@ -70,7 +64,30 @@ workflow DINCALCILAB_SAMURAI {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    DINCALCILAB_SAMURAI ()
+
+    PIPELINE_INITIALISATION (
+        params.version,
+        params.help,
+        params.validate_params,
+        params.monochrome_logs,
+        args,
+        params.outdir,
+        params.input
+    )
+
+    DINCALCILAB_SAMURAI (
+        PIPELINE_INITIALISATION.out.samplesheet
+    )
+
+    PIPELINE_COMPLETION (
+        params.email,
+        params.email_on_fail,
+        params.plaintext_email,
+        params.outdir,
+        params.monochrome_logs,
+        params.hook_url,
+        DINCALCILAB_SAMURAI.out.multiqc_report
+    )
 }
 
 /*
