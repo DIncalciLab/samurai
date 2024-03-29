@@ -37,6 +37,7 @@ include { RUN_GISTIC                    } from '../subworkflows/local/run_gistic
 //
 
 include { FASTQC                        } from '../modules/nf-core/fastqc/main'
+include { MOSDEPTH                      } from '../modules/nf-core/mosdepth/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { SAMTOOLS_INDEX                } from '../modules/nf-core/samtools/index/main'
@@ -208,6 +209,19 @@ workflow SAMURAI {
         BAM_QC_PICARD.out.multiple_metrics.collect{
             meta, metrics -> metrics
         }
+    )
+
+    MOSDEPTH(
+        ch_bam_bai.map {
+                meta, bam, bai -> [meta, bam, bai, [], []]
+            },
+            ch_fasta,
+            ch_fai,
+            ch_dict
+    )
+
+    ch_versions = ch_versions.mix(
+        MOSDEPTH.out.versions.first()
     )
 
     // CN Calling
