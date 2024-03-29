@@ -214,10 +214,8 @@ workflow SAMURAI {
     MOSDEPTH(
         ch_bam_bai.map {
                 meta, bam, bai -> [meta, bam, bai, [], []]
-            },
-            ch_fasta,
-            ch_fai,
-            ch_dict
+        },
+        ch_fasta,
     )
 
     ch_versions = ch_versions.mix(
