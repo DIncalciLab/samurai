@@ -213,7 +213,7 @@ workflow SAMURAI {
 
     MOSDEPTH(
         ch_bam_bai.map {
-                meta, bam, bai -> [meta, bam, bai, [], []]
+                meta, bam, bai -> [meta, bam, bai, []]
         },
         ch_fasta,
     )
