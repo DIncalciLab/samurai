@@ -222,10 +222,12 @@ workflow SAMURAI {
         MOSDEPTH.out.versions.first()
     )
 
-    ch_multiqc_files = ch_multiqc_files.mix(MOSDEPTH.out.global_txt)
-    ch_multiqc_files = ch_multiqc_files.mix(MOSDEPTH.out.summary_txt)
-    ch_multiqc_files = ch_multiqc_files.mix(MOSDEPTH.out.per_base_bed)
-    ch_multiqc_files = ch_multiqc_files.mix(MOSDEPTH.out.per_base_csi)
+    ch_multiqc_files = ch_multiqc_files.mix(MOSDEPTH.out.global_txt.map {
+        meta, output -> output
+    })
+    ch_multiqc_files = ch_multiqc_files.mix(MOSDEPTH.out.summary_txt.map {
+        meta, output -> output
+    })
 
     // CN Calling
 
