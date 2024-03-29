@@ -172,31 +172,6 @@ workflow SAMURAI {
                         [ meta, bam, csi ]
                 }
         }
-
-        // QC metrics about alignment (coverage, etc.)
-        BAM_QC_PICARD(
-            // sWGS has neither baits nor targets, 3rd and 4th args are thus empty
-            ch_bam_bai.map {
-                meta, bam, bai -> [meta, bam, bai, [], []]
-            },
-            ch_fasta,
-            ch_fai,
-            ch_dict
-        )
-
-        ch_versions = ch_versions.mix(
-            BAM_QC_PICARD.out.versions.first()
-        )
-        ch_multiqc_files = ch_multiqc_files.mix(
-                BAM_QC_PICARD.out.coverage_metrics.collect{
-                meta, metrics -> metrics
-            }
-        )
-        ch_multiqc_files = ch_multiqc_files.mix(
-            BAM_QC_PICARD.out.multiple_metrics.collect{
-                meta, metrics -> metrics
-            }
-        )
     } else {
         // Just index the files and we're good to go
         SAMTOOLS_INDEX(ch_input)
@@ -209,6 +184,42 @@ workflow SAMURAI {
         }
 
     }
+
+    // QC metrics about alignment (coverage, etc.)
+    BAM_QC_PICARD(
+            // sWGS has neither baits nor targets, 3rd and 4th args are thus empty
+            ch_bam_bai.map {
+                meta, bam, bai -> [meta, bam, bai, [], []]
+            },
+            ch_fasta,
+            ch_fai,
+            ch_dict
+    )
+
+    // QC metrics about alignment (coverage, etc.)
+    BAM_QC_PICARD(
+        // sWGS has neither baits nor targets, 3rd and 4th args are thus empty
+        ch_bam_bai.map {
+            meta, bam, bai -> [meta, bam, bai, [], []]
+        },
+        ch_fasta,
+        ch_fai,
+        ch_dict
+    )
+
+    ch_versions = ch_versions.mix(
+        BAM_QC_PICARD.out.versions.first()
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(
+            BAM_QC_PICARD.out.coverage_metrics.collect{
+            meta, metrics -> metrics
+        }
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(
+        BAM_QC_PICARD.out.multiple_metrics.collect{
+            meta, metrics -> metrics
+        }
+    )
 
     // CN Calling
 
