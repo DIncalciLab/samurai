@@ -196,17 +196,6 @@ workflow SAMURAI {
             ch_dict
     )
 
-    // QC metrics about alignment (coverage, etc.)
-    BAM_QC_PICARD(
-        // sWGS has neither baits nor targets, 3rd and 4th args are thus empty
-        ch_bam_bai.map {
-            meta, bam, bai -> [meta, bam, bai, [], []]
-        },
-        ch_fasta,
-        ch_fai,
-        ch_dict
-    )
-
     ch_versions = ch_versions.mix(
         BAM_QC_PICARD.out.versions.first()
     )
