@@ -8,7 +8,7 @@ report_section_order:
   signatures_summary:
     before: "ascatsc"
   maftools_summary:
-    after: "gistic"
+    before: "gistic"
   qdnaseq_summary:
     before: "ascatsc"
   ichorcna_summary:

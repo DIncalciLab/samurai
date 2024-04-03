@@ -117,6 +117,7 @@ df_final <- as.data.frame(ifelse(args$predict_refit,
 message("Creation of summary df with purity and ploidy")
 # Purity and ploidy are the same in refitted and non-refitted cases
 df_summary <- as.data.frame(res$summary$allSols)
+df_summary$samplename <- args$project
 
 # save output files
 message("Saving output into rds...")
