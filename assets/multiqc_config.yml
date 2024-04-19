@@ -3,6 +3,7 @@ custom_logo_title: "SAMURAI"
 
 table_columns_visible:
   "MEDIAN_COVERAGE": false
+  "MEAN_COVERAGE": false
   "SD_COVERAGE": false
   "PCT_30X": false
   "median_coverage": false
