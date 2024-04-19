@@ -1,18 +1,12 @@
 custom_logo: "samurai_logo_mqc.png"
 custom_logo_title: "SAMURAI"
 
-custom_table_header_config:
-  table-general_stats_table:
-    MEDIAN_COVERAGE:
-      hidden: true
-    SD_COVERAGE:
-      hidden: true
-    PCT_30X:
-      hidden: true
-    median_coverage:
-      hidden: true
-    mean_coverage:
-      hidden: false
+table_columns_visible:
+  "MEDIAN_COVERAGE": false
+  "SD_COVERAGE": false
+  "PCT_30X": false
+  "median_coverage": false
+  "mean_coverage": true
 
 mosdepth_config:
   include_contigs:
