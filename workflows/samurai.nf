@@ -173,19 +173,7 @@ workflow SAMURAI {
                 }
         }
 
-        ch_versions = ch_versions.mix(
-            BAM_QC_PICARD.out.versions.first()
-        )
-        ch_multiqc_files = ch_multiqc_files.mix(
-                BAM_QC_PICARD.out.coverage_metrics.collect{
-                meta, metrics -> metrics
-            }
-        )
-        ch_multiqc_files = ch_multiqc_files.mix(
-            BAM_QC_PICARD.out.multiple_metrics.collect{
-                meta, metrics -> metrics
-            }
-        )
+
     } else {
         // Just index the files and we're good to go
         SAMTOOLS_INDEX(ch_input)
@@ -208,6 +196,20 @@ workflow SAMURAI {
         ch_fasta,
         ch_fai,
         ch_dict
+    )
+
+    ch_versions = ch_versions.mix(
+            BAM_QC_PICARD.out.versions.first()
+        )
+    ch_multiqc_files = ch_multiqc_files.mix(
+            BAM_QC_PICARD.out.coverage_metrics.collect{
+            meta, metrics -> metrics
+        }
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(
+        BAM_QC_PICARD.out.multiple_metrics.collect{
+            meta, metrics -> metrics
+        }
     )
 
     // CN Calling
