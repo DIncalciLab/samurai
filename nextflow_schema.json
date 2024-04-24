@@ -632,8 +632,7 @@
                     "description": "Default log2ratio threshold to call deletions."
                 },
                 "gistic_remove_x": {
-                    "type": "integer",
-                    "default": 0,
+                    "type": "boolean",
                     "description": "Whether to remove or not chrosome X from the analysis."
                 },
                 "gistic_conf": {
@@ -645,6 +644,20 @@
                     "type": "number",
                     "default": 0.05,
                     "description": "Maximum q-value to call a region significant."
+                },
+                "gistic_broad_analysis": {
+                    "type": "boolean",
+                    "description": "Run arm-level (broad) analysis."
+                },
+                "gistic_broad_chr_length": {
+                    "type": "number",
+                    "default": 0.99,
+                    "description": "Fraction of altered chromosome to be included in broad analysis."
+                },
+                "gistic_cn_cap": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "GISTIC maximum copy number (higher values will be floored) ."
                 }
             }
         },
