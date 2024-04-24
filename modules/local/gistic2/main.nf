@@ -21,7 +21,7 @@ process GISTIC2 {
         path("del_qplot.pdf"),                    emit: del_score_qplot
         path("gistic_results"),                   emit: gistic_results_dir
         path("broad_values_by_arm.txt"),          emit: broad_values_per_arm, optional: true
-        path("broad_significance_results.txt")    emit: broad_results, optional: true
+        path("broad_significance_results.txt"),   emit: broad_results, optional: true
         path("versions.yml"),                     emit: versions
 
     script:
