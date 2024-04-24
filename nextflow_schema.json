@@ -640,6 +640,11 @@
                     "type": "number",
                     "default": 0.99,
                     "description": "GISTIC confidence level for calling recurrent altered regions."
+                },
+                "gistic_qval": {
+                    "type": "number",
+                    "default": 0.05,
+                    "description": "Maximum q-value to call a region significant."
                 }
             }
         },
