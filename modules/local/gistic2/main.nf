@@ -20,12 +20,14 @@ process GISTIC2 {
         path("amp_qplot.pdf"),                    emit: amp_score_qplot
         path("del_qplot.pdf"),                    emit: del_score_qplot
         path("gistic_results"),                   emit: gistic_results_dir
+        path("broad_values_by_arm.txt"),          emit: broad_values_per_arm, optional: true
+        path("broad_significance_results.txt")    emit: broad_results, optional: true
         path("versions.yml"),                     emit: versions
 
     script:
 
     def args = task.ext.args ?: ''
-    
+
     // Inside the container
     def ref_gene_file // Because it was only declared inside the scope of 'switch' statement and it was not accessible outside of that block
 
@@ -41,7 +43,7 @@ process GISTIC2 {
     }
 
 
-    """   
+    """
     gistic2 \\
         -seg '${seg_file}' \\
         ${ref_gene_file} \\
@@ -50,6 +52,7 @@ process GISTIC2 {
 
     mkdir -p gistic_results
     cp all_lesions.conf* {amp,del}_genes.conf* scores.gistic *.pdf  gistic_results/
+    cp broad*  gistic_results/
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
