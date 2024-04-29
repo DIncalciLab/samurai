@@ -212,6 +212,32 @@ custom_data:
         title: "Type of Lesion"
         placement: 9
 
+  gistic_broad_lesions:
+    id: "gistic_broad"
+    section_name: "Gistic arm-level analysis summary"
+    description: |
+      This table shows significant recurrent arm-level alterations identified by GISTIC2.
+      Each alteration has an associated frequency and q-value for statistical significance.
+    plot_type: "table"
+    pconfig:
+      col1_header: "Arm"
+    headers:
+      Arm:
+        title: "Arm"
+        placement: 1
+      kind:
+        title: "Type of alteration"
+        placement: 2
+      count:
+        title: "No. of samples"
+        placement: 3
+      frequency:
+        title: "Frequency"
+        placement: 4
+      "q-value":
+        title: "q-value"
+        placement: 5
+
   maftools_summary:
     id: "maftools"
     section_name: "Gistic Analysis"
