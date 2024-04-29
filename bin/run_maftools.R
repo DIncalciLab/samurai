@@ -21,7 +21,9 @@ parser <- add_argument(parser, "--gistic_scores",
     help = "Paths to the GISTIC scores file.",
     nargs = Inf)
 parser <- add_argument(parser, "--ref_build",
-    help = "Reference genome build", default="hg38")
+    help = "Reference genome build", default = "hg38")
+parser <- add_argument(parser, "--cutoff",
+    help = "q-value cutoff to display bands", default = 0.05)
 
 args <- parse_args(parser)
 
@@ -34,8 +36,10 @@ png(filename="maftools_summary_mqc.png", width = 1600, height = 800, res = 150)
 par(srt = 30, xpd = TRUE)
 gisticChromPlot(gistic = gistic_obj,
                 markBands = "all",
-                ref.build = args$ref_build, cytobandOffset = 0.4,
+                ref.build = args$ref_build,
+                cytobandOffset = 0.4,
                 txtSize = 0.9, cytobandTxtSize = 0.5,
+                fdrCutoff = args$cutoff,
                 ylim = c(-10, 10))
 dev.off()
 
