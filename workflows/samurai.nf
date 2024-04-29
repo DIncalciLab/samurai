@@ -258,6 +258,7 @@ workflow SAMURAI {
         RUN_GISTIC(gistic_file, genome)
         ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_lesions)
+        ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_broad_lesions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.chrom_plot)
     }
 

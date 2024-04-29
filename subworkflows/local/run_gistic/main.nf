@@ -25,6 +25,7 @@ workflow RUN_GISTIC {
 
     emit:
         gistic_lesions              = ASSEMBLE_GISTIC_OUTPUT.out.gistic_lesions
+        gistic_broad_lesions        = ASSEMBLE_GISTIC_OUTPUT.out.gistic_broad_lesions
         gistic_genes                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_genes
         gistic_log_r                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_log_r
         gistic_cn_states            = ASSEMBLE_GISTIC_OUTPUT.out.gistic_cn_states
