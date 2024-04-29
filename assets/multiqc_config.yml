@@ -228,6 +228,13 @@ custom_data:
       kind:
         title: "Type of alteration"
         placement: 2
+        cond_formatting_rules:
+          pass:
+            - s_eq: "Amp"
+          warn:
+            - s_eq: "Neut"
+          fail:
+            - s_eq: "Del"
       count:
         title: "No. of samples"
         placement: 3
