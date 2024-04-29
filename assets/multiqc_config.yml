@@ -247,6 +247,8 @@ custom_data:
       count:
         title: "No. of samples"
         placement: 3
+        format: "{:,.0f}"
+        scale: False
       frequency:
         title: "Frequency"
         placement: 4
@@ -254,6 +256,7 @@ custom_data:
       "q-value":
         title: "q-value"
         placement: 5
+        format: "{:,.4f}"
         scale: False
 
   maftools_summary:
