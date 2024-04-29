@@ -224,7 +224,7 @@ custom_data:
       col1_header: "Arm"
     headers:
       Arm:
-        title: "Arm"
+        title: "Chromosomal arm"
         placement: 1
       kind:
         title: "Type of alteration"
