@@ -34,7 +34,9 @@ png(filename="maftools_summary_mqc.png", width = 1600, height = 800, res = 150)
 par(srt = 30, xpd = TRUE)
 gisticChromPlot(gistic = gistic_obj,
                 markBands = "all",
-                ref.build = args$ref_build, cytobandOffset = 0.4, txtSize = 0.9, cytobandTxtSize = 0.5)
+                ref.build = args$ref_build, cytobandOffset = 0.4,
+                txtSize = 0.9, cytobandTxtSize = 0.5,
+                ylim = c(-10, 10))
 dev.off()
 
 png(filename="maftools_bubble.png", width = 2000, height = 600, units = "px", res=150)
