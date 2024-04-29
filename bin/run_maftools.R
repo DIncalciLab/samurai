@@ -39,8 +39,8 @@ gisticChromPlot(gistic = gistic_obj,
                 ref.build = args$ref_build,
                 cytobandOffset = 0.4,
                 txtSize = 0.9, cytobandTxtSize = 0.5,
-                fdrCutoff = args$cutoff,
-                ylim = c(-10, 10))
+                fdrCutoff = args$cutoff)
+                # ylim = c(-10, 10))
 dev.off()
 
 png(filename="maftools_bubble.png", width = 2000, height = 600, units = "px", res=150)
