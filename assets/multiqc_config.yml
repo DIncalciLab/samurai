@@ -213,7 +213,7 @@ custom_data:
         placement: 9
 
   gistic_broad_lesions:
-    id: "gistic_broad"
+    id: "gistic_broad_lesions"
     section_name: "Gistic arm-level analysis summary"
     description: |
       This table shows significant recurrent arm-level alterations identified by GISTIC2.
@@ -241,9 +241,11 @@ custom_data:
       frequency:
         title: "Frequency"
         placement: 4
+        scale: False
       "q-value":
         title: "q-value"
         placement: 5
+        scale: False
 
   maftools_summary:
     id: "maftools"
