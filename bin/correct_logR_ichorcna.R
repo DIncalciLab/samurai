@@ -9,7 +9,7 @@ suppressPackageStartupMessages({
 
 adjustLogRatio <- function(ratio, purity, ploidy, is.log2 = TRUE, min.ratio = 2^-8) {
     if (is.log2) ratio <- 2^ratio
-    adjusted <- (purity * ploidy * ratio + 2 * (1 - purity) * ratio - 2 * (1 - purity)) / (purity * ploidy)
+    adjusted <- (purity * ploidy * ratio + 2 * (1 - purity) * ratio - 2 * (1 - purity)) / (purity * ploidy)  # nolint
     adjusted <- pmax(min.ratio, adjusted)
     if (is.log2) adjusted <- log2(adjusted)
     return(adjusted)
