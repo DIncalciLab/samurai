@@ -7,11 +7,12 @@ suppressPackageStartupMessages({
 }
 )
 
-adjustLogRatio <- function(ratio, purity, ploidy, is.log2 = TRUE, min.ratio = 2^-8) {
-    if (is.log2) ratio <- 2^ratio
-    adjusted <- (purity * ploidy * ratio + 2 * (1 - purity) * ratio - 2 * (1 - purity)) / (purity * ploidy)  # nolint
+
+adjust_log_ratio <- function(copy_number, ploidy, min.ratio = 2^-8) {
+
+    adjusted <- copy_number / ploidy
     adjusted <- pmax(min.ratio, adjusted)
-    if (is.log2) adjusted <- log2(adjusted)
+    adjusted <- log2(adjusted)
     return(adjusted)
 }
 
@@ -57,8 +58,8 @@ df <- cbind(df, df_tmp)
 #https://github.com/maitnnguyen/Oseq_CNV_Paper/blob/main/src/pipeline/step4_CNVcall.R # nolint
 
 df <- df %>%
-    dplyr::mutate(adj.seg = adjustLogRatio(seg.median.logR,
-        df_ploidy$purity, df_ploidy$ploidy))
+    dplyr::mutate(adj.seg = adjust_log_ratio(seg.median.logR,
+        ploidy = df_ploidy$ploidy))
 
 # df$adj.seg <- (df$purity*df$ploidy*R + 2*(1-df$purity)*(R - 1))/(df$purity*df$ploidy) #nolint
 
