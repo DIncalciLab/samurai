@@ -120,7 +120,9 @@ df_final <- as.data.frame(ifelse(args$predict_refit,
         res[["allProfiles.refitted.auto"]],
         res[["allProfiles"]])) %>%
     mutate(samplename = res$summary$allSols$samplename,
-        logr = as.numeric(logr))
+        logr = as.numeric(logr),
+        total_copy_number_logr=as.numeric(total_copy_number_logr),
+        total_copy_number = as.numeric(total_copy_number))
 
 message("Creation of summary df with purity and ploidy")
 # Purity and ploidy are the same in refitted and non-refitted cases
