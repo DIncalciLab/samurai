@@ -9,11 +9,11 @@ suppressPackageStartupMessages({
 }
 )
 
-adjustLogRatio <- function(ratio, purity, ploidy, is.log2 = TRUE, min.ratio = 2^-8) {
-    if (is.log2) ratio <- 2^ratio
-    adjusted <- (purity * ploidy * ratio + 2 * (1 - purity) * ratio - 2 * (1 - purity)) / (purity * ploidy)
+adjust_log_ratio <- function(copy_number, ploidy, min.ratio = 2^-8) {
+
+    adjusted <- copy_number / ploidy
     adjusted <- pmax(min.ratio, adjusted)
-    if (is.log2) adjusted <- log2(adjusted)
+    adjusted <- log2(adjusted)
     return(adjusted)
 }
 
@@ -160,7 +160,8 @@ R <- 2^(df_final$logr)
 message("Adding column with adjusted logR values...")
 
 df_final <- df_final %>%
-    mutate(adj.seg = adjustLogRatio(logr, df_summary$purity, df_summary$ploidy))
+    mutate(adj.seg = adjust_log_ratio(total_copy_number_logr,
+           ploidy = df_summary$ploidy))
 
 
 message("Creating final GISTIC df...")
