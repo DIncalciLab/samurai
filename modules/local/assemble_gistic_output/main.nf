@@ -4,7 +4,7 @@ process ASSEMBLE_GISTIC_OUTPUT {
 
     tag "Rearrange GISTIC2 output"
     label "process_single"
-    container "quay.io/dincalcilab/gistic-cli:0.4.3-eeef3b8"
+    container "quay.io/dincalcilab/gistic-cli:0.4.5-0b35405"
 
     input:
         path gistic_folder
