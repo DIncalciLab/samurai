@@ -78,6 +78,11 @@ workflow PIPELINE_INITIALISATION {
     //
     validateInputParameters()
 
+
+    if (!params.fasta) {
+        error "Error: a reference FASTA file was not provided."
+    }
+
     //
     // Create channel from input file provided through params.input
     //
