@@ -38,19 +38,17 @@ workflow BUILD_PON {
                 wigfiles = HMMCOPY_READCOUNTER_PON.out.wig.map {
                     meta, wigfile ->
                     wigfile
-                }
+                }.collect()
 
-                gc_wig              = Channel.value(params.ichorcna_gc_wig)
-                map_wig             = Channel.value(params.ichorcna_map_wig)
-                reptime_file        = Channel.value(params.ichorcna_reptime_wig)
-                centromere          = Channel.value(params.ichorcna_centromere_file)
+                // FIXME: ship these with the pipeline
+                // Use files and not values to avoid hangs (#20)
+                gc_wig              = file(params.ichorcna_gc_wig)
+                map_wig             = file(params.ichorcna_map_wig)
+                reptime_file        = file(params.ichorcna_reptime_wig)
+                centromere          = file(params.ichorcna_centromere_file)
 
-                println wigfiles.collect().view()
-                wigfiles2 = wigfiles.collectFile(name: "wigfile.txt", newLine: true)
-
-
-                ICHORCNA_GENERATE_PON(wigfiles2,
-                                    gc_wig, map_wig, centromere, reptime_file)
+                ICHORCNA_GENERATE_PON(wigfiles,
+                                     gc_wig, map_wig, centromere, reptime_file)
 
                 normal_panel = ICHORCNA_GENERATE_PON.out.pon_file
                 ch_versions = ch_versions.mix(ICHORCNA_GENERATE_PON.out.versions)
