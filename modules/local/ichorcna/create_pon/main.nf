@@ -32,7 +32,7 @@ def VERSION = '0.3.2' // Version information not provided by tool on CLI
 
 """
 
-echo "${wigfiles.join("\n")}" > PoN_wigfiles.txt
+echo "${wigfile_list.join("\n")}" > PoN_wigfiles.txt
 
 ${ichorcna_script}\\
     --filelist PoN_wigfiles.txt \\
