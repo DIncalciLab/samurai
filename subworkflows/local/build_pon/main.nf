@@ -36,16 +36,18 @@ workflow BUILD_PON {
 
                 HMMCOPY_READCOUNTER_PON(ch_bam_for_pon)
                 wigfiles = HMMCOPY_READCOUNTER_PON.out.wig.map {
-                    it ->
-                    it[1]
-                }
+                    meta, wigfile ->
+                    wigfile
+                }.collectFile("wigfiles.txt")
 
                 gc_wig              = Channel.value(params.ichorcna_gc_wig)
                 map_wig             = Channel.value(params.ichorcna_map_wig)
                 reptime_file        = Channel.value(params.ichorcna_reptime_wig)
                 centromere          = Channel.value(params.ichorcna_centromere_file)
 
-                ICHORCNA_GENERATE_PON(wigfiles.collect(),
+
+
+                ICHORCNA_GENERATE_PON(wigfiles,
                                     gc_wig, map_wig, centromere, reptime_file)
 
                 normal_panel = ICHORCNA_GENERATE_PON.out.pon_file

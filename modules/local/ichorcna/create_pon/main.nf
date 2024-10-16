@@ -6,7 +6,7 @@ tag "Generate panel of normals"
 container "quay.io/dincalcilab/ichorcna:0.4.0-2ab0be2"
 
 input:
-    path wigfiles
+    path wigfile_list
     path gc_wig
     path map_wig
     path centromere
@@ -32,10 +32,8 @@ def VERSION = '0.3.2' // Version information not provided by tool on CLI
 
 """
 
-echo "${wigfiles.join("\n")}" > PoN_wigfiles.txt
-
 ${ichorcna_script}\\
-    --filelist PoN_wigfiles.txt \\
+    --filelist ${wigfile_list} \\
     --gcWig ${gc_wig} \\
     --mapWig ${map_wig} \\
     ${centro} \\
