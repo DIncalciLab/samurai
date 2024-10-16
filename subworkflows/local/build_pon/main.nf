@@ -38,9 +38,7 @@ workflow BUILD_PON {
                 wigfiles = HMMCOPY_READCOUNTER_PON.out.wig.map {
                     meta, wigfile ->
                     wigfile
-                }
-
-                collected_wigs = wigfiles.collectFile(name: "wigfiles.txt", newLine: true)
+                }.collectFile(name: "wigfiles.txt", newLine: true)
 
                 gc_wig              = Channel.value(params.ichorcna_gc_wig)
                 map_wig             = Channel.value(params.ichorcna_map_wig)
