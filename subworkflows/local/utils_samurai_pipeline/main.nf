@@ -78,11 +78,6 @@ workflow PIPELINE_INITIALISATION {
     //
     validateInputParameters()
 
-
-    if (!params.fasta) {
-        error "Error: a reference FASTA file was not provided."
-    }
-
     //
     // Create channel from input file provided through params.input
     //
@@ -165,6 +160,10 @@ def validateInputParameters() {
     } else if (params.analysis_type == "liquid_biopsy" &&
               !params.caller in ["ichorcna", "wisecondorx"] ) {
         error("Invalid caller ${params.caller} used with liquid biopsy workflow")
+    }
+
+    if (!params.fasta) {
+        error "Error: a reference FASTA file was not provided."
     }
 }
 
