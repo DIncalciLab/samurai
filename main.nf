@@ -11,6 +11,17 @@ nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    GENOME PARAMETER VALUES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+// They need to be there before imports, cf. #19
+params.fasta   = getGenomeAttribute('fasta')
+params.fai     = getGenomeAttribute('fasta_fai')
+params.dict    = getGenomeAttribute('dict')
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -18,17 +29,8 @@ nextflow.enable.dsl = 2
 include { SAMURAI } from './workflows/samurai'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_samurai_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_samurai_pipeline'
-include { getGenomeAttribute      } from './subworkflows/local/utils_samurai_pipeline'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-params.fasta   = getGenomeAttribute('fasta')
-params.fai     = getGenomeAttribute('fai')
-params.dict    = getGenomeAttribute('dict')
+// Temporarily disabled, see #19
+// include { getGenomeAttribute      } from './subworkflows/local/utils_samurai_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,6 +90,15 @@ workflow {
         params.hook_url,
         DINCALCILAB_SAMURAI.out.multiqc_report
     )
+}
+
+def getGenomeAttribute(attribute) {
+    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
+        if (params.genomes[ params.genome ].containsKey(attribute)) {
+            return params.genomes[ params.genome ][ attribute ]
+        }
+    }
+    return null
 }
 
 /*
