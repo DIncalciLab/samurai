@@ -46,10 +46,11 @@ workflow DINCALCILAB_SAMURAI {
 
     take:
     samplesheet
+    aligner
 
     main:
 
-    SAMURAI(samplesheet)
+    SAMURAI(samplesheet, aligner)
 
     emit:
     multiqc_report = SAMURAI.out.multiqc_report
@@ -67,6 +68,7 @@ workflow DINCALCILAB_SAMURAI {
 //
 workflow {
 
+
     PIPELINE_INITIALISATION (
         params.version,
         params.help,
@@ -78,7 +80,8 @@ workflow {
     )
 
     DINCALCILAB_SAMURAI (
-        PIPELINE_INITIALISATION.out.samplesheet
+        PIPELINE_INITIALISATION.out.samplesheet,
+        params.aligner
     )
 
     PIPELINE_COMPLETION (

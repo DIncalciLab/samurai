@@ -61,6 +61,7 @@ workflow SAMURAI {
 
     take:
     ch_input // channel: samplesheet read in from --input
+    aligner
 
     main:
 
@@ -86,6 +87,17 @@ workflow SAMURAI {
     ch_liftover = Channel.value(
         [["id": "liftover"], []]
     )
+
+    switch(params.aligner) {
+        case 'bwamem':
+            real_aligner = "bwa"
+            break
+        case 'bwamem2':
+            real_aligner = 'bwamem2'
+            break
+        default:
+            real_aligner = ''
+    }
 
     if (params.aligner) {
 
@@ -121,7 +133,7 @@ workflow SAMURAI {
         } else {
             if (!params.aligner_index && !params.igenomes_ignore) {
                 ch_index = [["id": "aligner"],
-                    file(getGenomeAttribute(params.aligner))]
+                    file(getGenomeAttribute(real_aligner))]
             } else {
                 ch_index = [["id": "aligner"],
                     file(params.aligner_index)]
