@@ -306,7 +306,6 @@
             "properties": {
                 "aligner": {
                     "type": "string",
-                    "default": "bwamem",
                     "enum": ["bwamem", "bwamem2"],
                     "description": "Aligner to use",
                     "help_text": "The aligner to use, either \"bwamem\" or \"bwamem\"."
