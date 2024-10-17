@@ -61,7 +61,7 @@ workflow SAMURAI {
 
     take:
     ch_input // channel: samplesheet read in from --input
-    aligner
+    aligner // supplied aligner
 
     main:
 
@@ -88,18 +88,18 @@ workflow SAMURAI {
         [["id": "liftover"], []]
     )
 
-    switch(params.aligner) {
-        case 'bwamem':
-            real_aligner = "bwa"
-            break
-        case 'bwamem2':
-            real_aligner = 'bwamem2'
-            break
-        default:
-            real_aligner = ''
-    }
-
     if (params.aligner) {
+
+        switch(params.aligner) {
+            case 'bwamem':
+                real_aligner = "bwa"
+                break
+            case 'bwamem2':
+                real_aligner = 'bwamem2'
+                break
+            default:
+                real_aligner = ''
+        }
 
         skip_fastp = params.run_fastp ? false : true
 
