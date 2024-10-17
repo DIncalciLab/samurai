@@ -88,9 +88,9 @@ workflow SAMURAI {
         [["id": "liftover"], []]
     )
 
-    if (params.aligner) {
+    if (aligner) {
 
-        switch(params.aligner) {
+        switch(aligner) {
             case 'bwamem':
                 real_aligner = "bwa"
                 break
@@ -127,7 +127,7 @@ workflow SAMURAI {
         // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
         if (params.index_genome) {
-            FASTA_INDEX_DNA(ch_fasta, ch_liftover, params.aligner)
+            FASTA_INDEX_DNA(ch_fasta, ch_liftover, aligner)
             ch_index = FASTA_INDEX_DNA.out.index
             ch_versions = ch_versions.mix(FASTA_INDEX_DNA.out.versions.first())
         } else {
