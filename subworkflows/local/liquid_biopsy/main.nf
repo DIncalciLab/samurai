@@ -32,9 +32,17 @@ workflow LIQUID_BIOPSY {
             ch_versions = ch_versions.mix(BUILD_PON.out.versions)
             pon_file = BUILD_PON.out.normal_panel
 
+        } else {
+            if (!params.normal_panel) {
+                if caller == "wisecondorX" ) {
+                    error "No PoN specified nor built, but WisecondorX requires it"
+                }
+                // ichorCNA can work without a PoN, although not optimally
+                pon_file = []
             } else {
                 pon_file = file(params.normal_panel, checkIfExists: true)
             }
+        }
 
         switch(caller) {
             case "ichorcna":
