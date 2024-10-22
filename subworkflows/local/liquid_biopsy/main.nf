@@ -38,7 +38,9 @@ workflow LIQUID_BIOPSY {
                     error "No PoN specified nor built, but WisecondorX requires it"
                 }
                 // ichorCNA can work without a PoN, although not optimally
+                log.warn "No PoN specified: CNA calling performance can be impacted"
                 pon_file = []
+
             } else {
                 pon_file = file(params.normal_panel, checkIfExists: true)
             }
