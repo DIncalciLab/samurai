@@ -34,7 +34,7 @@ workflow LIQUID_BIOPSY {
 
         } else {
             if (!params.normal_panel) {
-                if ( caller == "wisecondorx" ) {
+                if (caller == "wisecondorx") {
                     error "No PoN specified nor built, but WisecondorX requires it"
                 }
                 // ichorCNA can work without a PoN, although not optimally
