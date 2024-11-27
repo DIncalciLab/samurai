@@ -29,6 +29,11 @@ A preprint describing SAMURAI and its applications to artificial and real-world 
 9. (Optional) Identify recurrent altered regions in the sample population ([`GISTIC`]())
 10. Present QC for each sep of the pipeline ([`MultiQC`](http://multiqc.info/))
 
+<p align="center">
+    <img title="SAMURAI Workflow" src="docs/images/samurai_map.png" width=85%>
+</p>
+
+
 ## Quick Start
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=23.10.1`)
