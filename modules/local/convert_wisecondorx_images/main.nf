@@ -1,7 +1,12 @@
 process CONVERT_WISECONDORX_IMAGES {
 
     tag "genome_plot"
-    container "quay.io/einar_rainhart/img2pdf:latest"
+    container "community.wave.seqera.io/library/pip_img2pdf:75fb1abd67dc4e95"
+
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'oras://community.wave.seqera.io/library/pip_img2pdf:43f78f9b1d6c437d' :
+        'community.wave.seqera.io/library/pip_img2pdf:75fb1abd67dc4e95' }"
+
     label "process_single"
 
     input:
