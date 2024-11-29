@@ -26,7 +26,9 @@ class RowChecker:
 
     VALID_FORMATS = (
         ".fq.gz",
+        ".fq",
         ".fastq.gz",
+        ".fastq"
     )
 
     def __init__(

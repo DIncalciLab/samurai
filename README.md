@@ -40,12 +40,13 @@ A preprint describing SAMURAI and its applications to artificial and real-world 
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
 
-3. Download the pipeline and test it on a minimal dataset with a single command:
+3. Download the pipeline and test it on a minimal dataset with a single command. 
+
+   We included a test for the `solid_biopsy` subworkflow that demonstrates its functionality with `ASCAT.sc`. You can run it with the following command: 
 
    ```bash
-   nextflow run dincalcilab/samurai -profile test,YOURPROFILE --outdir <OUTDIR>
+   nextflow run dincalcilab/samurai -profile test_ascat_sc,YOURPROFILE --outdir <OUTDIR>
    ```
-
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
 
    > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
