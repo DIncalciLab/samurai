@@ -47,6 +47,17 @@ A preprint describing SAMURAI and its applications to artificial and real-world 
    ```bash
    nextflow run dincalcilab/samurai -profile test_ascat_sc,YOURPROFILE --outdir <OUTDIR>
    ```
+
+
+   We included also a test for the `liquid_biopsy` subworkflow that demonstrates its functionality with `ichorCNA`. You can run it with the following command: 
+
+   ```bash
+   nextflow run dincalcilab/samurai -profile test_ichorcna,YOURPROFILE --outdir <OUTDIR>
+   ```
+
+   > **Note: A working internet connection which allows connection to the AWS S3 service is required to run the tests**
+
+
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
 
    > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
