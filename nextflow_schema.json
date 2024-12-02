@@ -329,7 +329,7 @@
             "properties": {
                 "binsize": {
                     "type": "integer",
-                    "default": 30,
+                    "default": 500,
                     "description": "Size of the genomic bins in kbp"
                 },
                 "caller": {

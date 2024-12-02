@@ -30,18 +30,18 @@ SAMPLE1,path/to/SAMPLE1.bam,female
 SAMPLE2,path/to/SAMPLE2.bam,male
 ```
 
-| Column    | Description|
+| Column    | Description |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1.                                                         |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2.     
-| `bam` | Full path to BAM file.                                                          |
+| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).                                                               |
+| `fastq_1` | Full path to FastQ file for Illumina short reads 1.                                           |
+| `fastq_2` | Full path to FastQ file for Illumina short reads 2.                                           |
+| `bam`     | Full path to BAM file. Note: `bam` is _mutually exclusive_  with `fastq_1` or `fastq_2`.      |
 
-| Optional    | Description|
+| Optional  | Description |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `gender` | Gender of the patient that may be used in the copy number analysis; this could be either `female` or `male`. 
+| `gender`  | Gender of the patient that may be used in the copy number analysis; this could be either `female` or `male`. |
 
-> **NB:** You need to use all fastq files **OR** all bam files in the samplesheet.
+> **NB:** You can either use FASTQ files, or BAM files in a samplesheet. Mixing FASTQ fles and BAM files in the same samplesheet **is not supported**.
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -50,10 +50,10 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run dincalcilab/samurai --input samplesheet.csv --outdir <OUTDIR> --genome hg38 -profile singularity
+nextflow run dincalcilab/samurai --input samplesheet.csv --outdir <OUTDIR> --genome hg38 -profile docker
 ```
 
-This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -82,7 +82,7 @@ This version number will be logged in reports when you run the pipeline, so that
 
 # Core Nextflow arguments
 
-> **NB:** These options are part of Nextflow and use a _single_ hyphen (ex. `-profile`).
+> **NB:** These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
 
 #### `-profile`
 
@@ -100,11 +100,11 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is **_not_** recommended, since it can lead to different results on different machines dependent on the computer enviroment.
 
 - `test_ascat_sc`
-  - A profile with a complete configuration for automated testing with `ASCAT.sc` 
+  - A profile with a complete configuration for automated testing of `solid_biopsy` workflow with `ASCAT.sc` 
   - Includes links to test data so needs no other parameters
 - `test_ichorcna`
   - A profile with a complete configuration for automated 
-  testing with `ichorCNA`
+  testing of `liquid_biopsy` workflow with `ichorCNA`
   - Includes links to test data so needs no other parameters
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
