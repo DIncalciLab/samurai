@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/dincalcilab/samurai/master/nextflow_schema.json",
     "title": "dincalcilab/samurai pipeline parameters",
     "description": "SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline",
@@ -442,7 +442,8 @@
                 },
                 "ichorcna_fraction_reads_male": {
                     "type": "number",
-                    "default": 0.001
+                    "default": 0.001,
+                    "description": "hreshold for fraction of reads in chrY to assign as male."
                 },
                 "ichorcna_male_chrX_logR": {
                     "type": "number",
@@ -455,15 +456,18 @@
                 },
                 "ichorcna_max_frac_genome_subclone": {
                     "type": "number",
-                    "default": 0.5
+                    "default": 0.5,
+                    "description": "Exclude solutions with subclonal genome fraction greater than this value."
                 },
                 "ichorcna_max_frac_cna_subclone": {
                     "type": "number",
-                    "default": 0.7
+                    "default": 0.7,
+                    "description": "Exclude solutions with fraction of subclonal events greater than this value."
                 },
                 "ichorcna_min_segment_bins": {
                     "type": "integer",
-                    "default": 50
+                    "default": 50,
+                    "description": "Minimum number of bins for largest segment threshold required to estimate tumor fraction."
                 },
                 "ichorcna_max_cn": {
                     "type": "integer",
@@ -477,23 +481,28 @@
                 },
                 "ichorcna_txne": {
                     "type": "number",
-                    "default": 0.9999
+                    "default": 0.9999,
+                    "description": "Self-transition probability; Increase to decrease number of segments."
                 },
                 "ichorcna_alt_frac_threshold": {
                     "type": "number",
-                    "default": 0.05
+                    "default": 0.05,
+                    "description": "Minimum proportion of bins altered required to estimate tumor fraction."
                 },
                 "ichorcna_trx_strength": {
                     "type": "integer",
-                    "default": 10000
+                    "default": 10000,
+                    "description": "Transition pseudo-counts; Exponent should be the same as the number of decimal places of `ichorcna_txne`"
                 },
                 "ichorcna_plotfiletype": {
                     "type": "string",
-                    "default": "pdf"
+                    "default": "pdf",
+                    "description": "Type of plot to generate (PNG or PDF)"
                 },
                 "ichorcna_plotylim": {
                     "type": "string",
-                    "default": "c(-2,4)"
+                    "default": "c(-2,4)",
+                    "description": "Y axis limits of the ichorCNA plot"
                 },
                 "ichorcna_estimate_sc": {
                     "type": "boolean",
@@ -709,6 +718,18 @@
                     "description": "Trim poly-G stretches in a read (NextSeq sequencing artifacts)"
                 }
             }
+        },
+        "chromosomal_instability_signatures": {
+            "title": "Chroosomal instability (CIN) signature options",
+            "type": "object",
+            "description": "Options pertaining to the generation of the chromosomal instability signatures",
+            "default": "",
+            "properties": {
+                "compute_signatures": {
+                    "type": "boolean",
+                    "description": "Compute chromosomal instability signatures (Drews et al., 2022)"
+                }
+            }
         }
     },
     "allOf": [
@@ -756,12 +777,9 @@
         },
         {
             "$ref": "#/definitions/fastq_trimming_specific_options"
+        },
+        {
+            "$ref": "#/definitions/chromosomal_instability_signatures"
         }
-    ],
-    "properties": {
-        "compute_signatures": {
-            "type": "boolean",
-            "description": "Compute chromosomal instability signatures (Drews et al., 2022)"
-        }
-    }
+    ]
 }
