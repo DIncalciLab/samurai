@@ -26,3 +26,4 @@ lint:
   schema_params: false
   subworkflow_changes: false
   actions_ci: false
+nf_core_version: 3.0.2
