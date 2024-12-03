@@ -14,7 +14,7 @@ SAMPLE1,path/to/SAMPLE1.fastq.gz
 SAMPLE2,path/to/SAMPLE2.fastq.gz
 ```
 
-If you have paired-end sequencing samples, your `samplesheet.csv` will look like: 
+If you have paired-end sequencing samples, your `samplesheet.csv` will look like:
 
 ```console
 sample,fastq_1,fastq_2
@@ -22,7 +22,7 @@ SAMPLE1,path/to/SAMPLE1_R1.fastq.gz,path/to/SAMPLE1_R2.fastq.gz
 SAMPLE2,path/to/SAMPLE2_R1.fastq.gz,path/to/SAMPLE2_R2.fastq.gz
 ```
 
-You may want to skip the alignment step and start from pre-aligned BAM files. In this case your `samplesheet.csv` will look like: 
+You may want to skip the alignment step and start from pre-aligned BAM files. In this case your `samplesheet.csv` will look like:
 
 ```console
 sample,bam,gender
@@ -30,16 +30,16 @@ SAMPLE1,path/to/SAMPLE1.bam,female
 SAMPLE2,path/to/SAMPLE2.bam,male
 ```
 
-| Column    | Description |
+| Column    | Description                                                                                                                                                                            |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`).                                                               |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1.                                           |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2.                                           |
-| `bam`     | Full path to BAM file. Note: `bam` is _mutually exclusive_  with `fastq_1` or `fastq_2`.      |
+| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `fastq_1` | Full path to FastQ file for Illumina short reads 1.                                                                                                                                    |
+| `fastq_2` | Full path to FastQ file for Illumina short reads 2.                                                                                                                                    |
+| `bam`     | Full path to BAM file. Note: `bam` is _mutually exclusive_ with `fastq_1` or `fastq_2`.                                                                                                |
 
-| Optional  | Description |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `gender`  | Gender of the patient that may be used in the copy number analysis; this could be either `female` or `male`. |
+| Optional | Description                                                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------------ |
+| `gender` | Gender of the patient that may be used in the copy number analysis; this could be either `female` or `male`. |
 
 > **NB:** You can either use FASTQ files, or BAM files in a samplesheet. Mixing FASTQ fles and BAM files in the same samplesheet **is not supported**.
 
@@ -100,11 +100,11 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is **_not_** recommended, since it can lead to different results on different machines dependent on the computer enviroment.
 
 - `test_ascat_sc`
-  - A profile with a complete configuration for automated testing of `solid_biopsy` workflow with `ASCAT.sc` 
+  - A profile with a complete configuration for automated testing of `solid_biopsy` workflow with `ASCAT.sc`
   - Includes links to test data so needs no other parameters
 - `test_ichorcna`
-  - A profile with a complete configuration for automated 
-  testing of `liquid_biopsy` workflow with `ichorCNA`
+  - A profile with a complete configuration for automated
+    testing of `liquid_biopsy` workflow with `ichorCNA`
   - Includes links to test data so needs no other parameters
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
@@ -135,155 +135,155 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 ## General SAMURAI options
 
-| Parameter | Description     |
-|------------|-------------------------------------------------------------------------------|
-| `input`  | Path to `samplesheet.csv` containing information about the samples in the experiment.    |  
-| `outdir`  | The output directory where the results will be saved. |  
+| Parameter | Description                                                                           |
+| --------- | ------------------------------------------------------------------------------------- |
+| `input`   | Path to `samplesheet.csv` containing information about the samples in the experiment. |
+| `outdir`  | The output directory where the results will be saved.                                 |
 
 ## Reference genome options
-| Parameter | Description     |
-|------------|-------------------------------------------------------------------------------|
-| `genome` | If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. See the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details. Default is `--genome hg38` | 
-| `fasta`  | Path to FASTA genome file. If you are using iGenomes resources, it is automatically retrieved. |
-| `fai` | Path to FASTA FAI index. If you are using iGenomes resources, it is automatically retrieved. | 
-| `dict` | Path to the FASTA sequence dictionary. If you are using iGenomes resources, it is automatically retrieved. | 
+
+| Parameter | Description                                                                                                                                                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `genome`  | If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. See the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details. Default is `--genome hg38` |
+| `fasta`   | Path to FASTA genome file. If you are using iGenomes resources, it is automatically retrieved.                                                                                                                                                    |
+| `fai`     | Path to FASTA FAI index. If you are using iGenomes resources, it is automatically retrieved.                                                                                                                                                      |
+| `dict`    | Path to the FASTA sequence dictionary. If you are using iGenomes resources, it is automatically retrieved.                                                                                                                                        |
 
 ## Alignment options
-| Parameter | Description     | Possible Values |
-|----------------------------|---------------------------------------------------------------------------------------------------------|------------------------------------------|
-| `aligner` | This parameter specifies which aligner to use for the alignment step.If you start from BAM files and you want to skip the alingment step, you can set `--aligner false`| `bwamem`, `bwamem2`, `false`|
-| `index_genome`  | Wether to index the reference genome or not.|`true`, `false` |
-| `aligner_index` | Path to the aligner index basename (must be compatible). | 
+
+| Parameter       | Description                                                                                                                                                             | Possible Values              |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `aligner`       | This parameter specifies which aligner to use for the alignment step.If you start from BAM files and you want to skip the alingment step, you can set `--aligner false` | `bwamem`, `bwamem2`, `false` |
+| `index_genome`  | Wether to index the reference genome or not.                                                                                                                            | `true`, `false`              |
+| `aligner_index` | Path to the aligner index basename (must be compatible).                                                                                                                |
 
 ## FASTQ Trimming specific options
 
-| Parameter Name | Description  | Possible Values |
-|----------------------------|---------------------------------------------------------------------------------------------------------|------------------------------------------|
-| `run_fastp` | Run fastp for quality and UMI trimming|   `true`, `false`|
-| `fastp_min_read_length`    | Minimum length for a read to be kept after trimming |                                          |
-| `fastp_cut_window_size`    | Size of the sliding window used for quality trimming|                                          |
-| `fastp_min_quality`        | Minimum Phred score to keep a base|                                          |
-| `fastp_umi_loc`            | Location of UMIs in the read| `read1`, `read2`, `per_read`             |
-| `fastp_umi_skip`           | How many bases to skip after a UMI |                                          |
-| `fastp_umi_length`         | Length of the UMI to trim|                                          |
-| `fastp_max_trimmed_pct`    | Maximum percentage of trimmed bases before discarding a read|                                          |
-| `fastp_trim_poly_x`        | Trim poly-X stretches in a read|                                          |
-| `fastp_trim_poly_g`        | Trim poly-G stretches in a read (NextSeq sequencing artifacts) |             |
+| Parameter Name          | Description                                                    | Possible Values              |
+| ----------------------- | -------------------------------------------------------------- | ---------------------------- |
+| `run_fastp`             | Run fastp for quality and UMI trimming                         | `true`, `false`              |
+| `fastp_min_read_length` | Minimum length for a read to be kept after trimming            |                              |
+| `fastp_cut_window_size` | Size of the sliding window used for quality trimming           |                              |
+| `fastp_min_quality`     | Minimum Phred score to keep a base                             |                              |
+| `fastp_umi_loc`         | Location of UMIs in the read                                   | `read1`, `read2`, `per_read` |
+| `fastp_umi_skip`        | How many bases to skip after a UMI                             |                              |
+| `fastp_umi_length`      | Length of the UMI to trim                                      |                              |
+| `fastp_max_trimmed_pct` | Maximum percentage of trimmed bases before discarding a read   |                              |
+| `fastp_trim_poly_x`     | Trim poly-X stretches in a read                                |                              |
+| `fastp_trim_poly_g`     | Trim poly-G stretches in a read (NextSeq sequencing artifacts) |                              |
 
 ## Copy Number calling options
 
 ### Common Options
 
-| Parameter Name        | Description                                            | Default Value   | Possible Values                                                                 |
-|-----------------------|--------------------------------------------------------|-----------------|----------------------------------------------------------------------------------|
-| `binsize`             | Size of the genomic bins in kbp | 30             | Any integer (bin size in kilobases) |
-| `caller` | Caller for sWGS | `qdnaseq`       | `ichorcna`, `wisecondorx`, `ascat_sc`, `qdnaseq`                         |
-| `analysis_type`       | Subworkflow to use  | `solid_biopsy` | `liquid_biopsy`, `solid_biopsy`, `"align_only"`                              |
-
+| Parameter Name  | Description                     | Default Value  | Possible Values                                  |
+| --------------- | ------------------------------- | -------------- | ------------------------------------------------ |
+| `binsize`       | Size of the genomic bins in kbp | 30             | Any integer (bin size in kilobases)              |
+| `caller`        | Caller for sWGS                 | `qdnaseq`      | `ichorcna`, `wisecondorx`, `ascat_sc`, `qdnaseq` |
+| `analysis_type` | Subworkflow to use              | `solid_biopsy` | `liquid_biopsy`, `solid_biopsy`, `"align_only"`  |
 
 ### Solid Biopsy Options
+
 #### _QDNAseq specific options_
 
-| Parameter Name        | Description                                                        | Default Value | Possible Values            |
-|-----------------------|--------------------------------------------------------------------|---------------|----------------------------|
-| `qdnaseq_bin_data`    | Optional parameter to an RDS file containing bin annotations       |               | Any valid file path        |
-| `qdnaseq_paired_ends` | Whether reads are paired or not                                     | `true`        | `true`, `false`            |
+| Parameter Name        | Description                                                  | Default Value | Possible Values     |
+| --------------------- | ------------------------------------------------------------ | ------------- | ------------------- |
+| `qdnaseq_bin_data`    | Optional parameter to an RDS file containing bin annotations |               | Any valid file path |
+| `qdnaseq_paired_ends` | Whether reads are paired or not                              | `true`        | `true`, `false`     |
 
 #### _ASCAT.sc specific options_
 
-
-| Parameter Name               | Description                                                      | Default Value | Possible Values       |
-|------------------------------|------------------------------------------------------------------|---------------|-----------------------|
-| `ascat_sc_predict_refit`      | Perform refitting to select the optimal solution                 | `"TRUE"`        | `"TRUE"`, `"FALSE"`    |
-| `ascat_sc_segmentation_alpha` | Alpha value to use for segmentation                              | 0.01          | Any positive number   |
-| `ascat_sc_min_purity`         | Minimum purity to use for prediction, in fractional units        | 0.01          | Any number between 0 and 1 |
-| `ascat_sc_max_purity`         | Maximum purity to use for prediction, in fractional units        | 1             | Any number between 0 and 1 |
-| `ascat_sc_min_ploidy`         | Minimum ploidy to consider                                      | 1.7           | Any number greater than 1 |
-| `ascat_sc_max_ploidy`         | Maximum ploidy to consider                                      | 5             | Any number greater than 1 |
-| `ascat_sc_max_tumor_ploidy`  | Maximum tumor ploidy to consider                                | 5             | Any integer  greater than 1         |
+| Parameter Name                | Description                                               | Default Value | Possible Values            |
+| ----------------------------- | --------------------------------------------------------- | ------------- | -------------------------- |
+| `ascat_sc_predict_refit`      | Perform refitting to select the optimal solution          | `"TRUE"`      | `"TRUE"`, `"FALSE"`        |
+| `ascat_sc_segmentation_alpha` | Alpha value to use for segmentation                       | 0.01          | Any positive number        |
+| `ascat_sc_min_purity`         | Minimum purity to use for prediction, in fractional units | 0.01          | Any number between 0 and 1 |
+| `ascat_sc_max_purity`         | Maximum purity to use for prediction, in fractional units | 1             | Any number between 0 and 1 |
+| `ascat_sc_min_ploidy`         | Minimum ploidy to consider                                | 1.7           | Any number greater than 1  |
+| `ascat_sc_max_ploidy`         | Maximum ploidy to consider                                | 5             | Any number greater than 1  |
+| `ascat_sc_max_tumor_ploidy`   | Maximum tumor ploidy to consider                          | 5             | Any integer greater than 1 |
 
 ### Liquid Biopsy Options
+
 #### _Common Liquid biopsy options_
 
-| Parameter Name | Description| Default Value  | Possible Values |
-|----------------------------------|-----------------------------------------------------------------------------|----------------|-------------------------------------------------------|
-| `normal_panel`                   | Path to the panel of normals to be used                                      |                |                                                       |
-| `pon_path`                       | Path to BAM files to be used to build the panel of normals                   |                |                                                       |
-| `pon_name`                       | Name of the panel of normals to build                                        | `"PoN"`        |                                                       |
-| `build_pon`                      | Whether to build a panel of normals or not                                   | `false`        | `true`, `false`                                       |
-| `selection_maxsize`              | Maximum insert size in bp to be included for size selection                  | `150`          | Any positive integer                                  |
-| `plot_fragment_distribution`     | Whether to plot fragment size distributions during size selection (slow)     | `false`        | `true`, `false`                                       |
-
+| Parameter Name               | Description                                                              | Default Value | Possible Values      |
+| ---------------------------- | ------------------------------------------------------------------------ | ------------- | -------------------- |
+| `normal_panel`               | Path to the panel of normals to be used                                  |               |                      |
+| `pon_path`                   | Path to BAM files to be used to build the panel of normals               |               |                      |
+| `pon_name`                   | Name of the panel of normals to build                                    | `"PoN"`       |                      |
+| `build_pon`                  | Whether to build a panel of normals or not                               | `false`       | `true`, `false`      |
+| `selection_maxsize`          | Maximum insert size in bp to be included for size selection              | `150`         | Any positive integer |
+| `plot_fragment_distribution` | Whether to plot fragment size distributions during size selection (slow) | `false`       | `true`, `false`      |
 
 #### _ichorCNA specific options_
 
-| Parameter Name                        | Description                                                                 | Default Value                         | Possible Values               |
-|---------------------------------------|-----------------------------------------------------------------------------|---------------------------------------|-------------------------------|
-| `ichorcna_genome_style`               | Genome style to be used by ichorCNA (NCBI or UCSC)                          | `UCSC`                                | `NCBI`, `UCSC`                |
-| `ichorcna_readcounter_chrs`           | Chromosomes to be used by ichorCNA                                          | `chr1,chr2,...,chr22`                 | List of chromosomes (e.g., `chr1,chr2,chr3,...`) |
-| `ichorcna_readcounter_quality`        | Minimum read count quality to keep in ichorCNA                              | `20`                                  | Any integer                   |
-| `ichorcna_chrs_to_use`                | Chromosomes to use for ichorCNA                                              | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`) |
-| `ichorcna_chrs_to_train`              | Chromosomes to use for training during an ichorCNA run                      | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`) |
-| `ichorcna_chrs_to_normalize`          | Chromosomes to use for normalization during an ichorCNA run                 | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`) |
-| `ichorcna_estimate_normal`            | Whether ichorCNA should estimate normal contamination or not                 | `true`                                | `true`, `false`                |
-| `ichorcna_fraction_reads_male`        | Fraction of data used for copy number calling                               | `0.001`                               | Any value between 0 and 1     |
-| `ichorcna_male_chrX_logR`             | LogR value for male chromosome X                                            | `0.3`                                 | Any numerical value           |
-| `ichorcna_min_map_score`              | Minimum mapping score for reads to be used by ichorCNA                      | `0.75`                                | Any value between 0 and 1     |
-| `ichorcna_max_frac_genome_subclone`   | Maximum fraction of genome allowed for subclone                              | `0.5`                                 | Any value between 0 and 1     |
-| `ichorcna_max_frac_cna_subclone`      | Maximum fraction of CNA allowed for subclone                                 | `0.7`                                 | Any value between 0 and 1     |
-| `ichorcna_min_segment_bins`           | Minimum number of bins required for segmenting                              | `50`                                  | Any positive integer          |
-| `ichorcna_max_cn`                     | Maximum copy number to be considered by ichorCNA                            | `5`                                   | Any positive integer          |
-| `ichorcna_include_homd`               | Call also homozygous deletions in ichorCNA                                  | `"FALSE"`                             | `"TRUE"`, `"FALSE"`           |
-| `ichorcna_txne`                       | Tumor-normal estimation strength for ichorCNA                               | `0.9999`                              | Any value between 0 and 1     |
-| `ichorcna_alt_frac_threshold`         | Alternative fraction threshold for ichorCNA                                 | `0.05`                                | Any value between 0 and 1     |
-| `ichorcna_trx_strength`               | Strength of transcription effect for ichorCNA                               | `10000`                               | Any integer                   |
-| `ichorcna_plotfiletype`               | Output plot file type for ichorCNA                                          | `pdf`                                 | `pdf`, `png`, `jpeg`, etc.     |
-| `ichorcna_plotylim`                   | Y-axis limits for the generated plots                                       | `c(-2,4)`                             | String format (e.g., `"c(-2, 4)"`) |
-| `ichorcna_estimate_sc`                | Estimate copy number subclonality in ichorCNA                               | `false`                               | `true`, `false`               |
-| `ichorcna_estimate_ploidy`            | Estimate ploidy in ichorCNA                                                 | `true`                                | `true`, `false`               |
-| `ichorcna_filter_bam_pon`             | Apply PON filtering on BAM files                                            | N/A                                   | `true`, `false`               |
-| `ichorcna_normal_states`              | Fraction of normal copy number states used in ichorCNA                     | `0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99` | List of numerical values (e.g., `0.5, 0.6, 0.7`) |
-| `ichorcna_gc_wig`                     | Path to a Wiggle file with GC content data for the specified genome        | N/A                                   | File path (must be a `.wig` file) |
-| `ichorcna_map_wig`                    | Path to a Wiggle file with mappability scores for the specified genome      | N/A                                   | File path (must be a `.wig` file) |
-| `ichorcna_reptime_wig`                | Path to a Wiggle file with replication timing data for the specified genome | N/A                                   | File path (must be a `.wig` file) |
-| `ichorcna_centromere_file`            | Path to a file with centromere data for the specified genome               | N/A                                   | File path (must be a `.txt` or similar format) |
+| Parameter Name                      | Description                                                                 | Default Value                         | Possible Values                                  |
+| ----------------------------------- | --------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------ |
+| `ichorcna_genome_style`             | Genome style to be used by ichorCNA (NCBI or UCSC)                          | `UCSC`                                | `NCBI`, `UCSC`                                   |
+| `ichorcna_readcounter_chrs`         | Chromosomes to be used by ichorCNA                                          | `chr1,chr2,...,chr22`                 | List of chromosomes (e.g., `chr1,chr2,chr3,...`) |
+| `ichorcna_readcounter_quality`      | Minimum read count quality to keep in ichorCNA                              | `20`                                  | Any integer                                      |
+| `ichorcna_chrs_to_use`              | Chromosomes to use for ichorCNA                                             | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`)    |
+| `ichorcna_chrs_to_train`            | Chromosomes to use for training during an ichorCNA run                      | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`)    |
+| `ichorcna_chrs_to_normalize`        | Chromosomes to use for normalization during an ichorCNA run                 | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`)    |
+| `ichorcna_estimate_normal`          | Whether ichorCNA should estimate normal contamination or not                | `true`                                | `true`, `false`                                  |
+| `ichorcna_fraction_reads_male`      | Fraction of data used for copy number calling                               | `0.001`                               | Any value between 0 and 1                        |
+| `ichorcna_male_chrX_logR`           | LogR value for male chromosome X                                            | `0.3`                                 | Any numerical value                              |
+| `ichorcna_min_map_score`            | Minimum mapping score for reads to be used by ichorCNA                      | `0.75`                                | Any value between 0 and 1                        |
+| `ichorcna_max_frac_genome_subclone` | Maximum fraction of genome allowed for subclone                             | `0.5`                                 | Any value between 0 and 1                        |
+| `ichorcna_max_frac_cna_subclone`    | Maximum fraction of CNA allowed for subclone                                | `0.7`                                 | Any value between 0 and 1                        |
+| `ichorcna_min_segment_bins`         | Minimum number of bins required for segmenting                              | `50`                                  | Any positive integer                             |
+| `ichorcna_max_cn`                   | Maximum copy number to be considered by ichorCNA                            | `5`                                   | Any positive integer                             |
+| `ichorcna_include_homd`             | Call also homozygous deletions in ichorCNA                                  | `"FALSE"`                             | `"TRUE"`, `"FALSE"`                              |
+| `ichorcna_txne`                     | Tumor-normal estimation strength for ichorCNA                               | `0.9999`                              | Any value between 0 and 1                        |
+| `ichorcna_alt_frac_threshold`       | Alternative fraction threshold for ichorCNA                                 | `0.05`                                | Any value between 0 and 1                        |
+| `ichorcna_trx_strength`             | Strength of transcription effect for ichorCNA                               | `10000`                               | Any integer                                      |
+| `ichorcna_plotfiletype`             | Output plot file type for ichorCNA                                          | `pdf`                                 | `pdf`, `png`, `jpeg`, etc.                       |
+| `ichorcna_plotylim`                 | Y-axis limits for the generated plots                                       | `c(-2,4)`                             | String format (e.g., `"c(-2, 4)"`)               |
+| `ichorcna_estimate_sc`              | Estimate copy number subclonality in ichorCNA                               | `false`                               | `true`, `false`                                  |
+| `ichorcna_estimate_ploidy`          | Estimate ploidy in ichorCNA                                                 | `true`                                | `true`, `false`                                  |
+| `ichorcna_filter_bam_pon`           | Apply PON filtering on BAM files                                            | N/A                                   | `true`, `false`                                  |
+| `ichorcna_normal_states`            | Fraction of normal copy number states used in ichorCNA                      | `0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99` | List of numerical values (e.g., `0.5, 0.6, 0.7`) |
+| `ichorcna_gc_wig`                   | Path to a Wiggle file with GC content data for the specified genome         | N/A                                   | File path (must be a `.wig` file)                |
+| `ichorcna_map_wig`                  | Path to a Wiggle file with mappability scores for the specified genome      | N/A                                   | File path (must be a `.wig` file)                |
+| `ichorcna_reptime_wig`              | Path to a Wiggle file with replication timing data for the specified genome | N/A                                   | File path (must be a `.wig` file)                |
+| `ichorcna_centromere_file`          | Path to a file with centromere data for the specified genome                | N/A                                   | File path (must be a `.txt` or similar format)   |
 
 #### _WisecondorX specific options_
 
-| Parameter Name               | Description                                                      | Default Value | Possible Values             |
-|------------------------------|------------------------------------------------------------------|---------------|-----------------------------|
-| `wisecondorx_blacklist`       | Path to a BED file including loci not to be included in the WisecondorX analysis |      | File path (must be a valid BED file) |
-| `wisecondorx_no_rm_dup`       | Don't remove duplicates from BAM files                           |        | `true`, `false`             |
-| `wisecondorx_yfrac`           | Fraction of data used for copy number calling                    | 0.4           | Any value between 0 and 1   |
-| `wisecondorx_zscore`          | Z-score threshold for copy number calling                        | 5             | Any positive integer        |
-| `wisecondorx_ylim`            | Y axis limits for the generated plots                            |          | String format (e.g., "0,100") |
-
+| Parameter Name          | Description                                                                      | Default Value | Possible Values                      |
+| ----------------------- | -------------------------------------------------------------------------------- | ------------- | ------------------------------------ |
+| `wisecondorx_blacklist` | Path to a BED file including loci not to be included in the WisecondorX analysis |               | File path (must be a valid BED file) |
+| `wisecondorx_no_rm_dup` | Don't remove duplicates from BAM files                                           |               | `true`, `false`                      |
+| `wisecondorx_yfrac`     | Fraction of data used for copy number calling                                    | 0.4           | Any value between 0 and 1            |
+| `wisecondorx_zscore`    | Z-score threshold for copy number calling                                        | 5             | Any positive integer                 |
+| `wisecondorx_ylim`      | Y axis limits for the generated plots                                            |               | String format (e.g., "0,100")        |
 
 ## Downstram analysis options
+
 ### Copy Number Signatures
 
-> _NB:  CIN Signatures analysis can be performed only with with  `--caller ascat_sc` parameter_
+> _NB: CIN Signatures analysis can be performed only with with `--caller ascat_sc` parameter_
 
-| Parameter Name | Description  | Possible Values |
-|----------------------------|---------------------------------------------------------------------------------------------------------|------------------------------------------|
-| `compute_signatures` | Compute [chromosomal instability signatures](https://www.nature.com/articles/s41586-022-04789-9). |   `true`, `false`|
+| Parameter Name       | Description                                                                                       | Possible Values |
+| -------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
+| `compute_signatures` | Compute [chromosomal instability signatures](https://www.nature.com/articles/s41586-022-04789-9). | `true`, `false` |
 
 ### GISTIC2.0 Analysis
 
 > _NB: Currently, GISTIC analysis can be performed only with genome builds `--genome hg38` or `--genome hg19`_
 
-| Parameter Name |Description | Default Value | Possible Values|
-|--------------------------|-----------------------------------------------------------------------------------------------------|---------------|----------------------------------|
-| `run_gistic`             | Run GISTIC analysis.|               | `true`, `false`                  |
-| `gistic_t_amp`           | Default log2ratio threshold to call amplifications.| 0.1           | Any number (log2 ratio threshold)|
-| `gistic_t_del`           | Default log2ratio threshold to call deletions.| 0.1           | Any number (log2 ratio threshold)|
-| `gistic_remove_x`        | Whether to remove or not chromosome X from the analysis.                                             |               | `true`, `false`                  |
-| `gistic_conf`            | GISTIC confidence level for calling recurrent altered regions.                                      | 0.99          | Any number (confidence level)    |
-| `gistic_qval`            | Maximum q-value to call a region significant.| 0.05          | Any number (q-value threshold)   |
-| `gistic_broad_analysis`  | Run arm-level (broad) analysis.|               | `true`, `false`                  |
-| `gistic_broad_chr_length`| Fraction of altered chromosome to be included in broad analysis. | 0.99          | Any number (fraction)            |
-| `gistic_cn_cap`          | GISTIC maximum copy number (higher values will be floored). | 6| Any integer (copy number)        |
-
+| Parameter Name            | Description                                                      | Default Value | Possible Values                   |
+| ------------------------- | ---------------------------------------------------------------- | ------------- | --------------------------------- |
+| `run_gistic`              | Run GISTIC analysis.                                             |               | `true`, `false`                   |
+| `gistic_t_amp`            | Default log2ratio threshold to call amplifications.              | 0.1           | Any number (log2 ratio threshold) |
+| `gistic_t_del`            | Default log2ratio threshold to call deletions.                   | 0.1           | Any number (log2 ratio threshold) |
+| `gistic_remove_x`         | Whether to remove or not chromosome X from the analysis.         |               | `true`, `false`                   |
+| `gistic_conf`             | GISTIC confidence level for calling recurrent altered regions.   | 0.99          | Any number (confidence level)     |
+| `gistic_qval`             | Maximum q-value to call a region significant.                    | 0.05          | Any number (q-value threshold)    |
+| `gistic_broad_analysis`   | Run arm-level (broad) analysis.                                  |               | `true`, `false`                   |
+| `gistic_broad_chr_length` | Fraction of altered chromosome to be included in broad analysis. | 0.99          | Any number (fraction)             |
+| `gistic_cn_cap`           | GISTIC maximum copy number (higher values will be floored).      | 6             | Any integer (copy number)         |
 
 ## nf-core/configs
 
