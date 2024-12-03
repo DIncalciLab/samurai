@@ -44,7 +44,7 @@ A preprint describing SAMURAI and its applications to artificial and real-world 
    We included a test for the `solid_biopsy` subworkflow that demonstrates its functionality with `ASCAT.sc`. You can run it with the following command:
 
    ```bash
-   nextflow run dincalcilab/samurai -profile test_ascat_sc,YOURPROFILE --outdir <OUTDIR>
+   nextflow run dincalcilab/samurai -profile test,YOURPROFILE --outdir <OUTDIR>
    ```
 
    We included also a test for the `liquid_biopsy` subworkflow that demonstrates its functionality with `ichorCNA`. You can run it with the following command:

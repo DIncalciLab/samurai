@@ -99,7 +99,7 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is **_not_** recommended, since it can lead to different results on different machines dependent on the computer enviroment.
 
-- `test_ascat_sc`
+- `test`
   - A profile with a complete configuration for automated testing of `solid_biopsy` workflow with `ASCAT.sc`
   - Includes links to test data so needs no other parameters
 - `test_ichorcna`
