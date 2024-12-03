@@ -709,6 +709,18 @@
                     "description": "Trim poly-G stretches in a read (NextSeq sequencing artifacts)"
                 }
             }
+        },
+        "chromosomal_instability_signatures": {
+            "title": "Chroosomal instability (CIN) signature options",
+            "type": "object",
+            "description": "Options pertaining to the generation of the chromosomal instability signatures",
+            "default": "",
+            "properties": {
+                "compute_signatures": {
+                    "type": "boolean",
+                    "description": "Compute chromosomal instability signatures (Drews et al., 2022)"
+                }
+            }
         }
     },
     "allOf": [
@@ -756,12 +768,9 @@
         },
         {
             "$ref": "#/definitions/fastq_trimming_specific_options"
+        },
+        {
+            "$ref": "#/definitions/chromosomal_instability_signatures"
         }
-    ],
-    "properties": {
-        "compute_signatures": {
-            "type": "boolean",
-            "description": "Compute chromosomal instability signatures (Drews et al., 2022)"
-        }
-    }
+    ]
 }
