@@ -3,6 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.0.5 - [2024-12-12]
+
+### Documentation
+
+- Add usage docs (@SaraPotente) (#31)
+
+### Internal changes
+
+- Rename `test_ascat` profile to `test`
+
 ## v1.0.4 - [2024-11-29]
 
 ### Bug Fixes
