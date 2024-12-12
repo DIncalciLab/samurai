@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Add usage docs (@SaraPotente) (#31)
+- Add usage docs (PR #31, @SaraPotente) (#14)
 
 ### Internal changes
 
