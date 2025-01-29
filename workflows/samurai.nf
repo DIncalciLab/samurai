@@ -234,7 +234,7 @@ workflow SAMURAI {
             ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
             break
         case "liquid_biopsy":
-            if (params.size_selection && params.caller == "ichorcna") {
+            if (params.size_selection) {
                 SIZE_SELECTION(ch_bam_bai, ch_fasta)
                 ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
