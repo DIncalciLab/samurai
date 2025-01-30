@@ -3,6 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.0.6 - [2025-01-30]
+
+### Bug Fixes
+
+- Fix genomic plot concatenations when running under Docker (#32)
+- Allow running WisecondorX with size selection (8824631a699a33fa66fbe9c6b0021e021a64272f)
+
+### Internal changes
+
+- Don't try to be smart with HMMcopy's ReadCounter (1bbae5755acda8574b508ab93481fb5d0268cfc5)
+
 ## v1.0.5 - [2024-12-12]
 
 ### Documentation
