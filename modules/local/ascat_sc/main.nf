@@ -1,5 +1,3 @@
-def VERSION = "0.1"
-
 process ASCAT_SC {
 
     tag "${meta.id}"
@@ -14,15 +12,15 @@ process ASCAT_SC {
 
 
     output:
-        path("profiles_${meta.id}.pdf"),                       emit: profiles_plot
-        path("profiles_${meta.id}_refitted.pdf"),              emit: profiles_refitted
-        path("*_gistic.seg"),                     emit: gistic_file
-        path("*_summary.txt"),                    emit: summary_table
-        path("*_segments.seg"),                   emit: segments
-        path("*.rds"),                            emit: rds
-        path("*_df_signatures.seg"),              emit: sig_file
-        path("*.rds"),                            emit: ascat_rds
-        path("versions.yml"),                     emit: versions
+        path("profiles_${meta.id}.pdf")         , emit: profiles_plot
+        path("profiles_${meta.id}_refitted.pdf"), emit: profiles_refitted
+        path("*_gistic.seg")                    , emit: gistic_file
+        path("*_summary.txt")                   , emit: summary_table
+        path("*_segments.seg")                  , emit: segments
+        path("*.rds")                           , emit: rds
+        path("*_df_signatures.seg")             , emit: sig_file
+        path("*.rds")                           , emit: ascat_rds
+        path("versions.yml")                    , emit: versions
 
     script:
 
@@ -30,6 +28,11 @@ process ASCAT_SC {
     def gender = meta.gender ? "--sex ${meta.gender}": ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def bins_bp = binsize ? "--binsize ${binsize}000": "--binsize 30000"
+    def VERSION = "0.1"
+
+    if (!(genome in ["hg19", "hg38"])) {
+        error "Unsupported genome for ASCAT.sc: ${genome}. Only 'hg19' and 'hg38' are supported"
+    }
 
     """
     run_ascatsc.R \\
