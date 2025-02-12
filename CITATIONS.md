@@ -46,6 +46,9 @@
 
   > Drews RM, Hernando B, Tarabichi M, Haase K, Lesluyes T, Smith PS, Morrill Gavarró L, Couturier DL, Liu L, Schneider M, Brenton JD, Van Loo P, Macintyre G, Markowetz F. A pan-cancer compendium of chromosomal instability. Nature. 2022 Jun;606(7916):976-983. doi: 10.1038/s41586-022-04789-9. Epub 2022 Jun 15. PMID: 35705807; PMCID: PMC7613102.
 
+- [HRDCNA](https://www.nature.com/articles/s42003-023-04901-3)
+  >Yao, H., Li, H., Wang, J. et al. Copy number alteration features in pan-cancer homologous recombination deficiency prediction and biology. Commun Biol 6, 527 (2023). https://doi.org/10.1038/s42003-023-04901-3
+
 - [WisecondorX](https://pubmed.ncbi.nlm.nih.gov/30566647/)
 
   > Raman L, Dheedene A, De Smet M, Van Dorpe J, Menten B. WisecondorX: improved copy number detection for routine shallow whole-genome sequencing. Nucleic Acids Res. 2019 Feb 28;47(4):1605-1614. doi: 10.1093/nar/gky1263. PMID: 30566647; PMCID: PMC6393301.

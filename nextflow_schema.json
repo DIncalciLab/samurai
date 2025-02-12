@@ -168,7 +168,7 @@
                     "description": "Maximum amount of time that can be requested for any single job.",
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day|d)\\s*)+$",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
@@ -730,6 +730,18 @@
                     "description": "Compute chromosomal instability signatures (Drews et al., 2022)"
                 }
             }
+        },
+        "hrdcna_score": {
+            "title": "HRDCNA options",
+            "type": "object",
+            "description": "Options pertaining to the generation of HRDCNAScore",
+            "default": "",
+            "properties": {
+                "run_hrdcna": {
+                    "type": "boolean",
+                    "description": "Compute HRDCNA Score (H. Yao et al., 2023) "
+                }
+            }
         }
     },
     "allOf": [
@@ -780,6 +792,9 @@
         },
         {
             "$ref": "#/definitions/chromosomal_instability_signatures"
+        },
+        {
+            "$ref": "#/definitions/hrdcna_score"
         }
     ]
 }
