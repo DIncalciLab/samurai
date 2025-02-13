@@ -7,7 +7,7 @@ include { CONCATENATE_PDF as CONCATENATE_ASCATSC_REFITTED_PLOTS } from '../../..
 include { CREATE_QDNASEQ_SUMMARY                                } from '../../../modules/local/create_qdnaseq_summary/main'
 include { CREATE_ASCATSC_SUMMARY                                } from '../../../modules/local/create_ascatsc_summary/main'
 include { CIN_SIGNATURE_QUANTIFICATION                          } from '../../../modules/local/cin_signature_quantification/main'
-include { RUN_HRDCNA                                            } from '../../../modules/local/hrdcna/main'
+include { HRDCNA                                                } from '../../../modules/local/hrdcna/main'
 
 // Workfow
 
@@ -89,10 +89,10 @@ workflow SOLID_BIOPSY {
                         ch_reports = ch_reports.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
                 }
 
-                if (params.compute_hrdcna_score){
-                        RUN_HRDCNA(signature_file)
-                        ch_versions = ch_versions.mix(RUN_HRDCNA.out.versions)
-                        ch_reports = ch_reports.mix(RUN_HRDCNA.out.hrdcna_scores)
+                if (params.hrdcna_compute_score){
+                        HRDCNA(signature_file)
+                        ch_versions = ch_versions.mix(HRDCNA.out.versions)
+                        ch_reports = ch_reports.mix(HRDCNA.out.hrdcna_summary)
                 }
 
                 //CREATE_ASCATSC_SUMMARY(ascatsc_summary)

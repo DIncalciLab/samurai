@@ -31,13 +31,16 @@ parser <- add_argument(parser, "--seg_file",
 parser <- add_argument(parser, "--genome", type = "string",
     default = "hg38",
     help = "Genome to use")
+parser <- add_argument(parser, "--hrdcna_threshold", type = "float",
+    default = 0.2,
+    help = "Threshold to classify samples into 'HRD' or 'HRP'.")
 
 args <- parse_args(parser)
 
 message("Starting HRDCNA score analysis...")
 
 segments <- read_tsv(args$seg_file, show_col_types = FALSE)
-segments$sample <- gsub("_markdup.bam", "", segments$sample)
+# Dataframe MUST have chr, start, end, segVal, sample
 segments$segVal <- round(segments$segVal, 0)
 # Perform HRD analysis
 # Perform HRD analysis based on genome build
@@ -58,12 +61,14 @@ readr::write_tsv(nmfcn_wgs, file = "hrdcna_features_activity.tsv", quote = "need
 score_wgs <- HRDprediction(data = nmfcn_wgs)
 
 # Assign HRD status based on threshold declared in the original paper
-score_wgs$hrd_status_predicted <- ifelse(score_wgs$HRDCNAScore >= 0.2, "HRD", "HRP")
+score_wgs$hrd_status_predicted <- ifelse(score_wgs$HRDCNAScore >= args$hrdcna_threshold, "HRD", "HRP")
+# Order columns for multiqc
+score_wgs <- score_wgs %>% dplyr::select(sample, HRDCNAScore, hrd_status_predicted)
 
 message("Saving RDS dataset...")
 saveRDS(score_wgs, "hrdcna_scores.rds")
 message("RDS has been saved...")
 
-readr::write_tsv(score_wgs, file = "hrdcna_scores.tsv", quote = "needed")
+readr::write_tsv(score_wgs, file = "hrdcna_summary_mqc.tsv", quote = "needed")
 
 message("Complete.")
