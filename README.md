@@ -84,7 +84,8 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 ## Citations
 
-If you use dincalcilab/samurai for your analysis, please cite `SAMURAI` article as follows: 
+If you use dincalcilab/samurai for your analysis, please cite `SAMURAI` article as follows:
+
 > Sara Potente, Diego Boscarino, Dino Paladin, Sergio Marchini, Luca Beltrame, Chiara Romualdi, **SAMURAI: shallow analysis of copy number alterations using a reproducible and integrated bioinformatics pipeline**, _Briefings in Bioinformatics_, Volume 26, Issue 1, January 2025, bbaf035, https://doi.org/10.1093/bib/bbaf035
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.

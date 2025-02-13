@@ -271,12 +271,12 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 ### HRDCNA
 
-> _NB: HRDCNA Score can be computed only from `--caller ascat_sc`  analysis_
+> _NB: HRDCNA Score can be computed only from `--caller ascat_sc` analysis_
 
-| Parameter Name        | Description                                                                                      | Possible Values           |
-| --------------------  | ------------------------------------------------------------------------------------------------ | ------------------------- |
-| `hrdcna_compute_score`| Compute [HRDCNA Score](https://www.nature.com/articles/s42003-023-04901-3).                      | `true`, `false`           |
-| `hrdcna_threshold`    | Threshold to classify the sample as 'HRD' or 'HRP'. Default value is: 0.2.                       | Any number between 0 and 1|
+| Parameter Name         | Description                                                                 | Possible Values            |
+| ---------------------- | --------------------------------------------------------------------------- | -------------------------- |
+| `hrdcna_compute_score` | Compute [HRDCNA Score](https://www.nature.com/articles/s42003-023-04901-3). | `true`, `false`            |
+| `hrdcna_threshold`     | Threshold to classify the sample as 'HRD' or 'HRP'. Default value is: 0.2.  | Any number between 0 and 1 |
 
 ### GISTIC2.0 Analysis
 
@@ -285,7 +285,7 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 | Parameter Name            | Description                                                      | Default Value | Possible Values                   |
 | ------------------------- | ---------------------------------------------------------------- | ------------- | --------------------------------- |
 | `run_gistic`              | Run GISTIC analysis.                                             |               | `true`, `false`                   |
-| `gistic_t_amp`            | Default log2ratio threshold to call amplifications.             | 0.1           | Any number (log2 ratio threshold) |
+| `gistic_t_amp`            | Default log2ratio threshold to call amplifications.              | 0.1           | Any number (log2 ratio threshold) |
 | `gistic_t_del`            | Default log2ratio threshold to call deletions.                   | 0.1           | Any number (log2 ratio threshold) |
 | `gistic_remove_x`         | Whether to remove or not chromosome X from the analysis.         |               | `true`, `false`                   |
 | `gistic_conf`             | GISTIC confidence level for calling recurrent altered regions.   | 0.99          | Any number (confidence level)     |
