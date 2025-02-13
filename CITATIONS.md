@@ -47,7 +47,8 @@
   > Drews RM, Hernando B, Tarabichi M, Haase K, Lesluyes T, Smith PS, Morrill Gavarró L, Couturier DL, Liu L, Schneider M, Brenton JD, Van Loo P, Macintyre G, Markowetz F. A pan-cancer compendium of chromosomal instability. Nature. 2022 Jun;606(7916):976-983. doi: 10.1038/s41586-022-04789-9. Epub 2022 Jun 15. PMID: 35705807; PMCID: PMC7613102.
 
 - [HRDCNA](https://www.nature.com/articles/s42003-023-04901-3)
-  >Yao, H., Li, H., Wang, J. et al. Copy number alteration features in pan-cancer homologous recombination deficiency prediction and biology. Commun Biol 6, 527 (2023). https://doi.org/10.1038/s42003-023-04901-3
+
+  > Yao, H., Li, H., Wang, J. et al. Copy number alteration features in pan-cancer homologous recombination deficiency prediction and biology. Commun Biol 6, 527 (2023). https://doi.org/10.1038/s42003-023-04901-3
 
 - [WisecondorX](https://pubmed.ncbi.nlm.nih.gov/30566647/)
 
