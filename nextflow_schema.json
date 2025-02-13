@@ -737,9 +737,14 @@
             "description": "Options pertaining to the generation of HRDCNAScore",
             "default": "",
             "properties": {
-                "run_hrdcna": {
+                "hrdcna_compute_score": {
                     "type": "boolean",
                     "description": "Compute HRDCNA Score (H. Yao et al., 2023) "
+                },
+                "hrdcna_threshold": {
+                    "type": "number",
+                    "default": 0.2,
+                    "description": "Threshold to classify samples into 'HRD' or 'HRP'."
                 }
             }
         }
