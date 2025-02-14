@@ -271,7 +271,7 @@ custom_data:
     section_name: "HRDCNA Summary"
     format: "txt"
     plot_type: "table"
-    description: "This table reports HRDCNAScores with the putative labels for the classification of the sample into 'HRD' or 'HRP'."
+    description: "This table reports HRDCNAScores with the putative labels for the classification of the sample into 'HRD+' or 'HRD-'."
     pconfig:
       col1_header: "Sample ID"
     headers:

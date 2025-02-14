@@ -61,7 +61,7 @@ readr::write_tsv(nmfcn_wgs, file = "hrdcna_features_activity.tsv", quote = "need
 score_wgs <- HRDprediction(data = nmfcn_wgs)
 
 # Assign HRD status based on threshold declared in the original paper
-score_wgs$hrd_status_predicted <- ifelse(score_wgs$HRDCNAScore >= args$hrdcna_threshold, "HRD", "HRP")
+score_wgs$hrd_status_predicted <- ifelse(score_wgs$HRDCNAScore >= args$hrdcna_threshold, "HRD+", "HRD-")
 # Order columns for multiqc
 score_wgs <- score_wgs %>% dplyr::select(sample, HRDCNAScore, hrd_status_predicted)
 
