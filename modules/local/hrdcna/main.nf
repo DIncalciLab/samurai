@@ -17,6 +17,9 @@ process HRDCNA {
         path("hrdcna_features_activity.rds"),       emit: features_activity_rds
         path("versions.yml"),                       emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+    
     script:
 
     def args = task.ext.args ?: ''
