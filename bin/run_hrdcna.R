@@ -52,9 +52,9 @@ nmfcn_wgs <- if (args$genome == "hg38") {
   stop("Unsupported genome build. Please specify either 'hg38' or 'hg19'.")
 }
 
-message("Saving RDS dataset...")
+message("Saving RDS with Sigminer features activity...")
 saveRDS(nmfcn_wgs, "hrdcna_features_activity.rds")
-message("RDS has been saved...")
+message("Sigminer features activity RDS has been saved...")
 
 readr::write_tsv(nmfcn_wgs, file = "hrdcna_features_activity.tsv", quote = "needed")
 
@@ -65,9 +65,9 @@ score_wgs$hrd_status_predicted <- ifelse(score_wgs$HRDCNAScore >= args$hrdcna_th
 # Order columns for multiqc
 score_wgs <- score_wgs %>% dplyr::select(sample, HRDCNAScore, hrd_status_predicted)
 
-message("Saving RDS dataset...")
+message("Saving RDS with HRDCNA Scores...")
 saveRDS(score_wgs, "hrdcna_scores.rds")
-message("RDS has been saved...")
+message("HRDCNA Scores RDS has been saved...")
 
 readr::write_tsv(score_wgs, file = "hrdcna_summary_mqc.tsv", quote = "needed")
 
