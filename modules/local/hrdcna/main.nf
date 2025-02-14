@@ -2,7 +2,7 @@ def VERSION = "0.1"
 
 process HRDCNA {
 
-    tag "Computing HRDCNA score"
+    tag "HRDCNA score"
     label "process_single"
 
     container "quay.io/dincalcilab/hrdcna:0.0.0.9000_deb8861"
