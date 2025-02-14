@@ -34,8 +34,4 @@ process HRDCNA {
         HRDCNA: ${VERSION}
     END_VERSIONS
     """
-
-
-
-
 }       
