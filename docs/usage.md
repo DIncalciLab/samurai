@@ -269,6 +269,15 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 | -------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
 | `compute_signatures` | Compute [chromosomal instability signatures](https://www.nature.com/articles/s41586-022-04789-9). | `true`, `false` |
 
+### HRDCNA
+
+> _NB: HRDCNA Score can be computed only from `--caller ascat_sc` analysis_
+
+| Parameter Name         | Description                                                                 | Possible Values            |
+| ---------------------- | --------------------------------------------------------------------------- | -------------------------- |
+| `hrdcna_compute_score` | Compute [HRDCNA Score](https://www.nature.com/articles/s42003-023-04901-3). | `true`, `false`            |
+| `hrdcna_threshold`     | Threshold to classify the sample as 'HRD' or 'HRP'. Default value is: 0.2.  | Any number between 0 and 1 |
+
 ### GISTIC2.0 Analysis
 
 > _NB: Currently, GISTIC analysis can be performed only with genome builds `--genome hg38` or `--genome hg19`_
