@@ -125,8 +125,14 @@ df_final <- as.data.frame(ifelse(args$predict_refit,
         total_copy_number = as.numeric(total_copy_number))
 
 message("Creation of summary df with purity and ploidy")
-# Purity and ploidy are the same in refitted and non-refitted cases
-df_summary <- as.data.frame(res$summary$allSols)
+
+if (args$predict_refit) {
+    df_summary <- as.data.frame(res$summary[["allSols.refitted"]])
+} else {
+    df_summary <- as.data.frame(res$summary[["allSols"]])
+}
+
+
 df_summary$samplename <- args$project
 
 # save output files
