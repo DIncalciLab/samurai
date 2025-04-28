@@ -27,7 +27,7 @@ A preprint describing SAMURAI and its applications to artificial and real-world 
 7. Perform copy number alteration identification for liquid biopsy samples([`ichorCNA`](), [`WisecondorX`]())
 8. (Optional) Extract copy number instability signatures ([`CINSignatureQuantification`]())
 9. (Optional) Identify recurrent altered regions in the sample population ([`GISTIC`]())
-10. (Optional) Compute HRDCNA Score to detect Homologous recombination deficiency (HRD) ([`HRDCNA`]())
+10. (Optional) Compute HRDCNA Score to detect Homologous recombination deficiency (HRD) ([`HRDCNA`](https://doi.org/10.1038/s42003-023-04901-3))
 11. Present QC for each sep of the pipeline ([`MultiQC`](http://multiqc.info/))
 
 <p align="center">
