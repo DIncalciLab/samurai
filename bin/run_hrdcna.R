@@ -63,9 +63,7 @@ hrdcna_score$hrd_status_predicted <- ifelse(hrdcna_score$HRDCNAScore >= args$hrd
 # Order columns for multiqc
 hrdcna_score <- hrdcna_score %>% dplyr::select(sample, HRDCNAScore, hrd_status_predicted)
 
-message("Saving RDS with HRDCNA Scores...")
-saveRDS(hrdcna_score, "hrdcna_scores.rds")
-
+message("Saving table with HRDCNA Scores...")
 readr::write_tsv(hrdcna_score, file = "hrdcna_summary_mqc.tsv", quote = "needed")
 
 message("Complete.")

@@ -12,7 +12,6 @@ process HRDCNA {
 
     output:
         path("hrdcna_summary_mqc.tsv"),             emit: hrdcna_summary
-        path("hrdcna_scores.rds"),                  emit: hrdcna_scores_rds
         path("hrdcna_features_activity.tsv"),       emit: features_activity
         path("hrdcna_features_activity.rds"),       emit: features_activity_rds
         path("versions.yml"),                       emit: versions
