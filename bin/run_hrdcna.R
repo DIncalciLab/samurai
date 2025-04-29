@@ -53,7 +53,6 @@ features <- if (args$genome == "hg38") {
 
 message("Saving RDS with Sigminer features activity...")
 saveRDS(features, "hrdcna_features_activity.rds")
-message("Sigminer features activity RDS has been saved...")
 
 readr::write_tsv(features, file = "hrdcna_features_activity.tsv", quote = "needed")
 
@@ -66,7 +65,6 @@ hrdcna_score <- hrdcna_score %>% dplyr::select(sample, HRDCNAScore, hrd_status_p
 
 message("Saving RDS with HRDCNA Scores...")
 saveRDS(hrdcna_score, "hrdcna_scores.rds")
-message("HRDCNA Scores RDS has been saved...")
 
 readr::write_tsv(hrdcna_score, file = "hrdcna_summary_mqc.tsv", quote = "needed")
 
