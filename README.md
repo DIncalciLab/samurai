@@ -27,7 +27,8 @@ A preprint describing SAMURAI and its applications to artificial and real-world 
 7. Perform copy number alteration identification for liquid biopsy samples([`ichorCNA`](), [`WisecondorX`]())
 8. (Optional) Extract copy number instability signatures ([`CINSignatureQuantification`]())
 9. (Optional) Identify recurrent altered regions in the sample population ([`GISTIC`]())
-10. Present QC for each sep of the pipeline ([`MultiQC`](http://multiqc.info/))
+10. (Optional) Compute HRDCNA Score to detect Homologous recombination deficiency (HRD) ([`HRDCNA`](https://doi.org/10.1038/s42003-023-04901-3))
+11. Present QC for each sep of the pipeline ([`MultiQC`](http://multiqc.info/))
 
 <p align="center">
     <img title="SAMURAI Workflow" src="docs/images/samurai_map.png" width=85%>
@@ -83,7 +84,8 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 ## Citations
 
-If you use dincalcilab/samurai for your analysis, please cite `SAMURAI` article as follows: 
+If you use dincalcilab/samurai for your analysis, please cite `SAMURAI` article as follows:
+
 > Sara Potente, Diego Boscarino, Dino Paladin, Sergio Marchini, Luca Beltrame, Chiara Romualdi, **SAMURAI: shallow analysis of copy number alterations using a reproducible and integrated bioinformatics pipeline**, _Briefings in Bioinformatics_, Volume 26, Issue 1, January 2025, bbaf035, https://doi.org/10.1093/bib/bbaf035
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
