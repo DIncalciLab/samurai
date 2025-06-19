@@ -80,7 +80,7 @@ workflow LIQUID_BIOPSY {
         ch_reports = ch_reports.mix(AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
 
         RUN_ICHORCNA.out.bins
-            .map { meta, data -> data }
+            .map { _meta, data -> data }
             .collectFile(
                 storeDir: "${params.outdir}/ichorcna/",
                 name: 'all_segments_ichorcna_gistic.seg',
@@ -118,7 +118,7 @@ workflow LIQUID_BIOPSY {
         called_segments = WISECONDORX_PREDICT.out.calls
 
         CONVERT_GISTIC_SEG.out.gistic_file
-            .map { meta, data -> data }
+            .map { _meta, data -> data }
             .collectFile(
                 name: "all_segments_wisecondorx_gistic.seg",
                 skip: 1,
@@ -126,10 +126,10 @@ workflow LIQUID_BIOPSY {
             )
             .set { gistic_file }
         ASSEMBLE_WISECONDORX_OUTPUTS(
-            WISECONDORX_PREDICT.out.statistics.collect { meta, result ->
+            WISECONDORX_PREDICT.out.statistics.collect { _meta, result ->
                 result
             },
-            WISECONDORX_PREDICT.out.calls.collect { meta, result ->
+            WISECONDORX_PREDICT.out.calls.collect { _meta, result ->
                 result
             },
         )
@@ -137,7 +137,7 @@ workflow LIQUID_BIOPSY {
         ch_reports = ch_reports.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary)
 
         CONVERT_WISECONDORX_IMAGES(
-            WISECONDORX_PREDICT.out.genome_plot.collect { meta, result ->
+            WISECONDORX_PREDICT.out.genome_plot.collect { _meta, result ->
                 result
             }
         )
