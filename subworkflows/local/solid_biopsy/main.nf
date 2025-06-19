@@ -54,7 +54,7 @@ workflow SOLID_BIOPSY {
         //CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
         //ch_versions = ch_versions.mix(CREATE_QDNASEQ_SUMMARY.out.versions)
         ch_reports = ch_reports.mix(qdnaseq_summary)
-        gistic_file = ch_segments
+        corrected_gistic_file = ch_segments
     }
     else if (caller == "ascat_sc") {
         ASCAT_SC(ch_bam_bai, binsize, genome)
@@ -113,7 +113,6 @@ workflow SOLID_BIOPSY {
         //CREATE_ASCATSC_SUMMARY(ascatsc_summary)
         ch_reports = ch_reports.mix(ascatsc_summary)
 
-
         ASCAT_SC.out.gistic_file
             .collectFile(
                 storeDir: "${params.outdir}/ascat_sc/",
@@ -121,7 +120,7 @@ workflow SOLID_BIOPSY {
                 keepHeader: true,
                 skip: 1,
             )
-            .set { gistic_file }
+            .set { corrected_gistic_file }
     }
     else if (caller == "ichorcna") {
 
@@ -167,7 +166,7 @@ workflow SOLID_BIOPSY {
         )
         ch_versions = ch_versions.mix(RUN_ICHORCNA.out.versions)
 
-        called_segments = RUN_ICHORCNA.out.cna_seg
+        ch_segments = RUN_ICHORCNA.out.cna_seg
         genome_plot = RUN_ICHORCNA.out.genome_plot
 
         // Step 3: produce an aggregate table of the results
@@ -179,7 +178,7 @@ workflow SOLID_BIOPSY {
         ch_reports = ch_reports.mix(AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
 
         RUN_ICHORCNA.out.bins
-            .map { meta, data -> data }
+            .map { _meta, data -> data }
             .collectFile(
                 storeDir: "${params.outdir}/ichorcna/",
                 name: 'all_segments_ichorcna_gistic.seg',
@@ -203,6 +202,7 @@ workflow SOLID_BIOPSY {
     emit:
     ch_segments = ch_segments
     summary     = ch_reports
-    gistic_file = gistic_file
+    gistic_file = corrected_gistic_file
     versions    = ch_versions
+    genome_plot = genome_plot
 }
