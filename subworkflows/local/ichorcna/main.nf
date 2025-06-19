@@ -11,6 +11,7 @@ workflow ICHORCNA {
     ch_gc_wig       // Channel: path
     ch_map_wig      // Channel: path
     ch_centromere   // Channel: path
+    ch_reptime_wig  // Channel: path (optional)
 
     main:
 
@@ -27,7 +28,7 @@ workflow ICHORCNA {
         ch_map_wig,
         ch_normal_panel,
         ch_centromere,
-        [],
+        ch_reptime_wig,
     )
     ch_versions = ch_versions.mix(RUN_ICHORCNA.out.versions)
 

@@ -158,6 +158,7 @@ workflow SOLID_BIOPSY {
             gc_wig,
             map_wig,
             centromere,
+            reptime_file,
         )
 
         ch_segments = ICHORCNA.out.ch_segments
