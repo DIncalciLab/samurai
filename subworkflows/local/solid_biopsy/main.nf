@@ -23,8 +23,7 @@ workflow SOLID_BIOPSY {
         ch_versions = Channel.empty()
         ch_reports = Channel.empty()
 
-        switch(caller) {
-            case "qdnaseq":
+        if (caller == "qdnaseq") {
                 QDNASEQ(ch_bam_bai, binsize, genome)
                 ch_versions = ch_versions.mix(QDNASEQ.out.versions.first())
                 CONCATENATE_QDNASEQ_PLOTS(QDNASEQ.out.segment_plot.collect())
@@ -47,8 +46,7 @@ workflow SOLID_BIOPSY {
                 //ch_versions = ch_versions.mix(CREATE_QDNASEQ_SUMMARY.out.versions)
                 ch_reports = ch_reports.mix(qdnaseq_summary)
                 gistic_file = ch_segments
-                break
-            case "ascat_sc":
+        } else if (caller == "ascat_sc") {
                 ASCAT_SC(ch_bam_bai, binsize, genome)
                 ch_versions = ch_versions.mix(ASCAT_SC.out.versions)
 
@@ -105,11 +103,10 @@ workflow SOLID_BIOPSY {
                                     keepHeader: true,
                                     skip: 1)
                             .set{gistic_file}
-                break
-            default:
-                error "Unknown CNV caller ${caller}"
-
-
+        } else if (caller == "ichorcna") {
+            error "Stub"
+        } else {
+            error "Unknown CNV caller ${caller}"
         }
 
     emit:
