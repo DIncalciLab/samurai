@@ -3,14 +3,24 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### New features
+
+- Allow ichorCNA also in the solid biopsy workflow
+
+### Internal changes
+
+- Move ichorCNA to a separate subworkflow
+
 ## v1.1.0 - "Takeda Shingen" - [2025-04-29]
 
 ### New features
 
 - Integration of HRDCNA module for HRDCNA score detection in solid biopsy subworkflow (PR #35, @SaraPotente)
 
-Takeda Shingen (1521-1573) was a warlord who ruled the province of Kai during the "Warring States" period. 
-  
+Takeda Shingen (1521-1573) was a warlord who ruled the province of Kai during the "Warring States" period.
+
 ## v1.0.6 - [2025-01-30]
 
 ### Bug Fixes
