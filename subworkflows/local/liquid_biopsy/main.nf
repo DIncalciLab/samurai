@@ -79,7 +79,7 @@ workflow LIQUID_BIOPSY {
         ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
         ch_reports = ch_reports.mix(AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
 
-        RUN_ICHORCNA.out.bins
+        RUN_ICHORCNA.out.cna_seg
             .map { _meta, data -> data }
             .collectFile(
                 storeDir: "${params.outdir}/ichorcna/",

@@ -33,6 +33,7 @@ workflow ICHORCNA {
     ch_versions = ch_versions.mix(RUN_ICHORCNA.out.versions)
 
     called_segments = RUN_ICHORCNA.out.cna_seg
+    bins = RUN_ICHORCNA.out.bins
     genome_plot = RUN_ICHORCNA.out.genome_plot
 
     // Step 3: produce an aggregate table of the results
@@ -43,7 +44,7 @@ workflow ICHORCNA {
     ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
     ch_reports = ch_reports.mix(AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
 
-    RUN_ICHORCNA.out.bins
+    RUN_ICHORCNA.out.cna_seg
         .map { _meta, data -> data }
         .collectFile(
             storeDir: "${params.outdir}/ichorcna/",
@@ -65,6 +66,7 @@ workflow ICHORCNA {
     versions    = ch_versions
     summary     = ch_reports
     ch_segments = called_segments
+    ch_bins     = bins
     gistic_file = corrected_gistic_file
     genome_plot = genome_plot
 }

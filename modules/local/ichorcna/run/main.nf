@@ -15,8 +15,8 @@ process RUN_ICHORCNA {
         path reptime_file
 
     output:
-        tuple val(meta), path("*.cna.seg")           , emit: cna_seg
-        tuple val(meta), path("*.seg.txt")           , emit: bins
+        tuple val(meta), path("*.cna.seg")           , emit: bins
+        tuple val(meta), path("*.seg.txt")           , emit: cna_seg
         tuple val(meta), path("*.seg")
         tuple val(meta), path("*.correctedDepth.txt"), emit: corrected_depth
         path("*.params.txt")                         , emit: ichorcna_params
