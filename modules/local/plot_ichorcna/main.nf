@@ -3,7 +3,7 @@ process PLOT_ICHORCNA {
     tag "Plotting ichorCNA results for $meta.id"
     label 'process_low'
 
-    container "/mnt/local/sarap/images_def/plot_ichorcna/plot_ichorcna.sif"
+    container "community.wave.seqera.io/library/procps-ng_r-argparser_r-dplyr_r-ggplot2_pruned:1c03c7484bc96679"
 
     input:
         tuple val(meta), path(cna_seg)
