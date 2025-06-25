@@ -59,6 +59,7 @@ workflow ICHORCNA {
     ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
 
     corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
+
     if (params.correct_ichorcna_plot) {
             PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
         }

@@ -166,10 +166,6 @@ workflow SOLID_BIOPSY {
         ch_reports = ch_versions.mix(ICHORCNA.out.summary)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
 
-        if (params.correct_ichorcna_plot) {
-            // correct IchorCNA plots by accounting for ploidy of the samples
-            PLOT_ICHORCNA()
-        }
     }
     else {
         error("Unknown CNV caller ${caller}")
