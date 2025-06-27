@@ -53,6 +53,7 @@ get_summary <- function(file, sample_id) {
 
   df <- as.data.frame(t(sample_row), stringsAsFactors = FALSE)
   colnames(df) <- header
+  # TODO: Consider outputting TF/ploidy as a machine-readable format
   df$`Tumor Fraction` <- as.numeric(df$`Tumor Fraction`)
   df$Ploidy <- as.numeric(df$Ploidy)
 
