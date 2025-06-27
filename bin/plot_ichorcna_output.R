@@ -89,30 +89,16 @@ clean_bins_colnames <- function(df, sample_id) {
 }
 
 prepare_plot_data <- function(df) {
+  # Filter first to keep only autosomes
   df <- df %>%
+    filter(!grepl("X|Y|M|MT", chrom)) %>%
     mutate(
-      # Extract numeric chromosome identifier from "chr1", "chrX", etc.
-      chrom_num = gsub("chr", "", chrom),
-
-      # Convert special chromosomes to numeric codes
-      chrom_num = case_when(
-        chrom_num == "X" ~ "23",
-        chrom_num == "Y" ~ "24",
-        chrom_num == "M" ~ "25",
-        TRUE ~ chrom_num
-      ),
-
-      # Convert to numeric (suppress warnings for any NA coercion)
-      chrom_num = suppressWarnings(as.numeric(chrom_num)),
-
-      # Calculate midpoint of each region for plotting
+      # Extract numeric chromosome identifier
+      chrom_num = as.numeric(gsub("chr", "", chrom)),
+      # Calculate midpoint for plotting
       midpoint = (start + end) / 2
     ) %>%
-
-    # Keep only autosomes (chromosomes 1 through 22)
-    filter(chrom_num >= 1 & chrom_num <= 22) %>%
-
-    # Sort the data by chromosome number and genomic position
+    # Sort by chromosome and position
     arrange(chrom_num, midpoint)
 
   # Compute the maximum position per chromosome to determine its length
