@@ -60,7 +60,7 @@ workflow ICHORCNA {
 
     corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
 
-    if (params.correct_ichorcna_plot) {
+    if (params.ichorcna_plot_ploidy_aware) {
             PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
         }
     // Step 4: Aggregate bin-level plots into a single file
