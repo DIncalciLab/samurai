@@ -98,6 +98,8 @@ prepare_plot_data <- function(df) {
       # Calculate midpoint for plotting
       midpoint = (start + end) / 2
     ) %>%
+    # Remove rows with NA in any *_Copy_Number column
+    filter(!if_any(matches("_Copy_Number$"), is.na)) %>%
     # Sort by chromosome and position
     arrange(chrom_num, midpoint)
 
@@ -172,13 +174,6 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
     y_lower <- -2
     y_upper <- 2
   }
-
-  # Filter bins for plotting range
-  df_bins_filtered <- df_bins %>%
-    filter(!is.na(logR_Copy_Number),
-           logR_Copy_Number >= y_lower,
-           logR_Copy_Number <= y_upper)
-
   # Base plot
   p <- ggplot() +
     # Grey background for alternate chromosomes
@@ -186,14 +181,14 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
       data = chrom_lengths %>% filter(chrom_num %% 2 == 0),
       aes(xmin = cumulative_start, xmax = cumulative_end,
           ymin = -Inf, ymax = Inf),
-      fill = "grey96", alpha = 0.6
+      fill = "gray95", alpha = 1
     ) +
 
     # Raw logR points
     geom_point(
-      data = df_bins_filtered,
+      data = df_bins,
       aes(x = plot_position, y = logR_Copy_Number),
-      color = "grey65", size = 0.4, alpha = 0.3, stroke = 0
+      color = "grey39", size = 0.4, alpha = 0.3, stroke = 0
     ) +
 
     # Segmented corrected copy number calls
@@ -260,11 +255,11 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
   # Save the figure
   out_file <- file.path(output_dir, paste0(sample_id, ".copy_number.png"))
   ggsave(out_file, plot = p, width = 14, height = 6, dpi = 300)
-  cat("Plot saved to:", out_file, "\n")
+  message("Plot saved to:", out_file, "\n")
 }
 
 # Main execution
-cat("Processing sample:", sample_id, "\n")
+message("Processing sample:", sample_id, "\n")
 
 # Read and process summary
 summary_df <- get_summary(summary_file, sample_id)
@@ -272,7 +267,7 @@ ploidy <- summary_df$Ploidy
 tf <- summary_df$`Tumor Fraction`
 mad <- ifelse(is.na(summary_df$MAD), 0, summary_df$MAD)
 
-cat("Sample info - TF:", tf, "Ploidy:", ploidy, "MAD:", mad, "\n")
+message("Sample info - TF:", tf, "Ploidy:", ploidy, "MAD:", mad, "\n")
 
 # Read bins file and clean column names
 df_bins <- read_tsv(bin_file, show_col_types = FALSE)
@@ -297,7 +292,7 @@ df_segments <- df_segments %>%
     TRUE ~ "NEUTRAL"
   ))
 
-cat("Data loaded - Bins:", nrow(df_bins), "Segments:", nrow(df_segments), "\n")
+message("Data loaded - Bins:", nrow(df_bins), "Segments:", nrow(df_segments), "\n")
 
 # Prepare plot data
 prep_bins <- prepare_plot_data(df_bins)
@@ -309,4 +304,4 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 # Generate plot
 plot_combined_copy_number(prep_bins$df, prep_segments$df, prep_bins$chrom_lengths, tf, ploidy, mad, sample_id, output_dir) # nolint: line_length_linter.
 
-cat("Plot generation completed!\n")
+message("Plot generation completed!\n")
