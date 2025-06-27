@@ -88,109 +88,124 @@ clean_bins_colnames <- function(df, sample_id) {
   return(df)
 }
 
-parse_chromosome <- function(chrom) {
-  chr <- gsub("chr", "", chrom)
-
-  # Replace "X" and "Y" with numeric equivalents.
-  # Note: If there are no chromosomes "X" or "Y" in the input,
-  # the replacement will silently do nothing.
-  chr[chr == "X"] <- "23"
-  chr[chr == "Y"] <- "24"
-
-  as.numeric(chr)
-}
-
-
 prepare_plot_data <- function(df) {
   df <- df %>%
     mutate(
-      chrom_num = parse_chromosome(chrom),
+      # Parse chromosome number from "chr1", "chrX", etc.
+      chrom_num = gsub("chr", "", chrom),
+      chrom_num = case_when(
+        chrom_num == "X" ~ "23",
+        chrom_num == "Y" ~ "24",
+        chrom_num == "M" ~ "25",
+        TRUE ~ chrom_num
+      ),
+      chrom_num = suppressWarnings(as.numeric(chrom_num)),
       midpoint = (start + end) / 2
     ) %>%
+    # Keep only chromosomes 1 through 22
     filter(chrom_num >= 1 & chrom_num <= 22) %>%
     arrange(chrom_num, midpoint)
 
+  # Compute chromosome lengths and cumulative positions
   chrom_lengths <- df %>%
     group_by(chrom_num, chrom) %>%
     summarise(max_pos = max(end), .groups = "drop") %>%
     arrange(chrom_num)
-  # Create full chromosome list 1..22
+
   full_chrom_df <- data.frame(chrom_num = 1:22, chrom = paste0("chr", 1:22))
-  # Join to ensure all chromosomes are present, fill missing max_pos with 0
+
   chrom_lengths_full <- full_chrom_df %>%
     left_join(chrom_lengths, by = c("chrom_num", "chrom")) %>%
     mutate(
       max_pos = ifelse(is.na(max_pos), 0, max_pos),
-      # Cast max_pos to numeric before cumsum to prevent integer overflow
       cumulative_start = lag(cumsum(as.numeric(max_pos)), default = 0),
       cumulative_end = cumulative_start + max_pos,
       chrom_center = cumulative_start + max_pos / 2
-      )
+    )
 
   df <- df %>%
     left_join(chrom_lengths_full %>%
-    dplyr::select(chrom_num, cumulative_start), by = "chrom_num") %>%
-    dplyr::mutate(plot_position = cumulative_start + midpoint)
+                select(chrom_num, cumulative_start), by = "chrom_num") %>%
+    mutate(plot_position = cumulative_start + midpoint)
 
   return(list(df = df, chrom_lengths = chrom_lengths_full))
 }
 
 plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
-                                    tf, ploidy, mad, sample_id, output_dir) {
-  color_mapping <- c("NEUTRAL" = "#2E86AB",
-                    "AMPLIFICATION" = "#F24236",
-                    "DELETION" = "#08a50c")
+                                      tf, ploidy, mad, sample_id, output_dir) {
+  # Color map for calls
+  color_mapping <- c(
+    "NEUTRAL" = "#2E86AB",
+    "AMPLIFICATION" = "#F24236",
+    "DELETION" = "#08a50c"
+  )
 
-  y_vals <- df_bins$logR_Copy_Number[!is.na(df_bins$logR_Copy_Number)]
-
+  # Define Y-axis range
+  y_vals <- df_bins$logR_Copy_Number
+  y_vals <- y_vals[!is.na(y_vals)]
   if (length(y_vals) > 0) {
-    y_min <- floor(min(y_vals, na.rm = TRUE))
-    y_max <- 10
+    y_min <- floor(min(y_vals))
+    y_max <- 12 # for better plot visualization
     y_range_buffer <- (y_max - y_min) * 0.03
-    y_lower_bound <- y_min - y_range_buffer
-    y_upper_bound <- y_max + y_range_buffer
+    y_lower <- y_min - y_range_buffer
+    y_upper <- y_max + y_range_buffer
   } else {
-    y_lower_bound <- -2
-    y_upper_bound <- 2
+    y_lower <- -2
+    y_upper <- 2
   }
 
+  # Filter bins for plotting range
   df_bins_filtered <- df_bins %>%
     filter(!is.na(logR_Copy_Number),
-           logR_Copy_Number >= y_lower_bound,
-           logR_Copy_Number <= y_upper_bound)
+           logR_Copy_Number >= y_lower,
+           logR_Copy_Number <= y_upper)
 
+  # Base plot
   p <- ggplot() +
-    {if(nrow(chrom_lengths) > 1 &&
-    "cumulative_end" %in% colnames(chrom_lengths)) {
-      geom_rect(data = chrom_lengths %>%
-      filter(row_number() %% 2 == 0),
-                aes(xmin = cumulative_start, xmax = cumulative_end,
-                    ymin = -Inf, ymax = Inf),
-                fill = "grey96", alpha = 0.6, inherit.aes = FALSE)
-    }} +
-    geom_point(data = df_bins_filtered,
-               aes(x = plot_position, y = logR_Copy_Number),
-               color = "#c2c1c1", size = 0.2, alpha = 0.2) +
-    geom_segment(data = df_segments,
-                 aes(x = cumulative_start + start,
-                     xend = cumulative_start + end,
-                     y = Corrected_Copy_Number,
-                     yend = Corrected_Copy_Number,
-                     color = call),
-                 linewidth = 1.9, alpha = 0.9, lineend = "round") +
-    scale_color_manual(values = color_mapping,
-                       name = "Copy Number Call",
-                       guide = guide_legend(override.aes = list(linewidth = 4, alpha = 1))) +
+    # Grey background for alternate chromosomes
+    geom_rect(
+      data = chrom_lengths %>% filter(chrom_num %% 2 == 0),
+      aes(xmin = cumulative_start, xmax = cumulative_end,
+          ymin = -Inf, ymax = Inf),
+      fill = "grey96", alpha = 0.6
+    ) +
+
+    # Raw logR points
+    geom_point(
+      data = df_bins_filtered,
+      aes(x = plot_position, y = logR_Copy_Number),
+      color = "grey65", size = 0.4, alpha = 0.3, stroke = 0
+    ) +
+
+    # Segmented corrected copy number calls
+    geom_segment(
+      data = df_segments,
+      aes(x = cumulative_start + start,
+          xend = cumulative_start + end,
+          y = Corrected_Copy_Number,
+          yend = Corrected_Copy_Number,
+          color = call),
+      linewidth = 1.8, alpha = 0.9, lineend = "round"
+    ) +
+
+    # Axis and color configuration
+    scale_color_manual(
+      values = color_mapping,
+      name = "Copy Number Call",
+      guide = guide_legend(override.aes = list(linewidth = 4, alpha = 1))
+    ) +
     scale_x_continuous(
       breaks = chrom_lengths$chrom_center,
       labels = gsub("chr", "", chrom_lengths$chrom),
       expand = c(0.005, 0)
     ) +
     scale_y_continuous(
-      limits = c(y_lower_bound, y_upper_bound),
+      limits = c(y_lower, y_upper),
       breaks = pretty_breaks(n = 10),
       expand = expansion(mult = c(0.02, 0.02))
     ) +
+
+    # Labels
     labs(
       title = paste("Sample:", sample_id),
       subtitle = paste0("Tumor Fraction: ", round(tf, 3),
@@ -199,6 +214,8 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
       x = "Chromosome",
       y = "Copy Number"
     ) +
+
+    # Styling
     theme_minimal(base_size = 12) +
     theme(
       panel.background = element_rect(fill = "white", color = NA),
@@ -210,12 +227,8 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
       axis.text.y = element_text(size = 9, color = "grey25"),
       axis.title = element_text(size = 10, color = "grey15", face = "bold"),
       axis.line = element_line(color = "grey35", linewidth = 0.5),
-      plot.title = element_text(hjust = 0.5, size = 15, face = "bold",
-                                color = "grey10", margin = margin(b = 6)),
-      plot.subtitle = element_text(hjust = 0.5, size = 11, color = "grey35",
-                                   margin = margin(b = 10)),
-      plot.caption = element_text(size = 8, color = "grey55", hjust = 1,
-                                  margin = margin(t = 6)),
+      plot.title = element_text(hjust = 0.5, size = 15, face = "bold", color = "grey10", margin = margin(b = 6)),
+      plot.subtitle = element_text(hjust = 0.5, size = 11, color = "grey35", margin = margin(b = 10)),
       legend.position = "bottom",
       legend.title = element_text(size = 10, face = "bold", color = "grey15"),
       legend.text = element_text(size = 9, color = "grey25"),
@@ -225,11 +238,11 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
       plot.margin = margin(t = 15, r = 15, b = 12, l = 15)
     )
 
+  # Save the figure
   out_file <- file.path(output_dir, paste0(sample_id, ".copy_number.png"))
   ggsave(out_file, plot = p, width = 14, height = 6, dpi = 300)
   cat("Plot saved to:", out_file, "\n")
 }
-
 
 # Main execution
 cat("Processing sample:", sample_id, "\n")
@@ -275,6 +288,6 @@ prep_segments <- prepare_plot_data(df_segments)
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Generate plot
-plot_combined_copy_number(prep_bins$df, prep_segments$df, prep_bins$chrom_lengths, tf, ploidy, mad, sample_id, output_dir)
+plot_combined_copy_number(prep_bins$df, prep_segments$df, prep_bins$chrom_lengths, tf, ploidy, mad, sample_id, output_dir) # nolint: line_length_linter.
 
 cat("Plot generation completed!\n")
