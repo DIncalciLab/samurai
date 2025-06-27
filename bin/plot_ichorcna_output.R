@@ -53,6 +53,7 @@ get_summary <- function(file, sample_id) {
 
   df <- as.data.frame(t(sample_row), stringsAsFactors = FALSE)
   colnames(df) <- header
+
   # TODO: Consider outputting TF/ploidy as a machine-readable format
   df$`Tumor Fraction` <- as.numeric(df$`Tumor Fraction`)
   df$Ploidy <- as.numeric(df$Ploidy)
@@ -156,24 +157,28 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
                                       tf, ploidy, mad, sample_id, output_dir) {
   # Color map for calls
   color_mapping <- c(
-    "NEUTRAL" = "#2E86AB",
+    "NEUTRAL" = "#4b83d8",
     "AMPLIFICATION" = "#F24236",
     "DELETION" = "#08a50c"
   )
 
   # Define Y-axis range
-  y_vals <- df_bins$logR_Copy_Number
-  y_vals <- y_vals[!is.na(y_vals)]
-  if (length(y_vals) > 0) {
-    y_min <- floor(min(y_vals))
-    y_max <- 12 # for better plot visualization
-    y_range_buffer <- (y_max - y_min) * 0.03
-    y_lower <- y_min - y_range_buffer
-    y_upper <- y_max + y_range_buffer
+  copy_numbers <- df_bins$logR_Copy_Number
+
+  if (length(copy_numbers) > 0) {
+    # Use actual data range with sensible bounds
+    data_min <- min(copy_numbers)
+    data_max <- max(copy_numbers)
+
+    # Set reasonable limits
+    y_lower <- max(data_min - 0.5, -1)  # Don't go below -1
+    y_upper <- min(data_max + 0.5, 12)  # Don't go above 12
   } else {
-    y_lower <- -2
-    y_upper <- 2
+    # Fallback for empty data
+    y_lower <- -1
+    y_upper <- 6
   }
+
   # Base plot
   p <- ggplot() +
     # Grey background for alternate chromosomes
@@ -199,7 +204,7 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
           y = Corrected_Copy_Number,
           yend = Corrected_Copy_Number,
           color = call),
-      linewidth = 1.8, alpha = 0.9, lineend = "round"
+      linewidth = 1.7, alpha = 0.9, lineend = "round"
     ) +
 
     # Axis and color configuration
