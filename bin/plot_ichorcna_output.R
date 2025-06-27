@@ -114,16 +114,18 @@ prepare_plot_data <- function(df) {
     group_by(chrom_num, chrom) %>%
     summarise(max_pos = max(end), .groups = "drop") %>%
     arrange(chrom_num)
-
+  # Create full chromosome list 1..22
   full_chrom_df <- data.frame(chrom_num = 1:22, chrom = paste0("chr", 1:22))
+  # Join to ensure all chromosomes are present, fill missing max_pos with 0
   chrom_lengths_full <- full_chrom_df %>%
     left_join(chrom_lengths, by = c("chrom_num", "chrom")) %>%
     mutate(
       max_pos = ifelse(is.na(max_pos), 0, max_pos),
+      # Cast max_pos to numeric before cumsum to prevent integer overflow
       cumulative_start = lag(cumsum(as.numeric(max_pos)), default = 0),
-      chrom_center = cumulative_start + max_pos / 2,
-      cumulative_end = cumulative_start + max_pos
-    )
+      cumulative_end = cumulative_start + max_pos,
+      chrom_center = cumulative_start + max_pos / 2
+      )
 
   df <- df %>%
     left_join(chrom_lengths_full %>%
