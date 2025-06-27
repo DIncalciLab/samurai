@@ -91,43 +91,76 @@ clean_bins_colnames <- function(df, sample_id) {
 prepare_plot_data <- function(df) {
   df <- df %>%
     mutate(
-      # Parse chromosome number from "chr1", "chrX", etc.
+      # Extract numeric chromosome identifier from "chr1", "chrX", etc.
       chrom_num = gsub("chr", "", chrom),
+
+      # Convert special chromosomes to numeric codes
       chrom_num = case_when(
         chrom_num == "X" ~ "23",
         chrom_num == "Y" ~ "24",
         chrom_num == "M" ~ "25",
         TRUE ~ chrom_num
       ),
+
+      # Convert to numeric (suppress warnings for any NA coercion)
       chrom_num = suppressWarnings(as.numeric(chrom_num)),
+
+      # Calculate midpoint of each region for plotting
       midpoint = (start + end) / 2
     ) %>%
-    # Keep only chromosomes 1 through 22
+
+    # Keep only autosomes (chromosomes 1 through 22)
     filter(chrom_num >= 1 & chrom_num <= 22) %>%
+
+    # Sort the data by chromosome number and genomic position
     arrange(chrom_num, midpoint)
 
-  # Compute chromosome lengths and cumulative positions
+  # Compute the maximum position per chromosome to determine its length
   chrom_lengths <- df %>%
     group_by(chrom_num, chrom) %>%
-    summarise(max_pos = max(end), .groups = "drop") %>%
+    summarise(
+      max_pos = max(end),  # end coordinate is treated as chromosome length
+      .groups = "drop"
+    ) %>%
     arrange(chrom_num)
 
-  full_chrom_df <- data.frame(chrom_num = 1:22, chrom = paste0("chr", 1:22))
+  # Define the full set of chromosomes 1 to 22 (ensures consistency)
+  full_chrom_df <- data.frame(
+    chrom_num = 1:22,
+    chrom = paste0("chr", 1:22)
+  )
 
+  # Join with actual chromosome lengths to ensure completeness
   chrom_lengths_full <- full_chrom_df %>%
     left_join(chrom_lengths, by = c("chrom_num", "chrom")) %>%
     mutate(
+      # Fill missing chromosome lengths with 0 (in case some are absent in data)
       max_pos = ifelse(is.na(max_pos), 0, max_pos),
+
+      # Calculate cum. start pos. of each chrom for concatenated plotting
       cumulative_start = lag(cumsum(as.numeric(max_pos)), default = 0),
+
+      # Cumulative end = start + length
       cumulative_end = cumulative_start + max_pos,
+
+      # Chromosome center (used for axis labels)
       chrom_center = cumulative_start + max_pos / 2
     )
 
+  # Add the cumulative_start position back to the main dataframe
   df <- df %>%
-    left_join(chrom_lengths_full %>%
-                select(chrom_num, cumulative_start), by = "chrom_num") %>%
-    mutate(plot_position = cumulative_start + midpoint)
+    left_join(
+      chrom_lengths_full %>%
+        select(chrom_num, cumulative_start),
+      by = "chrom_num"
+    ) %>%
 
+    # Compute the final plotting position as midpoint within concatenated genome
+    mutate(
+      plot_position = cumulative_start + midpoint
+    )
+
+  # Return both processed data and chromosome metadata
   return(list(df = df, chrom_lengths = chrom_lengths_full))
 }
 
