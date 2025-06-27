@@ -8,7 +8,7 @@ process PLOT_ICHORCNA {
     input:
         tuple val(meta), path(cna_seg)
         tuple val(meta), path(bins)
-        file(ichorcna_summary)
+        file(ichorcna_params)
 
     output:
         tuple val(meta), path("*.copy_number.png")        , emit: corrected_cn_plot
@@ -24,7 +24,7 @@ process PLOT_ICHORCNA {
             --id ${prefix} \\
             --seg_file ${cna_seg} \\
             --binfile ${bins} \\
-            --summary ${ichorcna_summary} \\
+            --summary ${ichorcna_params} \\
             --outdir .
 
         cat <<-END_VERSIONS > versions.yml
