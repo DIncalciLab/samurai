@@ -90,10 +90,16 @@ clean_bins_colnames <- function(df, sample_id) {
 
 parse_chromosome <- function(chrom) {
   chr <- gsub("chr", "", chrom)
+
+  # Replace "X" and "Y" with numeric equivalents.
+  # Note: If there are no chromosomes "X" or "Y" in the input,
+  # the replacement will silently do nothing.
   chr[chr == "X"] <- "23"
   chr[chr == "Y"] <- "24"
+
   as.numeric(chr)
 }
+
 
 prepare_plot_data <- function(df) {
   df <- df %>%
