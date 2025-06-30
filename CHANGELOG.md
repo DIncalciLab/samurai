@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### New features
 
+- New plots for ichorCNA output
 - Allow ichorCNA also in the solid biopsy workflow
 
 ### Internal changes

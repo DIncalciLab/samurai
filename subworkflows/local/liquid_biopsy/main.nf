@@ -10,6 +10,7 @@ include { ASSEMBLE_WISECONDORX_OUTPUTS                        } from '../../../m
 include { CONVERT_WISECONDORX_IMAGES                          } from '../../../modules/local/convert_wisecondorx_images/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
 include { CORRECT_LOGR_ICHORCNA                               } from '../../../modules/local/correct_logR_ichorcna/main'
+include { PLOT_ICHORCNA                                       } from '../../../modules/local/plot_ichorcna/main'
 
 include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../modules/nf-core/hmmcopy/readcounter/main'
 
@@ -96,6 +97,10 @@ workflow LIQUID_BIOPSY {
         // Step 4: Aggregate bin-level plots into a single file
         CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
         ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
+
+        if (params.ichorcna_plot_ploidy_aware) {
+            PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
+        }
     }
     else if (caller == "wisecondorx") {
 

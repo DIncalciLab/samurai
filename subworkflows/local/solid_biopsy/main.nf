@@ -15,7 +15,6 @@ include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA   } from '../../..
 include { CORRECT_LOGR_ICHORCNA                                 } from '../../../modules/local/correct_logR_ichorcna/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS              } from '../../../modules/local/concatenate_pdf/main'
 include { ICHORCNA                                              } from "../ichorcna/main.nf"
-
 // Workfow
 
 workflow SOLID_BIOPSY {
@@ -166,6 +165,7 @@ workflow SOLID_BIOPSY {
         corrected_gistic_file = ICHORCNA.out.gistic_file
         ch_reports = ch_versions.mix(ICHORCNA.out.summary)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
+
     }
     else {
         error("Unknown CNV caller ${caller}")

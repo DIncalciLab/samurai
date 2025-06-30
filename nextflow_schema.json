@@ -509,6 +509,10 @@
                     "hidden": true,
                     "description": "Path to a file with centromere data for the specified genome.",
                     "format": "file-path"
+                },
+                "ichorcna_plot_ploidy_aware": {
+                    "type": "boolean",
+                    "description": "Ploidy-aware ichorCNA plots."
                 }
             }
         },
