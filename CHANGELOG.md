@@ -3,12 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.2.0 - "Ohori Tsuruhime"
+
+This release adds support for ichorCNA in the solid biopsy workflow (see PR #42 for caveats) and new ploidy-aware plots for ichorCNA (off by default), which can be enabled by specifying the option `--ichorcna_ploidy_aware_plot`.
+
+This release is named after Ohori Tsuruhime (大祝鶴姫; 1526–1543), an "onna-musha" (female warrior) who lived and fought during the "Warring States" period. A suit of armor allegedly belonging to Tsuruhime is kept in the treasure hall of Oyamazumi Shrine, on the island of Omishima.
 
 ### New features
 
-- New plots for ichorCNA output
-- Allow ichorCNA also in the solid biopsy workflow
+- New plots for ichorCNA output (PR #44, @SaraPotente)
+- Allow ichorCNA also in the solid biopsy workflow (PR #42, @lbeltrame)
 
 ### Internal changes
 
