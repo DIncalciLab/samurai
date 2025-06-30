@@ -98,7 +98,7 @@ workflow LIQUID_BIOPSY {
         CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
         ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
 
-        if (params.ichorcna_plot_ploidy_aware) {
+        if (params.ichorcna_ploidy_aware_plot) {
             PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
         }
     }
