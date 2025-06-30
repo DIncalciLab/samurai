@@ -11,7 +11,8 @@ process PLOT_ICHORCNA {
         file(ichorcna_params)
 
     output:
-        tuple val(meta), path("*.copy_number.png")        , emit: corrected_cn_plot
+        tuple val(meta), path("*.copy_number.png")        , emit: plot_png
+        tuple val(meta), path("*.copy_number.svg")        , emit: plot_svg
         path "versions.yml"                               , emit: versions
 
     script:

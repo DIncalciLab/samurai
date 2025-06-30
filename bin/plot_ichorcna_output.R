@@ -259,8 +259,11 @@ plot_combined_copy_number <- function(df_bins, df_segments, chrom_lengths,
 
   # Save the figure
   out_file <- file.path(output_dir, paste0(sample_id, ".copy_number.png"))
+  out_file_svg <- file.path(output_dir, paste0(sample_id, ".copy_number.svg"))
   ggsave(out_file, plot = p, width = 14, height = 6, dpi = 300)
-  message("Plot saved to:", out_file, "\n")
+  ggsave(out_file_svg, plot = p, width = 14, height = 6)
+  message("Plot (PNG) saved to:", out_file, "\n")
+  message("Plot (SVG) saved to:", out_file_svg, "\n")
 }
 
 # Main execution
