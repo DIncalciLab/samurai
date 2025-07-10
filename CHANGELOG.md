@@ -3,6 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.2.2 - "Shibata Katsuie" - [2025-07-10]
+
+This release fixes a bug in the workflow caused by the new genomic plotting feature in the ichorCNA workflow.
+
+Shibata Katsuie (柴田勝家; 1522-1583), also known with the name of Gonroku (権六) was a retainer of the Nobunaga clan, serving under Oda Nobuhide and Oda Nobunaga during the "Warring States" period in Japan. 
+
+### Bug Fixes
+
+- Fix undefined output variable (9418166871a6504ea25470af5e8ef2393f216664, @SaraPotente)
+
 ## v1.2.1 - "Maeda Toshiie" - [2025-07-04]
 
 This release fixes a bug in the new ichorCNA plotting introduced in version 1.2.0: plotting would not work due to a missing dependency in the container. A new container image has been made to correct this problem.
