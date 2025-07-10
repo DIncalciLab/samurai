@@ -161,7 +161,7 @@ workflow SOLID_BIOPSY {
         )
 
         ch_segments = ICHORCNA.out.ch_segments
-        genome_plot = ICHORCNA.out.genome_plot
+        all_seg_plot = ICHORCNA.out.genome_plot
         corrected_gistic_file = ICHORCNA.out.gistic_file
         ch_reports = ch_versions.mix(ICHORCNA.out.summary)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
@@ -176,5 +176,5 @@ workflow SOLID_BIOPSY {
     summary     = ch_reports
     gistic_file = corrected_gistic_file
     versions    = ch_versions
-    genome_plot = genome_plot
+    all_seg_plot = all_seg_plot
 }
