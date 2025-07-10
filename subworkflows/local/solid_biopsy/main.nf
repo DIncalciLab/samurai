@@ -33,7 +33,7 @@ workflow SOLID_BIOPSY {
         ch_versions = ch_versions.mix(QDNASEQ.out.versions.first())
         CONCATENATE_QDNASEQ_PLOTS(QDNASEQ.out.segment_plot.collect())
         ch_versions = ch_versions.mix(CONCATENATE_QDNASEQ_PLOTS.out.versions)
-        all_seg_plot = CONCATENATE_QDNASEQ_PLOTS.out.genome_plot
+        genome_plot = CONCATENATE_QDNASEQ_PLOTS.out.genome_plot
 
         QDNASEQ.out.segments
             .collectFile(
@@ -63,12 +63,12 @@ workflow SOLID_BIOPSY {
         if (params.ascat_sc_predict_refit) {
             CONCATENATE_ASCATSC_REFITTED_PLOTS(ASCAT_SC.out.profiles_refitted.collect())
             ch_versions = ch_versions.mix(CONCATENATE_ASCATSC_REFITTED_PLOTS.out.versions)
-            all_seg_plot = CONCATENATE_ASCATSC_REFITTED_PLOTS.out.genome_plot
+            genome_plot = CONCATENATE_ASCATSC_REFITTED_PLOTS.out.genome_plot
         }
         else {
             CONCATENATE_ASCATSC_PLOTS(ASCAT_SC.out.profiles_plot.collect())
             ch_versions = ch_versions.mix(CONCATENATE_ASCATSC_PLOTS.out.versions)
-            all_seg_plot = CONCATENATE_ASCATSC_PLOTS.out.genome_plot
+            genome_plot = CONCATENATE_ASCATSC_PLOTS.out.genome_plot
         }
 
         ASCAT_SC.out.segments
@@ -161,7 +161,7 @@ workflow SOLID_BIOPSY {
         )
 
         ch_segments = ICHORCNA.out.ch_segments
-        all_seg_plot = ICHORCNA.out.genome_plot
+        genome_plot = ICHORCNA.out.genome_plot
         corrected_gistic_file = ICHORCNA.out.gistic_file
         ch_reports = ch_versions.mix(ICHORCNA.out.summary)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
@@ -176,5 +176,5 @@ workflow SOLID_BIOPSY {
     summary     = ch_reports
     gistic_file = corrected_gistic_file
     versions    = ch_versions
-    all_seg_plot = all_seg_plot
+    genome_plot = genome_plot
 }
