@@ -98,6 +98,11 @@ custom_data:
         format: "{:,.4f}"
         placement: 3
         scale: False
+      rounded_ploidy:
+        title: "Rounded Ploidy"
+        format: "{:,.0f}"
+        placement: 4
+        scale: False
 
   wisecondorx_summary:
     id: "wisecondorx"

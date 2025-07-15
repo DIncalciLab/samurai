@@ -134,7 +134,7 @@ if (args$predict_refit) {
 
 
 df_summary$samplename <- args$project
-
+df_summary$rounded_ploidy <- round(as.numeric(df_summary$ploidy), 0)
 # save output files
 message("Saving output into rds...")
 saveRDS(res, paste0(args$project, "_ASCAT.rds"))
