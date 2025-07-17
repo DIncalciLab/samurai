@@ -121,6 +121,14 @@ for (i in 1:length(files)){
 									   genomeStyle = genomeStyle, fracReadsInChrYForMale = fracReadsInChrYForMale,
                                        chrNormalize = chrNormalize, mapScoreThres = minMapScore)
 	gender <- normal_counts$gender
+
+	if (gender$gender == "unknown") {
+        if (is.null(gender$chrXMedian)) {
+            # NULL doesn't have a dimension, NA does'
+            gender$chrXMedian = NA
+        }
+	}
+
 	### CORRECT TUMOUR DATA FOR GC CONTENT AND MAPPABILITY BIASES ###
 	message("Correcting ", sid, " sex: ", gender$gender,
 		" chrYcov: ", gender$chrYCovRatio,
