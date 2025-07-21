@@ -5,7 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.2.3 - "Nitta Yoshisada" - [2025-07-21]
 
-This release fixes a critical bug in the logR correction for GISTIC in ichorCNA, which caused wrong logR values to be generated. In addition, there are other fixes in ichorCNA (in particular now PoNs in data without chromosome X can be generated) and a small new feature (absolute integer CN in ASCAT.sc)
+This release fixes a critical bug in the logR correction for GISTIC in ichorCNA, which caused wrong logR values to be generated. In addition, there are other fixes in ichorCNA (in particular now PoNs in data without chromosome X can be generated) and a small new feature (absolute integer CN in ASCAT.sc). Nitta Yoshisada (新田義貞, 1301-1338) was a samurai lord during the Nanboku-cho period in Japan, also briefly involved in the wars following the so-called "Kenmu Restoration".
 
 ## New Features
 
