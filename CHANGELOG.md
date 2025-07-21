@@ -3,11 +3,24 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.2.3 - "Nitta Yoshisada" - [2025-07-21]
+
+This release fixes a critical bug in the logR correction for GISTIC in ichorCNA, which caused wrong logR values to be generated. In addition, there are other fixes in ichorCNA (in particular now PoNs in data without chromosome X can be generated) and a small new feature (absolute integer CN in ASCAT.sc)
+
+## New Features
+
+- Add integer absolute copy numbers to ASCAT.sc (#38, @SaraPotente)
+
+## Bug Fixes
+
+- Fix GISTIC logR correction in ichorCNA (@lbeltrame, 002273536314d96f8446ee0e9cd84836af7ccf45)
+- Make sure the ichorCNA PoN generation works even in absence of data on chrX (@lbeltrame, 5e292cef413676448f503f97660c395ee9ba0d99)
+
 ## v1.2.2 - "Shibata Katsuie" - [2025-07-10]
 
 This release fixes a bug in the workflow caused by the new genomic plotting feature in the ichorCNA workflow.
 
-Shibata Katsuie (柴田勝家; 1522-1583), also known with the name of Gonroku (権六) was a retainer of the Nobunaga clan, serving under Oda Nobuhide and Oda Nobunaga during the "Warring States" period in Japan. 
+Shibata Katsuie (柴田勝家; 1522-1583), also known with the name of Gonroku (権六) was a retainer of the Nobunaga clan, serving under Oda Nobuhide and Oda Nobunaga during the "Warring States" period in Japan.
 
 ### Bug Fixes
 
