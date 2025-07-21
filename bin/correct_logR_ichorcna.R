@@ -58,7 +58,7 @@ df <- cbind(df, df_tmp)
 #https://github.com/maitnnguyen/Oseq_CNV_Paper/blob/main/src/pipeline/step4_CNVcall.R # nolint
 
 df <- df %>%
-    dplyr::mutate(adj.seg = adjust_log_ratio(seg.median.logR,
+    dplyr::mutate(adj.seg = adjust_log_ratio(logR_Copy_Number,
         ploidy = df_ploidy$ploidy))
 
 # df$adj.seg <- (df$purity*df$ploidy*R + 2*(1-df$purity)*(R - 1))/(df$purity*df$ploidy) #nolint
