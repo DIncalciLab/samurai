@@ -30,7 +30,7 @@ process RUN_ICHORCNA {
         def args = task.ext.args ?: ''
         def prefix = task.ext.prefix ?: "${meta.id}"
 
-        def pon = params.normal_panel ? "--normalPanel ${params.normal_panel}" : ''
+        def pon = pon_file ? "--normalPanel ${pon_file}" : ''
         def centro = params.ichorcna_centromere_file ? "--centromere ${params.ichorcna_centromere_file}" : ''
         def reptime = params.ichorcna_reptime_wig ? "--repTimeWig ${params.ichorcna_reptime_wig}": ''
         def ichorcna_script = "runIchorCNA.R"
