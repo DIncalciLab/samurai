@@ -68,7 +68,7 @@ A preprint describing SAMURAI and its applications to artificial and real-world 
    ```bash
    nextflow run dincalcilab/samurai --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> <pipeline options>
    ```
-> **Note: At this time support for lane-split samples (e.g., FASTQs for the same sample split into multiple lanes) is currently missing (see issue #48): until that is implemented please use a concatenated FASTQ from all the lanes.**
+> **Note: At this time support for lane-split samples (e.g., FASTQs for the same sample split into multiple lanes) is currently missing (see [issue #48](https://github.com/DIncalciLab/samurai/issues/48): until that is implemented please use a concatenated FASTQ from all the lanes.**
 
 ## Credits
 
