@@ -13,6 +13,9 @@ adjust_log_ratio <- function(copy_number, ploidy, min.ratio = 2^-8) {
     adjusted <- copy_number / ploidy
     adjusted <- pmax(min.ratio, adjusted)
     adjusted <- log2(adjusted)
+    # Floor negative logratios to -0.5 (could be -1) because in most scenarios
+    # more than that does not make any sense biologically
+    adjusted <- min(-0.5, adjusted)
     return(adjusted)
 }
 
