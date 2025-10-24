@@ -2,7 +2,7 @@ include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_PON } from "../../../module
 include { ICHORCNA_GENERATE_PON                          } from "../../../modules/local/ichorcna/create_pon/main"
 include { SAMBAMBA_FILTER                                } from "../../../modules/local//sambamba/filterfragment/main"
 include { WISECONDORX_CONVERT as NORMAL_CONVERT          } from '../../../modules/local/wisecondorx/convert/main'
-include { WISECONDORX_NEWREF                             } from '../../../modules/local/wisecondorx/newref/main'
+include { WISECONDORX_NEWREF                             } from '../../../modules/nf-core/wisecondorx/newref/main'
 
 workflow BUILD_PON {
     take:
@@ -63,7 +63,7 @@ workflow BUILD_PON {
         ch_normal_npz = NORMAL_CONVERT.out.npz.collect { _sample, npz_file -> file(npz_file) }
         ch_versions = ch_versions.mix(NORMAL_CONVERT.out.versions)
         WISECONDORX_NEWREF(ch_normal_npz)
-        normal_panel = WISECONDORX_NEWREF.out.npz_reference
+        normal_panel = WISECONDORX_NEWREF.out.npz
         ch_versions = ch_versions.mix(WISECONDORX_NEWREF.out.versions)
     }
     else {
