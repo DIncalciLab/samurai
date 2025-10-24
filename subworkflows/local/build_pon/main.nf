@@ -1,7 +1,7 @@
 include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_PON } from "../../../modules/nf-core//hmmcopy/readcounter/main"
 include { ICHORCNA_GENERATE_PON                          } from "../../../modules/local/ichorcna/create_pon/main"
 include { SAMBAMBA_FILTER                                } from "../../../modules/local//sambamba/filterfragment/main"
-include { WISECONDORX_CONVERT as NORMAL_CONVERT          } from '../../../modules/local/wisecondorx/convert/main'
+include { WISECONDORX_CONVERT as NORMAL_CONVERT          } from '../../../modules/nf-core/wisecondorx/convert/main'
 include { WISECONDORX_NEWREF                             } from '../../../modules/nf-core/wisecondorx/newref/main'
 
 workflow BUILD_PON {
