@@ -12,6 +12,11 @@ lint:
     - .github/workflows/awsfulltest.yml
     - .github/workflows/ci.yml
     - .github/workflows/branch.yml
+    - nf-test.config
+    - .github/actions/nf-test/action.yml
+    - .github/actions/get-shards/action.yml
+    - .github/workflows/nf-test.yml
+    - tests/default.nf.test
   files_unchanged:
     - .github/workflows/ci.yml
     - .github/workflows/branch.yml
@@ -24,6 +29,9 @@ lint:
   readme:
     - nextflow_badge
   schema_params: false
-  subworkflow_changes: false
+  subworkflow_changes:
+    - utils_nfcore_pipeline
   actions_ci: false
+  nf_test_content: false
+  check_local_copy: false
 nf_core_version: 3.0.2
