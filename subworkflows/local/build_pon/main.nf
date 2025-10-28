@@ -8,6 +8,8 @@ workflow BUILD_PON {
     take:
     normal_dir
     caller
+    fasta
+    fai
 
     main:
     ch_versions = Channel.empty()
@@ -59,7 +61,7 @@ workflow BUILD_PON {
         ch_versions = ch_versions.mix(ICHORCNA_GENERATE_PON.out.versions)
     }
     else if (caller == "wisecondorx") {
-        NORMAL_CONVERT(ch_bam_files)
+        NORMAL_CONVERT(ch_bam_files, fasta, fai)
         ch_normal_npz = NORMAL_CONVERT.out.npz.collect { _sample, npz_file -> file(npz_file) }
         ch_versions = ch_versions.mix(NORMAL_CONVERT.out.versions)
         WISECONDORX_NEWREF(ch_normal_npz)

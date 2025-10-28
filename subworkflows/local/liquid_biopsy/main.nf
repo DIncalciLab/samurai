@@ -17,8 +17,8 @@ workflow LIQUID_BIOPSY {
     take:
     ch_bam_bai // [meta, bam, bai]
     caller
-    ch_fasta // [meta2, fasta]
-    ch_fai // [meta3, fasta]
+    fasta // [meta2, fasta]
+    fai // [meta3, fasta]
 
     main:
 
@@ -28,7 +28,7 @@ workflow LIQUID_BIOPSY {
     // If we want to build the normal panel
     if (params.build_pon) {
 
-        BUILD_PON(params.pon_path, caller)
+        BUILD_PON(params.pon_path, caller, fasta, fai)
         ch_versions = ch_versions.mix(BUILD_PON.out.versions)
         pon_file = BUILD_PON.out.normal_panel
     }
