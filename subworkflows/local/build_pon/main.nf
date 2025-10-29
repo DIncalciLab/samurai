@@ -63,7 +63,10 @@ workflow BUILD_PON {
     else if (caller == "wisecondorx") {
         NORMAL_CONVERT(ch_bam_files, fasta, fai)
         ch_versions = ch_versions.mix(NORMAL_CONVERT.out.versions)
-        WISECONDORX_NEWREF(NORMAL_CONVERT.out.npz)
+        WISECONDORX_NEWREF(NORMAL_CONVERT.out.npz.map {meta, npz ->
+            def new_meta = meta + [id: "joined"]
+            [new_meta, npz]
+            }.groupTuple())
         normal_panel = WISECONDORX_NEWREF.out.npz
         ch_versions = ch_versions.mix(WISECONDORX_NEWREF.out.versions)
     }
