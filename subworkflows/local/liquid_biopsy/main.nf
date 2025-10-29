@@ -105,7 +105,7 @@ workflow LIQUID_BIOPSY {
     }
     else if (caller == "wisecondorx") {
 
-        blacklist = params.wisecondorx_blacklist ? file(params.wisecondorx_blacklist, checkIfExists: true) : []
+        blacklist = params.wisecondorx_blacklist ? file(params.wisecondorx_blacklist, checkIfExists: true).map{blacklist -> [[id: "blacklist"], blacklist] } : []
         fasta = Channel.fromPath(params.fasta, checkIfExists: true).map{fastafile -> [[id: "fasta"], fastafile]}
         fai = Channel.fromPath(params.fai, checkIfExists: true).map{fastafile -> [[id: "fai"], fastafile]}
 
