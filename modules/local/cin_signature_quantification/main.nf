@@ -1,5 +1,3 @@
-def VERSION = "0.1"
-
 process CIN_SIGNATURE_QUANTIFICATION {
 
     tag "Extracting Signatures"
@@ -21,6 +19,7 @@ process CIN_SIGNATURE_QUANTIFICATION {
     script:
 
     def args = task.ext.args ?: ''
+    def VERSION = "0.1"
 
     """
     compute_signatures.R \\
