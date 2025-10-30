@@ -17,7 +17,7 @@ process WISECONDORX_PREDICT {
     tuple val(meta), path("*_aberrations.bed")      , emit: aberrations_bed, optional:true
     tuple val(meta), path("*_bins.bed")             , emit: bins_bed, optional:true
     tuple val(meta), path("*_segments.bed")         , emit: segments_bed, optional:true
-    tuple val(meta), path("*_chr_statistics.txt")   , emit: chr_statistics, optional:true
+    tuple val(meta), path("*_statistics.txt")   , emit: chr_statistics, optional:true
     tuple val(meta), path("[!genome_wide]*.png")    , emit: chr_plots, optional:true
     tuple val(meta), path("genome_wide.png")        , emit: genome_plot, optional:true
     path "versions.yml"                             , emit: versions

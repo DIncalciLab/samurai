@@ -1,0 +1,17 @@
+Changes in component 'nf-core/wisecondorx/predict'
+'modules/nf-core/wisecondorx/predict/environment.yml' is unchanged
+Changes in 'wisecondorx/predict/main.nf':
+--- modules/nf-core/wisecondorx/predict/main.nf
++++ modules/nf-core/wisecondorx/predict/main.nf
+@@ -17,7 +17,7 @@
+     tuple val(meta), path("*_aberrations.bed")      , emit: aberrations_bed, optional:true
+     tuple val(meta), path("*_bins.bed")             , emit: bins_bed, optional:true
+     tuple val(meta), path("*_segments.bed")         , emit: segments_bed, optional:true
+-    tuple val(meta), path("*_chr_statistics.txt")   , emit: chr_statistics, optional:true
++    tuple val(meta), path("*_statistics.txt")   , emit: chr_statistics, optional:true
+     tuple val(meta), path("[!genome_wide]*.png")    , emit: chr_plots, optional:true
+     tuple val(meta), path("genome_wide.png")        , emit: genome_plot, optional:true
+     path "versions.yml"                             , emit: versions
+
+'modules/nf-core/wisecondorx/predict/meta.yml' is unchanged
+************************************************************
