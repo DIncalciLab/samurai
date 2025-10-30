@@ -12,8 +12,8 @@ workflow BUILD_PON {
     fai
 
     main:
-    ch_versions = Channel.empty()
-    ch_bam_files = Channel.fromFilePairs(
+    ch_versions = channel.empty()
+    ch_bam_files = channel.fromFilePairs(
             "${normal_dir}/*.bam{,.bai}",
             checkIfExists: true
         )
