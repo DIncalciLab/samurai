@@ -128,6 +128,7 @@ workflow LIQUID_BIOPSY {
                 storeDir: "${params.outdir}/wisecondorx/",
             )
             .set { gistic_file }
+
         ASSEMBLE_WISECONDORX_OUTPUTS(
             BAM_CNV_WISECONDORX.out.chr_statistics.collect { _meta, result ->
                 result
