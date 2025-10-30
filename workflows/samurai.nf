@@ -235,9 +235,9 @@ workflow SAMURAI {
                 ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
                 ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_pre.map{
-                        meta, file -> return file })
+                        _meta, file -> return file })
                 ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
-                        meta, file -> return file })
+                        _meta, file -> return file })
 
                 ch_analysis = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
                             .map {
