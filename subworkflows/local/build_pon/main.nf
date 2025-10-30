@@ -17,9 +17,7 @@ workflow BUILD_PON {
     ch_bam_files = channel.fromFilePairs(
             "${normal_dir}/*.bam{,.bai}",
             checkIfExists: true
-        )
-        .ifEmpty { error("No BAM or BAI files found at ${normal_dir}") }
-        .map { meta, file ->
+        ).ifEmpty { error("No BAM or BAI files found at ${normal_dir}") }.map { meta, file ->
             def fmeta = [:]
             fmeta.id = meta
             tuple(fmeta, file[0], file[1])
