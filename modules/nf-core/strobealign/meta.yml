@@ -1,23 +1,24 @@
-name: bwa_mem
-description: Performs fastq alignment to a fasta reference using BWA
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "strobealign"
+description: "Align short reads using dynamic seed size with strobemers"
 keywords:
-  - mem
-  - bwa
+  - strobealign
+  - strobemers
   - alignment
   - map
   - fastq
   - bam
   - sam
 tools:
-  - bwa:
-      description: |
-        BWA is a software package for mapping DNA sequences against
-        a large reference genome, such as the human genome.
-      homepage: http://bio-bwa.sourceforge.net/
-      documentation: https://bio-bwa.sourceforge.net/bwa.shtml
-      arxiv: arXiv:1303.3997
-      licence: ["GPL-3.0-or-later"]
-      identifier: "biotools:bwa"
+  - "strobealign":
+      description: "Align short reads using dynamic seed size with strobemers"
+      homepage: "https://github.com/ksahlin/strobealign"
+      documentation: "https://github.com/ksahlin/strobealign?tab=readme-ov-file#usage"
+      tool_dev_url: "https://github.com/ksahlin/strobealign"
+      doi: "10.1186/s13059-022-02831-7"
+      licence: ["MIT"]
+      identifier: biotools:strobealign
+
 input:
   - - meta:
         type: map
@@ -35,17 +36,6 @@ input:
   - - meta2:
         type: map
         description: |
-          Groovy Map containing reference information.
-          e.g. [ id:'test', single_end:false ]
-    - index:
-        type: file
-        description: BWA genome index files
-        pattern: "Directory containing BWA index *.{amb,ann,bwt,pac,sa}"
-        ontologies:
-          - edam: "http://edamontology.org/data_3210" # Genome index
-  - - meta3:
-        type: map
-        description: |
           Groovy Map containing sample information
           e.g. [ id:'test', single_end:false ]
     - fasta:
@@ -55,6 +45,17 @@ input:
         ontologies:
           - edam: "http://edamontology.org/data_2044" # Sequence
           - edam: "http://edamontology.org/format_1929" # FASTA
+  - - meta3:
+        type: map
+        description: |
+          Groovy Map containing reference information.
+          e.g. [ id:'test', single_end:false ]
+    - index:
+        type: file
+        description: Strobealign genome index file
+        pattern: "*.sti"
+        ontologies:
+          - edam: "http://edamontology.org/data_3210" # Genome index
   - sort_bam:
       type: boolean
       description: use samtools sort (true) or samtools view (false)
@@ -99,6 +100,34 @@ output:
           description: Optional index file for CRAM file
           pattern: "*.{crai}"
           ontologies: []
+  paf:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.paf.gz":
+          type: file
+          description: Output PAF file containing read alignments
+          pattern: "*.{paf.gz}"
+          ontologies: []
+  tsv:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.tsv.gz":
+          type: file
+          description: Output TSV file containing read alignments
+          pattern: "*.{tsv.gz}"
+          ontologies:
+            - edam: "http://edamontology.org/format_3475" # TSV
+  sti:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - "*.sti":
+          type: file
+          description: Optional strobealign index file for fasta reference
+          pattern: "*.{sti}"
+          ontologies: []
   versions:
     - versions.yml:
         type: file
@@ -107,10 +136,7 @@ output:
         ontologies:
           - edam: http://edamontology.org/format_3750 # YAML
 authors:
-  - "@drpatelh"
-  - "@jeremy1805"
   - "@matthdsm"
 maintainers:
-  - "@drpatelh"
-  - "@jeremy1805"
   - "@matthdsm"
+  - "@nvnieuwk"
