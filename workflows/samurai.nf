@@ -90,15 +90,12 @@ workflow SAMURAI {
 
     if (aligner) {
 
-        switch(aligner) {
-            case 'bwamem':
-                real_aligner = "bwa"
-                break
-            case 'bwamem2':
-                real_aligner = 'bwamem2'
-                break
-            default:
-                real_aligner = ''
+        if (aligner == "bwamem") {
+            real_aligner = "bwa"
+        } else if (aligner == "bwamem2") {
+            real_aligner = 'bwamem2'
+        } else {
+            real_aligner = ''
         }
 
         skip_fastp = params.run_fastp ? false : true
@@ -215,33 +212,32 @@ workflow SAMURAI {
         )
     ch_multiqc_files = ch_multiqc_files.mix(
             BAM_QC_PICARD.out.coverage_metrics.collect{
-            meta, metrics -> metrics
+            _meta, metrics -> metrics
         }
     )
     ch_multiqc_files = ch_multiqc_files.mix(
         BAM_QC_PICARD.out.multiple_metrics.collect{
-            meta, metrics -> metrics
+            _meta, metrics -> metrics
         }
     )
 
     // CN Calling
 
-    switch(params.analysis_type) {
-        case "solid_biopsy":
+    if (params.analysis_type == "solid_biopsy") {
             SOLID_BIOPSY(ch_bam_bai, params.caller, binsize, Channel.value(params.genome))
             gistic_file = SOLID_BIOPSY.out.gistic_file
             ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
             ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
-            break
-        case "liquid_biopsy":
+
+    } else if (params.analysis_type == "liquid_biopsy") {
             if (params.size_selection) {
                 SIZE_SELECTION(ch_bam_bai, ch_fasta)
                 ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
                 ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_pre.map{
-                        meta, file -> return file })
+                        _meta, file -> return file })
                 ch_multiqc_files = ch_multiqc_files.mix(SIZE_SELECTION.out.stats_post.map{
-                        meta, file -> return file })
+                        _meta, file -> return file })
 
                 ch_analysis = SIZE_SELECTION.out.bam.join(SIZE_SELECTION.out.bai, by: [0], remainder: true)
                             .map {
@@ -250,19 +246,17 @@ workflow SAMURAI {
                 } else {
                     ch_analysis = ch_bam_bai
                 }
-            LIQUID_BIOPSY(ch_analysis, params.caller)
+            LIQUID_BIOPSY(ch_analysis, params.caller, ch_fasta, ch_fai)
             gistic_file = LIQUID_BIOPSY.out.corrected_gistic_file
             ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
             ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
-            break
-        case "align_only":
+    } else if (params.analysis_type == "align_only") {
             // Do nothing - we just need the alignment
             params.compute_signatures = false
             params.run_gistic = false
             params.caller = "none"
-            break
-        default:
-            error "Uknown / unsupported analysis ${analysis_type}"
+    } else {
+        error "Uknown / unsupported analysis ${params.analysis_type}"
     }
 
     // Run GISTIC if specified
@@ -300,7 +294,9 @@ workflow SAMURAI {
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
         ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
+        ch_multiqc_logo.toList(),
+        [], /* replace_names */
+        [] /* sample_names */
     )
 
     emit:

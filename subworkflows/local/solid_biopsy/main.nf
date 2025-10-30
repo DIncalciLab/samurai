@@ -165,7 +165,6 @@ workflow SOLID_BIOPSY {
         corrected_gistic_file = ICHORCNA.out.gistic_file
         ch_reports = ch_versions.mix(ICHORCNA.out.summary)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
-
     }
     else {
         error("Unknown CNV caller ${caller}")

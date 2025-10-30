@@ -3,9 +3,8 @@
 include { BUILD_PON                                           } from '../../../subworkflows/local/build_pon/main'
 include { RUN_ICHORCNA                                        } from '../../../modules/local/ichorcna/run/main'
 include { AGGREGATE_ICHORCNA_TABLE                            } from '../../../modules/local/aggregate_ichorcna_table/main'
-include { WISECONDORX_CONVERT                                 } from '../../../modules/local/wisecondorx/convert/main'
-include { WISECONDORX_PREDICT                                 } from '../../../modules/local/wisecondorx/predict/main'
 include { CONVERT_GISTIC_SEG                                  } from '../../../modules/local/convert_gistic_seg/main'
+include { BAM_CNV_WISECONDORX                                 } from '../../../subworkflows/nf-core/bam_cnv_wisecondorx/main'
 include { ASSEMBLE_WISECONDORX_OUTPUTS                        } from '../../../modules/local/assemble_wisecondorx_outputs/main'
 include { CONVERT_WISECONDORX_IMAGES                          } from '../../../modules/local/convert_wisecondorx_images/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
@@ -18,6 +17,8 @@ workflow LIQUID_BIOPSY {
     take:
     ch_bam_bai // [meta, bam, bai]
     caller
+    fasta // [meta2, fasta]
+    fai // [meta3, fasta]
 
     main:
 
@@ -27,7 +28,7 @@ workflow LIQUID_BIOPSY {
     // If we want to build the normal panel
     if (params.build_pon) {
 
-        BUILD_PON(params.pon_path, caller)
+        BUILD_PON(params.pon_path, caller, fasta, fai)
         ch_versions = ch_versions.mix(BUILD_PON.out.versions)
         pon_file = BUILD_PON.out.normal_panel
     }
@@ -104,24 +105,21 @@ workflow LIQUID_BIOPSY {
     }
     else if (caller == "wisecondorx") {
 
-        blacklist = params.wisecondorx_blacklist ? file(params.wisecondorx_blacklist, checkIfExists: true) : []
+        blacklist = params.wisecondorx_blacklist ? channel.fromPath(params.wisecondorx_blacklist, checkIfExists: true).map{blacklist -> [[id: "blacklist"], blacklist] } : [[], []]
+        fasta = channel.fromPath(params.fasta, checkIfExists: true).map{fastafile -> [[id: "fasta"], fastafile]}
+        fai = channel.fromPath(params.fai, checkIfExists: true).map{fastafile -> [[id: "fai"], fastafile]}
 
-        WISECONDORX_CONVERT(ch_bam_bai)
-        ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions)
-        ch_npz = WISECONDORX_CONVERT.out.npz
-
-        WISECONDORX_PREDICT(ch_npz, blacklist, pon_file)
-        ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions)
+        BAM_CNV_WISECONDORX(ch_bam_bai, fasta, fai, pon_file, blacklist)
+        ch_versions = ch_versions.mix(BAM_CNV_WISECONDORX.out.versions)
 
         CONVERT_GISTIC_SEG(
-            WISECONDORX_PREDICT.out.segments,
-            WISECONDORX_PREDICT.out.bins,
-            WISECONDORX_PREDICT.out.calls,
+            BAM_CNV_WISECONDORX.out.segments_bed,
+            BAM_CNV_WISECONDORX.out.bins_bed,
+            BAM_CNV_WISECONDORX.out.aberrations_bed,
         )
         ch_versions = ch_versions.mix(CONVERT_GISTIC_SEG.out.versions)
 
-        called_segments = WISECONDORX_PREDICT.out.calls
-
+        called_segments = BAM_CNV_WISECONDORX.out.aberrations_bed
         CONVERT_GISTIC_SEG.out.gistic_file
             .map { _meta, data -> data }
             .collectFile(
@@ -130,11 +128,12 @@ workflow LIQUID_BIOPSY {
                 storeDir: "${params.outdir}/wisecondorx/",
             )
             .set { gistic_file }
+
         ASSEMBLE_WISECONDORX_OUTPUTS(
-            WISECONDORX_PREDICT.out.statistics.collect { _meta, result ->
+            BAM_CNV_WISECONDORX.out.chr_statistics.collect { _meta, result ->
                 result
             },
-            WISECONDORX_PREDICT.out.calls.collect { _meta, result ->
+            BAM_CNV_WISECONDORX.out.aberrations_bed.collect { _meta, result ->
                 result
             },
         )
@@ -142,7 +141,7 @@ workflow LIQUID_BIOPSY {
         ch_reports = ch_reports.mix(ASSEMBLE_WISECONDORX_OUTPUTS.out.wisecondorx_summary)
 
         CONVERT_WISECONDORX_IMAGES(
-            WISECONDORX_PREDICT.out.genome_plot.collect { _meta, result ->
+            BAM_CNV_WISECONDORX.out.genome_plot.collect { _meta, result ->
                 result
             }
         )
