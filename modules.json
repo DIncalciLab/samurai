@@ -70,6 +70,11 @@
                         "git_sha": "b7ebe95761cd389603f9cc0e0dc384c0f663815a",
                         "installed_by": ["modules"]
                     },
+                    "parabricks/fq2bam": {
+                        "branch": "master",
+                        "git_sha": "1e4345f4e18eca1985e35562e8f5d29caf7f8206",
+                        "installed_by": ["modules"]
+                    },
                     "picard/collecthsmetrics": {
                         "branch": "master",
                         "git_sha": "20b0918591d4ba20047d7e13e5094bcceba81447",
