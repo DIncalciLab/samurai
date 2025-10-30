@@ -14,7 +14,7 @@ workflow BUILD_PON {
     main:
     ch_versions = Channel.empty()
     ch_bam_files = Channel.fromFilePairs(
-            "${normal_dir}/*.{bam,bam.bai}",
+            "${normal_dir}/*.bam{,.bai}",
             checkIfExists: true
         )
         .ifEmpty { error("No BAM or BAI files found at ${normal_dir}") }
