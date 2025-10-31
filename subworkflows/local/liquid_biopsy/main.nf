@@ -61,38 +61,10 @@ workflow LIQUID_BIOPSY {
 
         ICHORCNA(ch_bam_bai, pon_file, gc_wig, map_wig, centromere, reptime_file)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
+        ch_reports = ch_reports.mix(ICHORCNA.out.summary)
         called_segments = ICHORCNA.out.ch_segments
         genome_plot = ICHORCNA.out.genome_plot
-
-        // Step 3: produce an aggregate table of the results
-        AGGREGATE_ICHORCNA_TABLE(
-            RUN_ICHORCNA.out.ichorcna_params.collect()
-        )
-
-        ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
-        ch_reports = ch_reports.mix(AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
-
-        RUN_ICHORCNA.out.cna_seg
-            .map { _meta, data -> data }
-            .collectFile(
-                storeDir: "${params.outdir}/ichorcna/",
-                name: 'all_segments_ichorcna_gistic.seg',
-                keepHeader: true,
-                skip: 1,
-            )
-            .set { gistic_file }
-
-        CORRECT_LOGR_ICHORCNA(gistic_file, AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
-        ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
-
-        corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
-        // Step 4: Aggregate bin-level plots into a single file
-        CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
-        ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
-
-        if (params.ichorcna_ploidy_aware_plot) {
-            PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
-        }
+        corrected_gistic_file = ICHORCNA.out.gistic_file
     }
     else if (caller == "wisecondorx") {
 
