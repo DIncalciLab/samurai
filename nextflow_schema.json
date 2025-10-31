@@ -4,7 +4,7 @@
     "title": "dincalcilab/samurai pipeline parameters",
     "description": "SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -720,52 +720,52 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/$defs/reference_genome_options"
         },
         {
-            "$ref": "#/definitions/institutional_config_options"
+            "$ref": "#/$defs/institutional_config_options"
         },
         {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/$defs/generic_options"
         },
         {
-            "$ref": "#/definitions/workflow_specific_options"
+            "$ref": "#/$defs/workflow_specific_options"
         },
         {
-            "$ref": "#/definitions/alignment_options"
+            "$ref": "#/$defs/alignment_options"
         },
         {
-            "$ref": "#/definitions/common_swgs_options"
+            "$ref": "#/$defs/common_swgs_options"
         },
         {
-            "$ref": "#/definitions/qdnaseq_specific_options"
+            "$ref": "#/$defs/qdnaseq_specific_options"
         },
         {
-            "$ref": "#/definitions/common_liquid_biopsy_options"
+            "$ref": "#/$defs/common_liquid_biopsy_options"
         },
         {
-            "$ref": "#/definitions/ichorcna_options"
+            "$ref": "#/$defs/ichorcna_options"
         },
         {
-            "$ref": "#/definitions/wisecondorx_options"
+            "$ref": "#/$defs/wisecondorx_options"
         },
         {
-            "$ref": "#/definitions/ascat_sc_options"
+            "$ref": "#/$defs/ascat_sc_options"
         },
         {
-            "$ref": "#/definitions/gistic_specific_options"
+            "$ref": "#/$defs/gistic_specific_options"
         },
         {
-            "$ref": "#/definitions/fastq_trimming_specific_options"
+            "$ref": "#/$defs/fastq_trimming_specific_options"
         },
         {
-            "$ref": "#/definitions/chromosomal_instability_signatures"
+            "$ref": "#/$defs/chromosomal_instability_signatures"
         },
         {
-            "$ref": "#/definitions/hrdcna_score"
+            "$ref": "#/$defs/hrdcna_score"
         }
     ]
 }
