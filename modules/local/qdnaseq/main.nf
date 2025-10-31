@@ -1,5 +1,3 @@
-def VERSION = "1.3.0"
-
 process QDNASEQ {
 
     tag "${meta.id}"
@@ -28,6 +26,7 @@ process QDNASEQ {
 
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "1.3.0"
 
     """
     run_qdnaseq.R \\

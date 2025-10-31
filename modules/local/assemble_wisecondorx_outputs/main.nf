@@ -1,5 +1,3 @@
-def VERSION = '0.0.1'
-
 process ASSEMBLE_WISECONDORX_OUTPUTS {
 
     tag "output tables"
@@ -17,6 +15,7 @@ process ASSEMBLE_WISECONDORX_OUTPUTS {
         path "versions.yml"                  , emit: versions
 
     script:
+    def VERSION = '0.0.1'
 
     """
     assemble_statistics.py ${statistics}

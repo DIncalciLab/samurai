@@ -1,4 +1,3 @@
-def VERSION="0.1"
 process MAFTOOLS {
 
     tag "Maftools Plot"
@@ -21,6 +20,7 @@ process MAFTOOLS {
     script:
 
     def args = task.ext.args ?: ''
+    def VERSION="0.1"
 
     """
     run_maftools.R   \\

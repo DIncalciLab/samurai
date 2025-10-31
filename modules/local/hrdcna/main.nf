@@ -1,5 +1,3 @@
-def VERSION = "0.1"
-
 process HRDCNA {
 
     tag "HRDCNA score"
@@ -18,9 +16,9 @@ process HRDCNA {
 
     when:
     task.ext.when == null || task.ext.when
-    
-    script:
 
+    script:
+    def VERSION = "0.1"
     def args = task.ext.args ?: ''
 
     """
@@ -33,4 +31,4 @@ process HRDCNA {
         HRDCNA: ${VERSION}
     END_VERSIONS
     """
-}       
+}

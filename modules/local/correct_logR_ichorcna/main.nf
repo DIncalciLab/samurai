@@ -1,5 +1,3 @@
-def VERSION = "0.1"
-
 process CORRECT_LOGR_ICHORCNA {
 
     tag "Correcting Log2 for GISTIC Analysis"
@@ -17,6 +15,7 @@ process CORRECT_LOGR_ICHORCNA {
         path("versions.yml"),                                           emit: versions
 
     script:
+    def VERSION = "0.1"
 
     """
     correct_logR_ichorcna.R \\

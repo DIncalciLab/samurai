@@ -1,5 +1,3 @@
-VERSION = '0.1'
-
 process ASSEMBLE_GISTIC_OUTPUT {
 
     tag "Rearrange GISTIC2 output"

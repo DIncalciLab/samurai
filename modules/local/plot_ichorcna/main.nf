@@ -7,7 +7,7 @@ process PLOT_ICHORCNA {
 
     input:
         tuple val(meta), path(cna_seg)
-        tuple val(meta), path(bins)
+        tuple val(meta2), path(bins)
         file(ichorcna_params)
 
     output:

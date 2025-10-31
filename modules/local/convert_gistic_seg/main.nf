@@ -6,8 +6,8 @@ process CONVERT_GISTIC_SEG {
 
     input:
         tuple val(meta), path(segments)
-        tuple val(meta), path(bins)
-        tuple val(meta), path(aberrations)
+        tuple val(meta2), path(bins)
+        tuple val(meta3), path(aberrations)
     output:
         tuple val(meta), path("*.seg"), emit: segfile
         tuple val(meta), path("*_gistic.seg"), emit: gistic_file

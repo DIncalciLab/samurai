@@ -1,5 +1,3 @@
-def VERSION = '0.0.1'
-
 process AGGREGATE_ICHORCNA_TABLE {
 
     tag "Assemble IchorCNA outputs"
@@ -17,6 +15,7 @@ process AGGREGATE_ICHORCNA_TABLE {
         path "versions.yml",                  emit: versions
 
     script:
+    def VERSION = '0.0.1'
 
     """
     assemble_outputs.py ${all_params}
