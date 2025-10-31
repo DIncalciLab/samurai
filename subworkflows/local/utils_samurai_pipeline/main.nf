@@ -38,7 +38,7 @@ workflow PIPELINE_INITIALISATION {
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
@@ -80,8 +80,7 @@ workflow PIPELINE_INITIALISATION {
     //
     // Create channel from input file provided through params.input
     //
-    Channel
-        .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+    channel.fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
         .map { meta, fastq1, fastq2, bam ->
             // Poor man's check to make sure a BAM and a FASTQ aren't put together
             if (fastq1 && bam) {
@@ -99,11 +98,25 @@ workflow PIPELINE_INITIALISATION {
         }
         .set { ch_samplesheet }
 
-    
+
+    ch_fasta = channel.value(
+        [["id": "fasta"], file(params.fasta, checkIfExists: true)]
+    )
+    ch_fai = channel.value(
+        [["id": "fai"], file(params.fai, checkIfExists: true)]
+    )
+
+    ch_dict = channel.value(
+        [["id": "dict"], file(params.dict, checkIfExists: true)]
+    )
+
 
     emit:
-    samplesheet = ch_samplesheet
-    versions    = ch_versions
+    samplesheet   = ch_samplesheet
+    versions      = ch_versions
+    fasta         = ch_fasta
+    fai           = ch_fai
+    dict          = ch_dict
 }
 
 /*
@@ -166,6 +179,14 @@ def validateInputParameters() {
 
     if (!params.fasta) {
         error("Error: a reference FASTA file was not provided.")
+    }
+
+    if (!params.fai) {
+        error("Error: a FASTA index was not provided.")
+    }
+
+    if (!params.dict) {
+        error("Error: a FASTA sequence dictionary was not provided.")
     }
 }
 

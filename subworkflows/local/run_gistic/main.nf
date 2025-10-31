@@ -9,7 +9,7 @@ workflow RUN_GISTIC {
         genome // value: genome
 
     main:
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
 
         GISTIC2(gistic_results_dir, genome)
         ch_versions = ch_versions.mix(GISTIC2.out.versions)

@@ -16,6 +16,9 @@ process CIN_SIGNATURE_QUANTIFICATION {
         path("*_activity.txt"),                   emit: sig_activity_file
         path("versions.yml"),                     emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
 
     def args = task.ext.args ?: ''
