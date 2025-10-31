@@ -33,7 +33,8 @@ lint:
     - utils_nfcore_pipeline
   actions_ci: false
   nf_test_content: false
-  check_local_copy: false
+  check_local_copy:
+    - utils_nfcore_pipeline
 nf_core_version: 3.4.1
 template:
-  version: 3.4.1
+  version: 1.2.3.1
