@@ -84,24 +84,25 @@ workflow SAMURAI {
     if (val_aligner) {
         skip_fastp = options.run_fastp ? false : true
 
-        FASTQ_TRIM_FASTP_FASTQC(
-            ch_input,
-            [],
-            false,
-            false,
-            skip_fastp,
-            false,
-        )
+        ch_fastq = ch_input.map{meta, fastq -> [meta, fastq, []]}
 
+        FASTQ_TRIM_FASTP_FASTQC(
+            ch_fastq,
+            false /* save_trimmed_fail */,
+            false /* discard_trimmed_pass */,
+            false, /* save_merged */
+            skip_fastp /* skip_fastp */,
+            false /* skip_fastqc */
+        )
         ch_versions = ch_versions.mix(FASTQ_TRIM_FASTP_FASTQC.out.versions.first())
         ch_multiqc_files = ch_multiqc_files.mix(
-            FASTQ_TRIM_FASTP_FASTQC.out.fastqc_raw_zip.collect { it[1] }.ifEmpty([])
+            FASTQ_TRIM_FASTP_FASTQC.out.fastqc_raw_zip.collect { it -> it[1] }.ifEmpty([])
         )
         ch_multiqc_files = ch_multiqc_files.mix(
-            FASTQ_TRIM_FASTP_FASTQC.out.trim_json.collect { it[1] }.ifEmpty([])
+            FASTQ_TRIM_FASTP_FASTQC.out.trim_json.collect { it -> it[1] }.ifEmpty([])
         )
         ch_multiqc_files = ch_multiqc_files.mix(
-            FASTQ_TRIM_FASTP_FASTQC.out.fastqc_trim_zip.collect { it[1] }.ifEmpty([])
+            FASTQ_TRIM_FASTP_FASTQC.out.fastqc_trim_zip.collect {it -> it[1] }.ifEmpty([])
         )
 
         ch_input = FASTQ_TRIM_FASTP_FASTQC.out.reads
@@ -232,7 +233,7 @@ workflow SAMURAI {
         else {
             ch_analysis = ch_bam_bai
         }
-        LIQUID_BIOPSY(ch_analysis, caller, ch_fasta, ch_fai, options.build_pon, pon_path)
+        LIQUID_BIOPSY(ch_analysis, caller, ch_fasta, ch_fai, options.build_pon, ch_pon_path)
         gistic_file = LIQUID_BIOPSY.out.corrected_gistic_file
         ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
