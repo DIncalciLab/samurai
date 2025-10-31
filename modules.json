@@ -12,12 +12,12 @@
                     },
                     "bowtie2/build": {
                         "branch": "master",
-                        "git_sha": "1fea64f5132a813ec97c1c6d3a74e0aee7142b6d",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["fasta_index_dna"]
                     },
                     "bwa/index": {
                         "branch": "master",
-                        "git_sha": "6278bf9afd4a4b2d00fa6052250e73da3d91546f",
+                        "git_sha": "1c46359c837ef768b004519f535c30378e8289fc",
                         "installed_by": ["fasta_index_dna", "modules"]
                     },
                     "bwa/mem": {
@@ -27,7 +27,7 @@
                     },
                     "bwamem2/index": {
                         "branch": "master",
-                        "git_sha": "7081e04c18de9480948d34513a1c1e2d0fa9126d",
+                        "git_sha": "d86336f3e7ae0d5f76c67b0859409769cfeb2af2",
                         "installed_by": ["fasta_index_dna", "modules"]
                     },
                     "bwamem2/mem": {
@@ -37,7 +37,7 @@
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "de45447d060b8c8b98575bc637a4a575fd0638e1",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "dragmap/align": {
@@ -47,7 +47,7 @@
                     },
                     "dragmap/hashtable": {
                         "branch": "master",
-                        "git_sha": "575e1bc54b083fb15e7dd8b5fcc40bea60e8ce83",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["fasta_index_dna"]
                     },
                     "fastp": {
@@ -62,12 +62,12 @@
                     },
                     "hmmcopy/readcounter": {
                         "branch": "master",
-                        "git_sha": "68fa054a9188bbd523d2bf25c51309c07ab5ef3d",
+                        "git_sha": "3db80bad01d58d9977654212253a30af42c9fd48",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "e10b76ca0c66213581bec2833e30d31f239dec0b",
+                        "git_sha": "af27af1be706e6a2bb8fe454175b0cdf77f47b49",
                         "installed_by": ["modules"]
                     },
                     "picard/collecthsmetrics": {
@@ -92,7 +92,7 @@
                     },
                     "samtools/faidx": {
                         "branch": "master",
-                        "git_sha": "aeb02a39d4c463598bfdcb2d964dbb7acbcf1298",
+                        "git_sha": "c8be52dba1166c678e74cda9c3a3c221635c8bb1",
                         "installed_by": ["modules"]
                     },
                     "samtools/flagstat": {
@@ -122,7 +122,7 @@
                     },
                     "samtools/view": {
                         "branch": "master",
-                        "git_sha": "0bd7d2333a88483aa0476acea172e9f5f6dd83bb",
+                        "git_sha": "c8be52dba1166c678e74cda9c3a3c221635c8bb1",
                         "installed_by": ["modules"]
                     },
                     "snapaligner/align": {
@@ -132,7 +132,7 @@
                     },
                     "snapaligner/index": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "804078353d4a3c519411639d424853d046927d85",
                         "installed_by": ["fasta_index_dna"]
                     },
                     "strobealign": {
@@ -152,7 +152,7 @@
                     },
                     "wisecondorx/predict": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["bam_cnv_wisecondorx", "modules"],
                         "patch": "modules/nf-core/wisecondorx/predict/wisecondorx-predict.diff"
                     }
