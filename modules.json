@@ -35,11 +35,6 @@
                         "git_sha": "d86336f3e7ae0d5f76c67b0859409769cfeb2af2",
                         "installed_by": ["fastq_align_dna", "modules"]
                     },
-                    "custom/dumpsoftwareversions": {
-                        "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["modules"]
-                    },
                     "dragmap/align": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
