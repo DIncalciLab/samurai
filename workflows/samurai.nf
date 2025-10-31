@@ -208,7 +208,7 @@ workflow SAMURAI {
         ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
     }
     else if (analysis_type == "liquid_biopsy") {
-        if (params.size_selection) {
+        if (options.size_selection) {
             SIZE_SELECTION(ch_bam_bai, ch_fasta)
             ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
@@ -232,7 +232,7 @@ workflow SAMURAI {
         else {
             ch_analysis = ch_bam_bai
         }
-        LIQUID_BIOPSY(ch_analysis, caller, ch_fasta, ch_fai)
+        LIQUID_BIOPSY(ch_analysis, caller, ch_fasta, ch_fai, options.build_pon, pon_path)
         gistic_file = LIQUID_BIOPSY.out.corrected_gistic_file
         ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())

@@ -5,6 +5,7 @@ include { RUN_ICHORCNA                                        } from '../../../m
 include { AGGREGATE_ICHORCNA_TABLE                            } from '../../../modules/local/aggregate_ichorcna_table/main'
 include { CONVERT_GISTIC_SEG                                  } from '../../../modules/local/convert_gistic_seg/main'
 include { BAM_CNV_WISECONDORX                                 } from '../../../subworkflows/nf-core/bam_cnv_wisecondorx/main'
+include { ICHORCNA                                            } from '../../../subworkflows/local/ichorcna/main'
 include { ASSEMBLE_WISECONDORX_OUTPUTS                        } from '../../../modules/local/assemble_wisecondorx_outputs/main'
 include { CONVERT_WISECONDORX_IMAGES                          } from '../../../modules/local/convert_wisecondorx_images/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
@@ -17,32 +18,37 @@ workflow LIQUID_BIOPSY {
     take:
     ch_bam_bai // [meta, bam, bai]
     caller
-    fasta // [meta2, fasta]
-    fai // [meta3, fasta]
+    ch_fasta // [meta2, fasta]
+    ch_fai // [meta3, fasta]
+    ch_normal_panel // channel: normal_panel
+    build_pon // bool
+    pon_path // value: path
 
     main:
 
-    ch_versions = Channel.empty()
-    ch_reports = Channel.empty()
+    ch_versions = channel.empty()
+    ch_reports = channel.empty()
 
     // If we want to build the normal panel
-    if (params.build_pon) {
+    if (build_pon) {
 
-        BUILD_PON(params.pon_path, caller, fasta, fai)
+        BUILD_PON(pon_path, caller, ch_fasta, ch_fai)
         ch_versions = ch_versions.mix(BUILD_PON.out.versions)
         pon_file = BUILD_PON.out.normal_panel
     }
     else {
-        if (!params.normal_panel) {
+        if (!ch_normal_panel) {
             if (caller == "wisecondorx") {
                 error("No PoN specified nor built, but WisecondorX requires it")
             }
-            // ichorCNA can work without a PoN, although not optimally
-            log.warn("No PoN specified: CNA calling performance can be impacted")
-            pon_file = []
+            else {
+                // ichorCNA can work without a PoN, although not optimally
+                log.warn("No PoN specified: CNA calling performance can be impacted")
+                pon_file = []
+            }
         }
         else {
-            pon_file = file(params.normal_panel, checkIfExists: true)
+            pon_file = ch_normal_panel
         }
     }
 
@@ -53,25 +59,10 @@ workflow LIQUID_BIOPSY {
         centromere = file(params.ichorcna_centromere_file, checkIfExists: true)
         reptime_file = params.ichorcna_reptime_wig ? file(params.ichorcna_reptime_wig, checkIfExists: true) : []
 
-        // Step 1: Generate coverage wig files
-        // To generate Wig Files
-        HMMCOPY_READCOUNTER_ICHORCNA(ch_bam_bai)
-        // wigfiles = HMMCOPY_READCOUNTER_ICHORCNA.out.wig.map{it -> it[1]}
-        ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_ICHORCNA.out.versions)
-
-        // Step 2: run ichorCNA
-        RUN_ICHORCNA(
-            HMMCOPY_READCOUNTER_ICHORCNA.out.wig,
-            gc_wig,
-            map_wig,
-            pon_file,
-            centromere,
-            reptime_file,
-        )
-        ch_versions = ch_versions.mix(RUN_ICHORCNA.out.versions)
-
-        called_segments = RUN_ICHORCNA.out.cna_seg
-        genome_plot = RUN_ICHORCNA.out.genome_plot
+        ICHORCNA(ch_bam_bai, pon_file, gc_wig, map_wig, centromere, reptime_file)
+        ch_versions = ch_versions.mix(ICHORCNA.out.versions)
+        called_segments = ICHORCNA.out.ch_segments
+        genome_plot = ICHORCNA.out.genome_plot
 
         // Step 3: produce an aggregate table of the results
         AGGREGATE_ICHORCNA_TABLE(
@@ -105,11 +96,11 @@ workflow LIQUID_BIOPSY {
     }
     else if (caller == "wisecondorx") {
 
-        blacklist = params.wisecondorx_blacklist ? channel.fromPath(params.wisecondorx_blacklist, checkIfExists: true).map{blacklist -> [[id: "blacklist"], blacklist] } : [[], []]
-        fasta = channel.fromPath(params.fasta, checkIfExists: true).map{fastafile -> [[id: "fasta"], fastafile]}
-        fai = channel.fromPath(params.fai, checkIfExists: true).map{fastafile -> [[id: "fai"], fastafile]}
+        blacklist = params.wisecondorx_blacklist ? channel.fromPath(params.wisecondorx_blacklist, checkIfExists: true).map { blacklist -> [[id: "blacklist"], blacklist] } : [[], []]
+        ch_fasta = channel.fromPath(params.fasta, checkIfExists: true).map { fastafile -> [[id: "fasta"], fastafile] }
+        ch_fai = channel.fromPath(params.fai, checkIfExists: true).map { fastafile -> [[id: "fai"], fastafile] }
 
-        BAM_CNV_WISECONDORX(ch_bam_bai, fasta, fai, pon_file, blacklist)
+        BAM_CNV_WISECONDORX(ch_bam_bai, ch_fasta, ch_fai, pon_file, blacklist)
         ch_versions = ch_versions.mix(BAM_CNV_WISECONDORX.out.versions)
 
         CONVERT_GISTIC_SEG(

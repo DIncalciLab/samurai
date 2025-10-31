@@ -59,10 +59,8 @@ workflow ICHORCNA {
     ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
 
     corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
+    PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
 
-    if (params.ichorcna_ploidy_aware_plot) {
-            PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
-        }
     // Step 4: Aggregate bin-level plots into a single file
     CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
     ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
