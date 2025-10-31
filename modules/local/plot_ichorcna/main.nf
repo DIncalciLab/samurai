@@ -26,7 +26,8 @@ process PLOT_ICHORCNA {
             --seg_file ${cna_seg} \\
             --binfile ${bins} \\
             --summary ${ichorcna_params} \\
-            --outdir .
+            --outdir . \\
+            ${args}
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
