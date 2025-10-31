@@ -14,7 +14,7 @@ workflow SIZE_SELECTION {
         ch_bam_bai
         ch_fasta
     main:
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
 
         SAMTOOLS_STATS_PRE(ch_bam_bai, ch_fasta)
         ch_versions = ch_versions.mix(SAMTOOLS_STATS_PRE.out.versions)
@@ -27,7 +27,7 @@ workflow SIZE_SELECTION {
             }
 
         if (params.plot_fragment_distribution) {
-            BAMPE_FRAGMENTSIZE_PRE(Channel.value("prefiltering"),
+            BAMPE_FRAGMENTSIZE_PRE(channel.value("prefiltering"),
                                     bam_bai_pre.bam.collect(),
                                     bam_bai_pre.bai.collect())
             ch_versions = ch_versions.mix(BAMPE_FRAGMENTSIZE_PRE.out.versions)
@@ -52,7 +52,7 @@ workflow SIZE_SELECTION {
             }
 
         if (params.plot_fragment_distribution) {
-            BAMPE_FRAGMENTSIZE_POST(Channel.value("postfiltering"),
+            BAMPE_FRAGMENTSIZE_POST(channel.value("postfiltering"),
                                     ch_fragment.bam.collect(),
                                     ch_fragment.bai.collect())
             ch_versions = ch_versions.mix(BAMPE_FRAGMENTSIZE_POST.out.versions)
