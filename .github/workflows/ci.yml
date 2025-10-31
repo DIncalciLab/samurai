@@ -26,7 +26,7 @@ jobs:
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
         with:
-          version: "23.10.1"
+          version: "24.10.0"
 
       - name: Disk space cleanup
         uses: jlumbroso/free-disk-space@v1.3.1
