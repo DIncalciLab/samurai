@@ -109,7 +109,6 @@ workflow DINCALCILAB_SAMURAI {
 //
 workflow {
 
-
     PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
@@ -117,6 +116,9 @@ workflow {
         args,
         params.outdir,
         params.input,
+        params.help,
+        params.help_full,
+        params.show_hidden
     )
 
     run_gistic = params.analysis_type != "align_only" ? params.run_gistic : false

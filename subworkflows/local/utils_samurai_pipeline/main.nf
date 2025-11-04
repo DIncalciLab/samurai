@@ -26,12 +26,15 @@ include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
 
 workflow PIPELINE_INITIALISATION {
     take:
-    version // boolean: Display version and exit
-    validate_params // boolean: Boolean whether to validate parameters against the schema at runtime
-    monochrome_logs // boolean: Do not use coloured log outputs
+    version           // boolean: Display version and exit
+    validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
+    monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
-    outdir //  string: The output directory where the results will be saved
-    input //  string: Path to input samplesheet
+    outdir            //  string: The output directory where the results will be saved
+    input             //  string: Path to input samplesheet
+    help              // boolean: Display help message and exit
+    help_full         // boolean: Show the full help message
+    show_hidden       // boolean: Show hidden parameters in the help message
 
     main:
 
@@ -50,10 +53,17 @@ workflow PIPELINE_INITIALISATION {
     //
     // Validate parameters and generate parameter summary to stdout
     //
+    command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
     UTILS_NFSCHEMA_PLUGIN(
         workflow,
         validate_params,
         null,
+        help,
+        help_full,
+        show_hidden,
+        "",
+        "",
+        command
     )
 
     //

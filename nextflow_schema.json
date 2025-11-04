@@ -133,6 +133,14 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display the full detailed help message."
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
+                },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
