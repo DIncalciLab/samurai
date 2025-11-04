@@ -100,10 +100,13 @@ workflow SAMURAI {
 
         skip_fastp = params.run_fastp ? false : true
 
+        ch_fastq = ch_input.map{meta, fasta -> [meta, fasta, []]}
+
         FASTQ_TRIM_FASTP_FASTQC(
-            ch_input, [] /* adapters */,
+            ch_fastq,
             false /* save_trimmed_fail */,
-            false /* save_merged */,
+            false /* discard_trimmed_pass */,
+            false, /* save_merged */
             skip_fastp /* skip_fastp */,
             false /* skip_fastqc */
         )
