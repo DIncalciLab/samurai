@@ -58,7 +58,7 @@ include { BAM_QC_PICARD                } from '../subworkflows/nf-core/bam_qc_pi
 workflow SAMURAI {
     take:
     ch_input // channel: samplesheet read in from --input
-    val_aligner // supplied aligner
+    aligner // value: supplied aligner
     analysis_type
     genome
     ch_fasta
@@ -68,7 +68,18 @@ workflow SAMURAI {
     caller
     binsize
     ch_pon_path
-    options
+    build_pon
+    ch_normal_panel
+    index_genome
+    run_fastp
+    run_gistic
+    size_selection
+    ch_blacklist
+    ch_gc_wig
+    ch_map_wig
+    ch_centromere
+    ch_reptime
+    ascat_predict_refit
 
     main:
 
@@ -80,18 +91,18 @@ workflow SAMURAI {
         [["id": "liftover"], []]
     )
 
-    if (val_aligner) {
-        skip_fastp = options.run_fastp ? false : true
+    if (aligner) {
+        skip_fastp = run_fastp ? false : true
 
-        ch_fastq = ch_input.map{meta, fastq -> [meta, fastq, []]}
+        ch_fastq = ch_input.map { meta, fastq -> [meta, fastq, []] }
 
         FASTQ_TRIM_FASTP_FASTQC(
             ch_fastq,
-            false /* save_trimmed_fail */,
-            false /* discard_trimmed_pass */,
-            false, /* save_merged */
-            skip_fastp /* skip_fastp */,
-            false /* skip_fastqc */
+            false,
+            false,
+            false,
+            skip_fastp,
+            false,
         )
         ch_versions = ch_versions.mix(FASTQ_TRIM_FASTP_FASTQC.out.versions.first())
         ch_multiqc_files = ch_multiqc_files.mix(
@@ -101,15 +112,15 @@ workflow SAMURAI {
             FASTQ_TRIM_FASTP_FASTQC.out.trim_json.collect { it -> it[1] }.ifEmpty([])
         )
         ch_multiqc_files = ch_multiqc_files.mix(
-            FASTQ_TRIM_FASTP_FASTQC.out.fastqc_trim_zip.collect {it -> it[1] }.ifEmpty([])
+            FASTQ_TRIM_FASTP_FASTQC.out.fastqc_trim_zip.collect { it -> it[1] }.ifEmpty([])
         )
 
         ch_input = FASTQ_TRIM_FASTP_FASTQC.out.reads
 
         // SUBWORKFLOW: FASTQ_ALIGN_DNA
 
-        if (options.index_genome) {
-            FASTA_INDEX_DNA(ch_fasta, ch_liftover, val_aligner)
+        if (index_genome) {
+            FASTA_INDEX_DNA(ch_fasta, ch_liftover, aligner)
             ch_index = FASTA_INDEX_DNA.out.index
             ch_versions = ch_versions.mix(FASTA_INDEX_DNA.out.versions.first())
         }
@@ -118,7 +129,7 @@ workflow SAMURAI {
             ch_input,
             ch_index,
             ch_fasta,
-            val_aligner,
+            aligner,
             true,
         )
         ch_versions = ch_versions.mix(FASTQ_ALIGN_DNA.out.versions.first())
@@ -202,13 +213,26 @@ workflow SAMURAI {
     // CN Calling
 
     if (analysis_type == "solid_biopsy") {
-        SOLID_BIOPSY(ch_bam_bai, caller, binsize, genome)
+        SOLID_BIOPSY(
+            ch_bam_bai,
+            caller,
+            binsize,
+            genome,
+            ascat_predict_refit,
+            build_pon,
+            ch_pon_path,
+            ch_normal_panel,
+            ch_gc_wig,
+            ch_map_wig,
+            ch_centromere,
+            ch_reptime,
+        )
         gistic_file = SOLID_BIOPSY.out.gistic_file
         ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
         ch_multiqc_files = ch_multiqc_files.mix(SOLID_BIOPSY.out.summary.collect())
     }
     else if (analysis_type == "liquid_biopsy") {
-        if (options.size_selection) {
+        if (size_selection) {
             SIZE_SELECTION(ch_bam_bai, ch_fasta)
             ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
@@ -232,17 +256,29 @@ workflow SAMURAI {
         else {
             ch_analysis = ch_bam_bai
         }
-        LIQUID_BIOPSY(ch_analysis, caller, ch_fasta, ch_fai, options.build_pon, ch_pon_path)
+        LIQUID_BIOPSY(
+            ch_analysis,
+            caller,
+            ch_fasta,
+            ch_fai,
+            ch_normal_panel,
+            ch_gc_wig,
+            ch_map_wig,
+            ch_centromere,
+            ch_reptime,
+            build_pon,
+            ch_pon_path,
+            ch_blacklist)
         gistic_file = LIQUID_BIOPSY.out.corrected_gistic_file
         ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(LIQUID_BIOPSY.out.summary.collect())
     }
-    else if (params.analysis_type != "align_only") {
+    else if (analysis_type != "align_only") {
         error("Unknown / unsupported analysis ${analysis_type}")
     }
 
     // Run GISTIC if specified
-    if (options.run_gistic) {
+    if (run_gistic) {
         RUN_GISTIC(gistic_file, genome)
         ch_versions = ch_versions.mix(RUN_GISTIC.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(RUN_GISTIC.out.gistic_lesions)

@@ -52,7 +52,18 @@ workflow DINCALCILAB_SAMURAI {
     caller
     binsize
     pon_path
-    options
+    build_pon
+    normal_panel
+    index_genome
+    run_fastp
+    run_gistic
+    size_selection
+    wisecondor_blacklist
+    ichorcna_gc_wig
+    ichorcna_map_wig
+    ichorcna_centromere
+    ichorcna_reptime_file
+    ascat_sc_predict_refit
 
     main:
 
@@ -67,8 +78,19 @@ workflow DINCALCILAB_SAMURAI {
         genome_index,
         caller,
         binsize,
+        run_fastp,
         pon_path,
-        options,
+        build_pon,
+        normal_panel,
+        index_genome,
+        run_gistic,
+        size_selection,
+        wisecondor_blacklist,
+        ichorcna_gc_wig,
+        ichorcna_map_wig,
+        ichorcna_centromere,
+        ichorcna_reptime_file,
+        ascat_sc_predict_refit,
     )
 
     emit:
@@ -97,19 +119,15 @@ workflow {
         params.input,
     )
 
-    def options = [
-        build_pon: params.build_pon,
-        index_genome: params.index_genome,
-        run_fastp: params.run_fastp,
-        compute_signatures: params.analysis_type != "align_only" ? params.compute_signatures : false,
-        run_gistic: params.analysis_type != "align_only" ? params.run_gistic : false,
-    ]
+    run_gistic = params.analysis_type != "align_only" ? params.run_gistic : false
 
     genome = channel.value(params.genome)
     caller = params.analysis_type == "align_only" ? channel.value("none") : channel.value(params.caller)
     pon_path = params.pon_path && params.build_pon ? channel.value(params.pon_path) : []
     analysis_type = channel.value(params.analysis_type)
     binsize = channel.value(params.binsize)
+    normal_panel = params.normal_panel ? file(params.normal_panel, checkIfExists: true): []
+
 
     if (params.aligner == "bwamem") {
         real_aligner = "bwa"
@@ -131,6 +149,17 @@ workflow {
         ch_index = [[], []]
     }
 
+    ichorcna_gc_wig = params.ichorcna_gc_wig ? file(params.ichorcna_gc_wig, checkIfExists: true) : []
+    ichorcna_map_wig = params.ichorcna_map_wig ? file(params.ichorcna_map_wig, checkIfExists: true) : []
+    ichorcna_centromere = params.ichorcna_centromere_file ? file(params.ichorcna_centromere_file, checkIfExists: true) : []
+    ichorcna_reptime_file = params.ichorcna_reptime_wig ? file(params.ichorcna_reptime_wig, checkIfExists: true) : []
+
+    if (caller == "ichorcna" && (!ichorcna_gc_wig || !ichorcna_map_wig)) {
+        error("ichorCNA calling requires a GC WIG and a mappability WIG")
+    }
+
+    wisecondor_blacklist = params.wisecondorx_blacklist ? channel.fromPath(params.wisecondorx_blacklist, checkIfExists: true).map { blacklist -> [[id: "blacklist"], blacklist] } : [[], []]
+
     // pass build_index as param here
     // pass size_selection as param here
 
@@ -146,7 +175,19 @@ workflow {
         caller,
         binsize,
         pon_path,
-        options,
+        params.run_fastp,
+        params.build_pon,
+        normal_panel,
+        params.index_genome,
+        params.run_fastp,
+        run_gistic,
+        params.size_selection,
+        wisecondor_blacklist,
+        ichorcna_gc_wig,
+        ichorcna_map_wig,
+        ichorcna_centromere,
+        ichorcna_reptime_file,
+        params.ascat_sc_predict_refit,
     )
 
     PIPELINE_COMPLETION(

@@ -21,8 +21,13 @@ workflow LIQUID_BIOPSY {
     ch_fasta // [meta2, fasta]
     ch_fai // [meta3, fasta]
     ch_normal_panel // channel: normal_panel
+    ch_gc_wig // channel: path to GC wig
+    ch_map_wig // channel: path to mappability wig
+    ch_centromere // channel: path to centromere file
+    ch_reptiming // channel: path to reptiming file
     build_pon // bool
     pon_path // value: path
+    ch_blacklist // channel: [meta, blacklist]
 
     main:
 
@@ -54,12 +59,7 @@ workflow LIQUID_BIOPSY {
 
     if (caller == "ichorcna") {
 
-        gc_wig = file(params.ichorcna_gc_wig, checkIfExists: true)
-        map_wig = file(params.ichorcna_map_wig, checkIfExists: true)
-        centromere = file(params.ichorcna_centromere_file, checkIfExists: true)
-        reptime_file = params.ichorcna_reptime_wig ? file(params.ichorcna_reptime_wig, checkIfExists: true) : []
-
-        ICHORCNA(ch_bam_bai, pon_file, gc_wig, map_wig, centromere, reptime_file)
+        ICHORCNA(ch_bam_bai, pon_file, ch_gc_wig, ch_map_wig, ch_centromere, ch_reptiming)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
         ch_reports = ch_reports.mix(ICHORCNA.out.summary)
         called_segments = ICHORCNA.out.ch_segments
@@ -68,11 +68,7 @@ workflow LIQUID_BIOPSY {
     }
     else if (caller == "wisecondorx") {
 
-        blacklist = params.wisecondorx_blacklist ? channel.fromPath(params.wisecondorx_blacklist, checkIfExists: true).map { blacklist -> [[id: "blacklist"], blacklist] } : [[], []]
-        ch_fasta = channel.fromPath(params.fasta, checkIfExists: true).map { fastafile -> [[id: "fasta"], fastafile] }
-        ch_fai = channel.fromPath(params.fai, checkIfExists: true).map { fastafile -> [[id: "fai"], fastafile] }
-
-        BAM_CNV_WISECONDORX(ch_bam_bai, ch_fasta, ch_fai, pon_file, blacklist)
+        BAM_CNV_WISECONDORX(ch_bam_bai, ch_fasta, ch_fai, pon_file, ch_blacklist)
         ch_versions = ch_versions.mix(BAM_CNV_WISECONDORX.out.versions)
 
         CONVERT_GISTIC_SEG(
