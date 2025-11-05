@@ -204,7 +204,6 @@ workflow {
         params.build_pon,
         normal_panel,
         params.index_genome,
-        params.run_fastp,
         run_gistic,
         params.size_selection,
         wisecondor_blacklist,
