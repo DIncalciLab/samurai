@@ -227,6 +227,7 @@ workflow SAMURAI {
             ch_map_wig,
             ch_centromere,
             ch_reptime,
+            ch_fasta
         )
         gistic_file = SOLID_BIOPSY.out.gistic_file
         ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())

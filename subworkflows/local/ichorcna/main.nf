@@ -13,14 +13,15 @@ workflow ICHORCNA {
     ch_map_wig      // Channel: path
     ch_centromere   // Channel: path
     ch_reptime_wig  // Channel: path (optional)
+    ch_fasta        // Channel: [meta, fasta]
 
     main:
 
-    ch_versions = Channel.empty()
-    ch_reports = Channel.empty()
+    ch_versions = channel.empty()
+    ch_reports = channel.empty()
     // Step 1: Generate coverage wig files
     // To generate Wig Files
-    HMMCOPY_READCOUNTER_ICHORCNA(ch_bam_bai)
+    HMMCOPY_READCOUNTER_ICHORCNA(ch_bam_bai, ch_fasta)
     ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_ICHORCNA.out.versions)
     // Step 2: run ichorCNA
     RUN_ICHORCNA(

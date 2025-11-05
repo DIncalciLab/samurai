@@ -59,7 +59,7 @@ workflow LIQUID_BIOPSY {
 
     if (caller == "ichorcna") {
 
-        ICHORCNA(ch_bam_bai, pon_file, ch_gc_wig, ch_map_wig, ch_centromere, ch_reptiming)
+        ICHORCNA(ch_bam_bai, pon_file, ch_gc_wig, ch_map_wig, ch_centromere, ch_reptiming, ch_fasta)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
         ch_reports = ch_reports.mix(ICHORCNA.out.summary)
         called_segments = ICHORCNA.out.ch_segments

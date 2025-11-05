@@ -31,6 +31,7 @@ workflow SOLID_BIOPSY {
     ch_map_wig // channel: path to mappability wig
     ch_centromere // channel: path to centromere file
     ch_reptiming // channel: path to reptiming file
+    ch_fasta
 
 
     main:
@@ -157,6 +158,7 @@ workflow SOLID_BIOPSY {
             ch_map_wig,
             ch_centromere,
             ch_reptiming,
+            ch_fasta
         )
 
         ch_segments = ICHORCNA.out.ch_segments
