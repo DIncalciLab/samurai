@@ -52,10 +52,10 @@ workflow DINCALCILAB_SAMURAI {
     caller
     binsize
     pon_path
+    run_fastp
     build_pon
     normal_panel
     index_genome
-    run_fastp
     run_gistic
     size_selection
     wisecondor_blacklist
@@ -78,12 +78,11 @@ workflow DINCALCILAB_SAMURAI {
         genome_index,
         caller,
         binsize,
-        run_fastp,
         pon_path,
+        run_fastp,
         build_pon,
         normal_panel,
         index_genome,
-        run_fastp,
         run_gistic,
         size_selection,
         wisecondor_blacklist,
@@ -150,10 +149,10 @@ workflow {
 
     genome = channel.value(params.genome)
     caller = params.analysis_type == "align_only" ? channel.value("none") : channel.value(params.caller)
-    pon_path = params.pon_path && params.build_pon ? channel.value(params.pon_path) : []
+    pon_path = params.pon_path && params.build_pon ? channel.value(params.pon_path) : channel.empty()
     analysis_type = channel.value(params.analysis_type)
     binsize = channel.value(params.binsize)
-    normal_panel = params.normal_panel ? file(params.normal_panel, checkIfExists: true) : []
+    normal_panel = params.normal_panel ? channel.fromPath(params.normal_panel, checkIfExists: true) : channel.empty()
 
     if (params.aligner == "bwamem") {
         real_aligner = "bwa"

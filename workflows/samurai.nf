@@ -69,9 +69,9 @@ workflow SAMURAI {
     binsize
     ch_pon_path
     build_pon
+    run_fastp
     ch_normal_panel
     index_genome
-    run_fastp
     run_gistic
     size_selection
     ch_blacklist
