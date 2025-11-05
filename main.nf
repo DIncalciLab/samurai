@@ -109,6 +109,18 @@ workflow DINCALCILAB_SAMURAI {
 //
 workflow {
 
+    if (!params.fasta) {
+        error("Error: a reference FASTA file was not provided.")
+    }
+
+    if (!params.fai) {
+        error("Error: a FASTA index was not provided.")
+    }
+
+    if (!params.dict) {
+        error("Error: a FASTA sequence dictionary was not provided.")
+    }
+
     fasta = params.fasta ? channel.fromPath(params.fasta).map { it -> [[id: it.baseName], it] }.collect() : channel.empty()
     fai = params.fai ? channel.fromPath(params.fai).map { it -> [[id: it.baseName], it] }.collect() : channel.empty()
     dict = params.dict ? channel.fromPath(params.fai).map { it -> [[id: it.baseName], it] }.collect() : channel.empty()

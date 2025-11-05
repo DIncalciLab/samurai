@@ -175,18 +175,6 @@ def validateInputParameters() {
     else if (params.analysis_type == "liquid_biopsy" && !params.caller in ["ichorcna", "wisecondorx"]) {
         error("Invalid caller ${params.caller} used with liquid biopsy workflow")
     }
-
-    if (!params.fasta) {
-        error("Error: a reference FASTA file was not provided.")
-    }
-
-    if (!params.fai) {
-        error("Error: a FASTA index was not provided.")
-    }
-
-    if (!params.dict) {
-        error("Error: a FASTA sequence dictionary was not provided.")
-    }
 }
 
 //
