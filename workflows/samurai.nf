@@ -194,6 +194,7 @@ workflow SAMURAI {
         ch_fasta,
         ch_fai,
         ch_dict,
+        [] /* fasta_gzi */
     )
 
     ch_versions = ch_versions.mix(
