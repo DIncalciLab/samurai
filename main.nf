@@ -83,6 +83,7 @@ workflow DINCALCILAB_SAMURAI {
         build_pon,
         normal_panel,
         index_genome,
+        run_fastp,
         run_gistic,
         size_selection,
         wisecondor_blacklist,
