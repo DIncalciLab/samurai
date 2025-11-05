@@ -150,8 +150,8 @@ workflow {
     genome = channel.value(params.genome)
     caller = params.analysis_type == "align_only" ? channel.value("none") : channel.value(params.caller)
     pon_path = params.pon_path && params.build_pon ? channel.value(params.pon_path) : channel.empty()
-    analysis_type = channel.value(params.analysis_type)
-    binsize = channel.value(params.binsize)
+    analysis_type = params.analysis_type
+    binsize = params.binsize
     normal_panel = params.normal_panel ? channel.fromPath(params.normal_panel, checkIfExists: true) : channel.empty()
 
     if (params.aligner == "bwamem") {
