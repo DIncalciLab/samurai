@@ -84,8 +84,7 @@ workflow PIPELINE_INITIALISATION {
     channel.fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
         .map { meta, fastq1, fastq2, bam ->
             // Poor man's check to make sure a BAM and a FASTQ aren't put together
-            def read_group = "\"@RG\\tID:${meta.sample}\\tPU:1\\tSM:${meta.sample}\\tLB:${meta.sample}\\tDS:${params.fasta}\\tPL:Illumina\""
-            meta += [read_group: read_group]
+
             if (fastq1 && bam) {
                 error("Input validation error: specify either FASTQ files or BAM")
             }
@@ -101,24 +100,9 @@ workflow PIPELINE_INITIALISATION {
         }
         .set { ch_samplesheet }
 
-
-    ch_fasta = channel.value(
-        [["id": "fasta"], file(params.fasta, checkIfExists: true)]
-    )
-    ch_fai = channel.value(
-        [["id": "fai"], file(params.fai, checkIfExists: true)]
-    )
-
-    ch_dict = channel.value(
-        [["id": "dict"], file(params.dict, checkIfExists: true)]
-    )
-
     emit:
     samplesheet = ch_samplesheet
     versions    = ch_versions
-    fasta       = ch_fasta
-    fai         = ch_fai
-    dict        = ch_dict
 }
 
 /*

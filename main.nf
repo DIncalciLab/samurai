@@ -109,6 +109,10 @@ workflow DINCALCILAB_SAMURAI {
 //
 workflow {
 
+    fasta = params.fasta ? channel.fromPath(params.fasta).map { it -> [[id: it.baseName], it] }.collect() : channel.empty()
+    fai = params.fai ? channel.fromPath(params.fai).map { it -> [[id: it.baseName], it] }.collect() : channel.empty()
+    dict = params.dict ? channel.fromPath(params.fai).map { it -> [[id: it.baseName], it] }.collect() : channel.empty()
+
     PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
@@ -118,8 +122,16 @@ workflow {
         params.input,
         params.help,
         params.help_full,
-        params.show_hidden
+        params.show_hidden,
     )
+
+    ch_samplesheet = PIPELINE_INITIALISATION.out.samplesheet.map { it ->
+        def meta = it[0]
+        def read_group = "\"@RG\\tID:${meta.sample}\\tPU:1\\tSM:${meta.sample}\\tLB:${meta.sample}\\tDS:${params.fasta}\\tPL:Illumina\""
+        meta += [read_group: read_group]
+        it[0] = meta
+        it
+    }
 
     run_gistic = params.analysis_type != "align_only" ? params.run_gistic : false
 
@@ -128,8 +140,7 @@ workflow {
     pon_path = params.pon_path && params.build_pon ? channel.value(params.pon_path) : []
     analysis_type = channel.value(params.analysis_type)
     binsize = channel.value(params.binsize)
-    normal_panel = params.normal_panel ? file(params.normal_panel, checkIfExists: true): []
-
+    normal_panel = params.normal_panel ? file(params.normal_panel, checkIfExists: true) : []
 
     if (params.aligner == "bwamem") {
         real_aligner = "bwa"
@@ -166,13 +177,13 @@ workflow {
     // pass size_selection as param here
 
     DINCALCILAB_SAMURAI(
-        PIPELINE_INITIALISATION.out.samplesheet,
+        ch_samplesheet,
         real_aligner,
         analysis_type,
         genome,
-        PIPELINE_INITIALISATION.out.fasta,
-        PIPELINE_INITIALISATION.out.fai,
-        PIPELINE_INITIALISATION.out.dict,
+        fasta,
+        fai,
+        dict,
         ch_index,
         caller,
         binsize,
