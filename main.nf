@@ -147,9 +147,9 @@ workflow {
 
     run_gistic = params.analysis_type != "align_only" ? params.run_gistic : false
 
-    genome = channel.value(params.genome)
+    genome = params.genome
     caller = params.analysis_type == "align_only" ? "none" : params.caller
-    pon_path = params.pon_path && params.build_pon ? channel.value(params.pon_path) : channel.empty()
+    pon_path = params.pon_path && params.build_pon ? params.pon_path : ""
     analysis_type = params.analysis_type
     binsize = params.binsize
     normal_panel = params.normal_panel ? channel.fromPath(params.normal_panel, checkIfExists: true) : channel.empty()
