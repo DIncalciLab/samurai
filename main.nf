@@ -164,7 +164,7 @@ workflow {
         real_aligner = ''
     }
 
-    if (!params.aligner_index && !params.igenomes_ignore) {
+    if (!params.aligner_index && !params.igenomes_ignore && real_aligner) {
         ch_index = [
             ["id": "aligner"],
             file(getGenomeAttribute(real_aligner)),
