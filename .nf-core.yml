@@ -17,6 +17,7 @@ lint:
     - .github/actions/nf-test/action.yml
     - nf-test.config
     - tests/default.nf.test
+    - ro-crate-metadata.json
   files_unchanged:
     - .github/workflows/ci.yml
     - .github/workflows/branch.yml

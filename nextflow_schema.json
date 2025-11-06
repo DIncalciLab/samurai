@@ -267,7 +267,9 @@
             "properties": {
                 "purity": {
                     "type": "integer",
-                    "default": 1
+                    "default": 1,
+                    "description": "Purity for the qDNAseq calling algorithm",
+                    "hidden": true
                 },
                 "size_selection": {
                     "type": "boolean",
@@ -283,7 +285,8 @@
                 "max_fragmentsize": {
                     "type": "integer",
                     "default": 400,
-                    "hidden": true
+                    "hidden": true,
+                    "description": "Maximum fragment size to consider for the distribution"
                 }
             }
         },

@@ -32,6 +32,7 @@ workflow BUILD_PON {
         if (params.filter_bam_pon) {
             SAMBAMBA_FILTER(ch_bam_files)
             ch_bam_for_pon = SAMBAMBA_FILTER.out.filtered_bam
+            ch_versions = ch_versions.mix(SAMBAMBA_FILTER.out.versions)
         }
         else {
             // Remove the BAM index for compatibility with the ReadCounter workflow
