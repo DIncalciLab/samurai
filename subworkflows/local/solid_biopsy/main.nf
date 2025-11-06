@@ -4,16 +4,9 @@ include { ASCAT_SC                                              } from '../../..
 include { CONCATENATE_PDF as CONCATENATE_QDNASEQ_PLOTS          } from '../../../modules/local/concatenate_pdf/main'
 include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS          } from '../../../modules/local/concatenate_pdf/main'
 include { CONCATENATE_PDF as CONCATENATE_ASCATSC_REFITTED_PLOTS } from '../../../modules/local/concatenate_pdf/main'
-include { CREATE_QDNASEQ_SUMMARY                                } from '../../../modules/local/create_qdnaseq_summary/main'
-include { CREATE_ASCATSC_SUMMARY                                } from '../../../modules/local/create_ascatsc_summary/main'
 include { CIN_SIGNATURE_QUANTIFICATION                          } from '../../../modules/local/cin_signature_quantification/main'
 include { HRDCNA                                                } from '../../../modules/local/hrdcna/main'
 include { BUILD_PON                                             } from '../../../subworkflows/local/build_pon/main'
-include { RUN_ICHORCNA                                          } from '../../../modules/local/ichorcna/run/main'
-include { AGGREGATE_ICHORCNA_TABLE                              } from '../../../modules/local/aggregate_ichorcna_table/main'
-include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA   } from '../../../modules/nf-core/hmmcopy/readcounter/main'
-include { CORRECT_LOGR_ICHORCNA                                 } from '../../../modules/local/correct_logR_ichorcna/main'
-include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS              } from '../../../modules/local/concatenate_pdf/main'
 include { ICHORCNA                                              } from "../ichorcna/main.nf"
 // Workfow
 
@@ -61,8 +54,6 @@ workflow SOLID_BIOPSY {
                 skip: 1,
             )
             .set { qdnaseq_summary }
-        //CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
-        //ch_versions = ch_versions.mix(CREATE_QDNASEQ_SUMMARY.out.versions)
         ch_reports = ch_reports.mix(qdnaseq_summary)
         corrected_gistic_file = ch_segments
     }
