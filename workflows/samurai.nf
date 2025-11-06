@@ -68,8 +68,8 @@ workflow SAMURAI {
     caller
     binsize
     ch_pon_path
-    build_pon
     run_fastp
+    build_pon
     ch_normal_panel
     index_genome
     run_gistic
@@ -258,6 +258,7 @@ workflow SAMURAI {
         else {
             ch_analysis = ch_bam_bai
         }
+
         LIQUID_BIOPSY(
             ch_analysis,
             caller,
