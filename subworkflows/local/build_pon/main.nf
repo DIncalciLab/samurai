@@ -10,6 +10,10 @@ workflow BUILD_PON {
     caller
     fasta
     fai
+    gc_wig
+    map_wig
+    reptime
+    centromere
 
     main:
 
@@ -41,19 +45,14 @@ workflow BUILD_PON {
             }
             .collect()
 
-        // FIXME: ship these with the pipeline
-        // Use files and not values to avoid hangs (#20)
-        gc_wig = file(params.ichorcna_gc_wig)
-        map_wig = file(params.ichorcna_map_wig)
-        reptime_file = file(params.ichorcna_reptime_wig)
-        centromere = file(params.ichorcna_centromere_file)
+        ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_PON.out.versions)
 
         ICHORCNA_GENERATE_PON(
             wigfiles,
             gc_wig,
             map_wig,
             centromere,
-            reptime_file,
+            reptime,
         )
 
         normal_panel = ICHORCNA_GENERATE_PON.out.pon_file

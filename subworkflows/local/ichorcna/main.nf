@@ -56,11 +56,14 @@ workflow ICHORCNA {
         )
         .set { gistic_file }
 
+    ch_versions = ch_versions.mix(RUN_ICHORCNA.out.versions)
+
     CORRECT_LOGR_ICHORCNA(gistic_file, AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
     ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
 
     corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
     PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
+    ch_versions = ch_versions.mix(PLOT_ICHORCNA.out.versions)
 
     // Step 4: Aggregate bin-level plots into a single file
     CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())

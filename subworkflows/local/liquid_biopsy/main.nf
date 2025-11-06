@@ -1,14 +1,11 @@
 // Import modules
 
-include { BUILD_PON                                           } from '../../../subworkflows/local/build_pon/main'
-include { RUN_ICHORCNA                                        } from '../../../modules/local/ichorcna/run/main'
-include { CONVERT_GISTIC_SEG                                  } from '../../../modules/local/convert_gistic_seg/main'
-include { BAM_CNV_WISECONDORX                                 } from '../../../subworkflows/nf-core/bam_cnv_wisecondorx/main'
-include { ICHORCNA                                            } from '../../../subworkflows/local/ichorcna/main'
-include { ASSEMBLE_WISECONDORX_OUTPUTS                        } from '../../../modules/local/assemble_wisecondorx_outputs/main'
-include { CONVERT_WISECONDORX_IMAGES                          } from '../../../modules/local/convert_wisecondorx_images/main'
-include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
-include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../modules/nf-core/hmmcopy/readcounter/main'
+include { BUILD_PON                    } from '../../../subworkflows/local/build_pon/main'
+include { CONVERT_GISTIC_SEG           } from '../../../modules/local/convert_gistic_seg/main'
+include { BAM_CNV_WISECONDORX          } from '../../../subworkflows/nf-core/bam_cnv_wisecondorx/main'
+include { ICHORCNA                     } from '../../../subworkflows/local/ichorcna/main'
+include { ASSEMBLE_WISECONDORX_OUTPUTS } from '../../../modules/local/assemble_wisecondorx_outputs/main'
+include { CONVERT_WISECONDORX_IMAGES   } from '../../../modules/local/convert_wisecondorx_images/main'
 
 workflow LIQUID_BIOPSY {
     take:
@@ -33,7 +30,7 @@ workflow LIQUID_BIOPSY {
     // If we want to build the normal panel
     if (build_pon) {
 
-        BUILD_PON(pon_path, caller, ch_fasta, ch_fai)
+        BUILD_PON(pon_path, caller, ch_fasta, ch_fai, ch_gc_wig, ch_map_wig, ch_reptiming, ch_centromere)
         ch_versions = ch_versions.mix(BUILD_PON.out.versions)
         pon_file = BUILD_PON.out.normal_panel
     }
