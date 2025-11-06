@@ -39,7 +39,7 @@ workflow BUILD_PON {
             ch_bam_for_pon = ch_bam_files
         }
 
-        HMMCOPY_READCOUNTER_PON(ch_bam_for_pon)
+        HMMCOPY_READCOUNTER_PON(ch_bam_for_pon, fasta)
         wigfiles = HMMCOPY_READCOUNTER_PON.out.wig
             .map { _meta, wigfile ->
                 wigfile
