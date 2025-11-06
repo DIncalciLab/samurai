@@ -133,7 +133,8 @@
                     "strobealign": {
                         "branch": "master",
                         "git_sha": "c698799db60819ff8769000e429defad1cb432af",
-                        "installed_by": ["fastq_align_dna"]
+                        "installed_by": ["fastq_align_dna"],
+                        "patch": "modules/nf-core/strobealign/strobealign.diff"
                     },
                     "wisecondorx/convert": {
                         "branch": "master",

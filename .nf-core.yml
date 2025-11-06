@@ -12,6 +12,11 @@ lint:
     - .github/workflows/awsfulltest.yml
     - .github/workflows/ci.yml
     - .github/workflows/branch.yml
+    - .github/workflows/nf-test.yml
+    - .github/actions/get-shards/action.yml
+    - .github/actions/nf-test/action.yml
+    - nf-test.config
+    - tests/default.nf.test
   files_unchanged:
     - .github/workflows/ci.yml
     - .github/workflows/branch.yml
@@ -21,9 +26,15 @@ lint:
     - manifest.homePage
   multiqc_config:
     - report_comment
+  check_local_copy:
+    - utils_nfschema_plugin
   readme:
     - nextflow_badge
   schema_params: false
-  subworkflow_changes: false
+  subworkflow_changes:
+    - utils_nfschema_plugin
+    - check_local_copy
   actions_ci: false
 nf_core_version: 3.0.2
+template:
+  version: 1.2.3.1
