@@ -3,6 +3,25 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### New Features
+
+- Support read groups ([#54](https://github.com/DIncalciLab/samurai/issues/54)), @lbeltrame)
+- Use optimized parameters for BWA alignment when dealing with cfDNA ([#36](https://github.com/DIncalciLab/samurai/issues/36), @lbeltrame) - Thanks to @SPPearce for the insight!
+- Rename `broad` and `focal` in GISTIC output to `long` and `short` respectively to reduce the confusion with broad and focal lesions as defined by GISTIC itself (c3d17b840f90aaddeea123c46fe3e2ebbaebb3fc, @lbeltrame)
+
+### Bug Fixes
+
+- Make pipeline parameters conditional ([#23](https://github.com/DIncalciLab/samurai/issues/23), @lbeltrame)
+- Clamp ploidy aware log2ratios to -0.5 as lower bound to prevent nonsense results (e.g., -7) (6c02573f6ff9fee472760b3d79671547160d5665, @lbeltrame)
+
+### Internal changes
+
+- Remove usage of `params` as much as possible ([#21](https://github.com/DIncalciLab/samurai/issues/21), @lbeltrame)
+- Use the upstream nf-core WisecondorX module and workflow([PR #51](https://github.com/DIncalciLab/samurai/pull/51), @lbeltrame)
+- Switch liquid biopsy to the common ichorCNA workflow ([PR #55](https://github.com/DIncalciLab/samurai/pull/55), @lbeltrame)
+
 ## v1.2.3.1 [2025-07-22]
 
 This release is a hotfix to ensure that ichorCNA panel of normals (PoN) built during the analysis (as opposed to using a pre-made one) will actually be used (before that the would get copied, but not included in the ichorCNA commands).
