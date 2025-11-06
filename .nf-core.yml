@@ -35,6 +35,6 @@ lint:
     - utils_nfschema_plugin
     - check_local_copy
   actions_ci: false
-nf_core_version: 3.0.2
+nf_core_version: 3.4.1
 template:
   version: 1.2.3.1
