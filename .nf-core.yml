@@ -22,7 +22,7 @@ lint:
   files_unchanged:
     - .github/workflows/ci.yml
     - .github/workflows/branch.yml
-    - lib/NfcoreTemplate.groovy
+    - .prettierignore
   nextflow_config:
     - manifest.name
     - manifest.homePage
