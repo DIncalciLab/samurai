@@ -18,6 +18,7 @@ lint:
     - nf-test.config
     - tests/default.nf.test
     - ro-crate-metadata.json
+  included_configs: False
   files_unchanged:
     - .github/workflows/ci.yml
     - .github/workflows/branch.yml
@@ -31,6 +32,7 @@ lint:
     - utils_nfschema_plugin
   readme:
     - nextflow_badge
+    - nfcore_template_badge
   schema_params: false
   subworkflow_changes:
     - utils_nfschema_plugin

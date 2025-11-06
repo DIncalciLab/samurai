@@ -439,7 +439,8 @@
                 },
                 "ichorcna_male_chrX_logR": {
                     "type": "number",
-                    "default": 0.3
+                    "default": 0.3,
+                    "description": "logR on chromosomeX to consider male status"
                 },
                 "ichorcna_min_map_score": {
                     "type": "number",
@@ -506,7 +507,8 @@
                     "description": "Estimate ploidy in ichorCNA"
                 },
                 "ichorcna_filter_bam_pon": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Perform size selection also on the BAM files from the panel of normals (and not only on samples)"
                 },
                 "ichorcna_normal_states": {
                     "type": "string",
@@ -560,7 +562,8 @@
                 },
                 "wisecondorx_yfrac": {
                     "type": "number",
-                    "default": 0.4
+                    "default": 0.4,
+                    "description": "chrY read fraction cutoff in order to manually define gender"
                 },
                 "wisecondorx_zscore": {
                     "type": "integer",
@@ -611,7 +614,8 @@
                 },
                 "ascat_sc_max_tumor_ploidy": {
                     "type": "integer",
-                    "default": 5
+                    "default": 5,
+                    "description": "Maximum tumor ploidy state to consider"
                 }
             }
         },
