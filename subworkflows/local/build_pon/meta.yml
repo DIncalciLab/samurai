@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "build_pon"
+description: Build a panel of normals (PoN) from BAM files
+keywords:
+  - bam
+  - cnv
+  - pon
+components:
+  - hmmcopy/readcounter
+  - ichorcna/generate/pon
+  - sambamba/filter
+  - wisecondorx/convert
+  - wisecondorx/newref
+  - sambamba/filterfragment
+input:
+  - normal_dir:
+      type: value
+      description: |
+        Path to a folder containing BAM files and their indices.
+  - caller:
+      type: value
+      description: |
+        Caller to use (either 'ichorcna' or 'wisecondorx')
+  - fasta:
+      type: file
+      description: |
+        Channel containing a FASTA file
+        Structure: [ (val(meta), path(fasta) ]
+        pattern: "*.fa"
+  - fai:
+      type: file
+      description: |
+        Channel containing a FASTA index file
+        Structure: [ (val(meta), path(fai) ]
+      pattern: "*.fa.fai"
+  - gc_wig:
+      type: file
+      description: |
+        Channel containing a file with GC content in
+        Wiggle format
+      pattern: "*.wig"
+  - map_wig:
+      type: file
+      description: |
+        Channel containing a file with mappability scores
+        in Wiggle format
+      pattern: "*.wig"
+  - reptime:
+      type: file
+      description: |
+        Channel containing a file with replication timing scores
+        in Wiggle format
+      pattern: "*.wig"
+  - centromere:
+      type: file
+      description: |
+        Channel containing a file with centromere positions
+        in BED format
+      pattern: "*.bed"
+output:
+  - normal_panel:
+      type: file
+      description: |
+        Channel the normal panel
+        It has the .npz extension for WisecondorX, and
+        .rds for ichorCNA
+        Structure: [ val(meta), path(pon) ]
+      pattern: "*.{rds,npz}"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - lbeltrame
+  - SaraPotente
+maintainers:
+  - lbeltrame
+  - SaraPotente
