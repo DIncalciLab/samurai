@@ -152,7 +152,7 @@ workflow {
     pon_path = params.pon_path && params.build_pon ? params.pon_path : ""
     analysis_type = params.analysis_type
     binsize = params.binsize
-    normal_panel = params.normal_panel ? channel.fromPath(params.normal_panel, checkIfExists: true) : channel.empty()
+    normal_panel = params.normal_panel ? channel.value(params.normal_panel) : channel.empty()
 
     index_genome_key = ""
 
