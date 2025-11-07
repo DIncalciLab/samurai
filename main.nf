@@ -154,20 +154,28 @@ workflow {
     binsize = params.binsize
     normal_panel = params.normal_panel ? channel.fromPath(params.normal_panel, checkIfExists: true) : channel.empty()
 
-    if (params.aligner == "bwamem") {
-        real_aligner = "bwa"
+    index_genome_key = ""
+
+    if (params.aligner == "bwamem" || params.aligner == "bwa") {
+        real_aligner = "bwamem"
+        index_genome_key = "bwa"
     }
     else if (params.aligner == "bwamem2") {
         real_aligner = 'bwamem2'
+        index_genome_key = real_aligner
     }
     else {
         real_aligner = ''
     }
 
-    if (!params.aligner_index && !params.igenomes_ignore && real_aligner) {
+    if (params.aligner_index) {
+        ch_index = channel.fromPath(params.aligner_index, checkIfExists: true)
+            .map { idx -> [[id: 'aligner'], idx] }
+    }
+    else if (!params.aligner_index && !params.igenomes_ignore && real_aligner) {
         ch_index = [
             ["id": "aligner"],
-            file(getGenomeAttribute(real_aligner)),
+            file(getGenomeAttribute(index_genome_key)),
         ]
     }
     else {
