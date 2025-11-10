@@ -152,7 +152,7 @@ workflow {
     pon_path = params.pon_path && params.build_pon ? params.pon_path : ""
     analysis_type = params.analysis_type
     binsize = params.binsize
-    normal_panel = params.normal_panel ? channel.value(params.normal_panel) : channel.empty()
+    normal_panel = params.normal_panel ? channel.fromPath(params.normal_panel, checkIfExists: true).map{it -> it}.collect() : channel.empty()
 
     index_genome_key = ""
 
@@ -191,7 +191,7 @@ workflow {
         error("ichorCNA calling requires a GC WIG and a mappability WIG")
     }
 
-    wisecondor_blacklist = params.wisecondorx_blacklist ? channel.fromPath(params.wisecondorx_blacklist, checkIfExists: true).map { blacklist -> [[id: "blacklist"], blacklist] } : [[], []]
+    wisecondor_blacklist = params.wisecondorx_blacklist ? channel.fromPath(params.wisecondorx_blacklist, checkIfExists: true).map { blacklist -> [[id: "blacklist"], blacklist] }.collect() : [[], []]
 
     // pass build_index as param here
     // pass size_selection as param here
