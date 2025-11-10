@@ -32,7 +32,7 @@ workflow LIQUID_BIOPSY {
 
         BUILD_PON(pon_path, caller, ch_fasta, ch_fai, ch_gc_wig, ch_map_wig, ch_reptiming, ch_centromere)
         ch_versions = ch_versions.mix(BUILD_PON.out.versions)
-        pon_file = BUILD_PON.out.normal_panel
+        pon_file = BUILD_PON.out.normal_panel.collect()
     }
     else {
         if (!ch_normal_panel) {
@@ -46,7 +46,7 @@ workflow LIQUID_BIOPSY {
             }
         }
         else {
-            pon_file = ch_normal_panel
+            pon_file = ch_normal_panel.collect()
         }
     }
 
@@ -60,7 +60,7 @@ workflow LIQUID_BIOPSY {
         corrected_gistic_file = ICHORCNA.out.gistic_file
     }
     else if (caller == "wisecondorx") {
-
+        
         BAM_CNV_WISECONDORX(ch_bam_bai, ch_fasta, ch_fai, pon_file, ch_blacklist)
         ch_versions = ch_versions.mix(BAM_CNV_WISECONDORX.out.versions)
 
