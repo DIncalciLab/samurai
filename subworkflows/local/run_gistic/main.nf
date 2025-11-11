@@ -9,7 +9,7 @@ workflow RUN_GISTIC {
         genome // value: genome
 
     main:
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
 
         GISTIC2(gistic_results_dir, genome)
         ch_versions = ch_versions.mix(GISTIC2.out.versions)
@@ -29,7 +29,6 @@ workflow RUN_GISTIC {
         gistic_genes                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_genes
         gistic_log_r                = ASSEMBLE_GISTIC_OUTPUT.out.gistic_log_r
         gistic_cn_states            = ASSEMBLE_GISTIC_OUTPUT.out.gistic_cn_states
-        gistic_lesions              = ASSEMBLE_GISTIC_OUTPUT.out.gistic_lesions
         chrom_plot                  = MAFTOOLS.out.chrom_plot
         versions                    = ch_versions
 

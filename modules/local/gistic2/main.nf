@@ -1,4 +1,3 @@
-def VERSION = "0.1"
 process GISTIC2 {
 
     tag "Run Gistic2"
@@ -7,37 +6,40 @@ process GISTIC2 {
     container "quay.io/dincalcilab/gistic:2.0.23-35a282"
 
     input:
-        path(seg_file)
-        val(genome)
-
+    path seg_file
+    val genome
 
     output:
-        path("all_lesions.conf_*"),               emit: all_lesions
-        path("amp_genes.conf*"),                  emit: amplified_genes
-        path("del_genes.conf*"),                  emit: deleted_genes
-        path("scores.gistic"),                    emit: gistic_score
-        path("raw_copy_number.pdf"),              emit: raw_copy_number
-        path("amp_qplot.pdf"),                    emit: amp_score_qplot
-        path("del_qplot.pdf"),                    emit: del_score_qplot
-        path("gistic_results"),                   emit: gistic_results_dir
-        path("broad_values_by_arm.txt"),          emit: broad_values_per_arm, optional: true
-        path("broad_significance_results.txt"),   emit: broad_results, optional: true
-        path("versions.yml"),                     emit: versions
+    path ("all_lesions.conf_*"), emit: all_lesions
+    path ("amp_genes.conf*"), emit: amplified_genes
+    path ("del_genes.conf*"), emit: deleted_genes
+    path ("scores.gistic"), emit: gistic_score
+    path ("raw_copy_number.pdf"), emit: raw_copy_number
+    path ("amp_qplot.pdf"), emit: amp_score_qplot
+    path ("del_qplot.pdf"), emit: del_score_qplot
+    path ("gistic_results"), emit: gistic_results_dir
+    path ("broad_values_by_arm.txt"), emit: broad_values_per_arm, optional: true
+    path ("broad_significance_results.txt"), emit: broad_results, optional: true
+    path ("versions.yml"), emit: versions
+
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
 
     def args = task.ext.args ?: ''
+    def VERSION = "2.2.3"
 
     // Inside the container
-    def ref_gene_file // Because it was only declared inside the scope of 'switch' statement and it was not accessible outside of that block
+    def ref_gene_file
+    // Because it was only declared inside the scope of 'switch' statement and it was not accessible outside of that block
 
-    if (genome == "hg38") {
-        ref_gene_file = "-refgene '/opt/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'"
-    } else if (genome == "hg19") {
-        ref_gene_file = "-refgene '/opt/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
-    } else {
-        error "Unsupported genome for GISTIC: ${genome}. Only 'hg19' and 'hg38' are supported"
+    if (!genome in ["hg19", "hg38"]) {
+        error("Unsupported genome for GISTIC: ${genome}. Only 'hg19' and 'hg38' are supported")
     }
+
+    ref_gene_file = genome == "hg38" ? "-refgene '/opt/refgenefiles/hg38.UCSC.add_miR.160920.refgene.mat'": "-refgene '/opt/refgenefiles/hg19.UCSC.add_miR.140312.refgene.mat'"
 
     """
     gistic2 \\

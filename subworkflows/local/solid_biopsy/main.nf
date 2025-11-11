@@ -4,16 +4,9 @@ include { ASCAT_SC                                              } from '../../..
 include { CONCATENATE_PDF as CONCATENATE_QDNASEQ_PLOTS          } from '../../../modules/local/concatenate_pdf/main'
 include { CONCATENATE_PDF as CONCATENATE_ASCATSC_PLOTS          } from '../../../modules/local/concatenate_pdf/main'
 include { CONCATENATE_PDF as CONCATENATE_ASCATSC_REFITTED_PLOTS } from '../../../modules/local/concatenate_pdf/main'
-include { CREATE_QDNASEQ_SUMMARY                                } from '../../../modules/local/create_qdnaseq_summary/main'
-include { CREATE_ASCATSC_SUMMARY                                } from '../../../modules/local/create_ascatsc_summary/main'
 include { CIN_SIGNATURE_QUANTIFICATION                          } from '../../../modules/local/cin_signature_quantification/main'
 include { HRDCNA                                                } from '../../../modules/local/hrdcna/main'
 include { BUILD_PON                                             } from '../../../subworkflows/local/build_pon/main'
-include { RUN_ICHORCNA                                          } from '../../../modules/local/ichorcna/run/main'
-include { AGGREGATE_ICHORCNA_TABLE                              } from '../../../modules/local/aggregate_ichorcna_table/main'
-include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA   } from '../../../modules/nf-core/hmmcopy/readcounter/main'
-include { CORRECT_LOGR_ICHORCNA                                 } from '../../../modules/local/correct_logR_ichorcna/main'
-include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS              } from '../../../modules/local/concatenate_pdf/main'
 include { ICHORCNA                                              } from "../ichorcna/main.nf"
 // Workfow
 
@@ -23,10 +16,20 @@ workflow SOLID_BIOPSY {
     caller     // value: either "qdnaseq" or "ascat_sc"
     binsize    // value, bin size in bp
     genome     // value, genome to use
+    ascat_predict_refit // boolean
+    build_pon // boolean
+    pon_path
+    ch_normal_panel // channel
+    ch_gc_wig // channel: path to GC wig
+    ch_map_wig // channel: path to mappability wig
+    ch_centromere // channel: path to centromere file
+    ch_reptiming // channel: path to reptiming file
+    ch_fasta
+
 
     main:
-    ch_versions = Channel.empty()
-    ch_reports = Channel.empty()
+    ch_versions = channel.empty()
+    ch_reports = channel.empty()
 
     if (caller == "qdnaseq") {
         QDNASEQ(ch_bam_bai, binsize, genome)
@@ -51,8 +54,6 @@ workflow SOLID_BIOPSY {
                 skip: 1,
             )
             .set { qdnaseq_summary }
-        //CREATE_QDNASEQ_SUMMARY(qdnaseq_summary)
-        //ch_versions = ch_versions.mix(CREATE_QDNASEQ_SUMMARY.out.versions)
         ch_reports = ch_reports.mix(qdnaseq_summary)
         corrected_gistic_file = ch_segments
     }
@@ -60,7 +61,7 @@ workflow SOLID_BIOPSY {
         ASCAT_SC(ch_bam_bai, binsize, genome)
         ch_versions = ch_versions.mix(ASCAT_SC.out.versions)
 
-        if (params.ascat_sc_predict_refit) {
+        if (ascat_predict_refit) {
             CONCATENATE_ASCATSC_REFITTED_PLOTS(ASCAT_SC.out.profiles_refitted.collect())
             ch_versions = ch_versions.mix(CONCATENATE_ASCATSC_REFITTED_PLOTS.out.versions)
             genome_plot = CONCATENATE_ASCATSC_REFITTED_PLOTS.out.genome_plot
@@ -98,17 +99,13 @@ workflow SOLID_BIOPSY {
             )
             .set { signature_file }
 
-        if (params.compute_signatures) {
-            CIN_SIGNATURE_QUANTIFICATION(signature_file)
-            ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
-            ch_reports = ch_reports.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
-        }
+        CIN_SIGNATURE_QUANTIFICATION(signature_file)
+        ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
+        ch_reports = ch_reports.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
 
-        if (params.hrdcna_compute_score) {
-            HRDCNA(signature_file)
-            ch_versions = ch_versions.mix(HRDCNA.out.versions)
-            ch_reports = ch_reports.mix(HRDCNA.out.hrdcna_summary)
-        }
+        HRDCNA(signature_file)
+        ch_versions = ch_versions.mix(HRDCNA.out.versions)
+        ch_reports = ch_reports.mix(HRDCNA.out.hrdcna_summary)
 
         //CREATE_ASCATSC_SUMMARY(ascatsc_summary)
         ch_reports = ch_reports.mix(ascatsc_summary)
@@ -128,36 +125,31 @@ workflow SOLID_BIOPSY {
         // we may want to see if we can use sub-sub workflows
 
         // If we want to build the normal panel
-        if (params.build_pon) {
+        if (build_pon) {
 
-            BUILD_PON(params.pon_path, caller)
+            BUILD_PON(pon_path, caller)
             ch_versions = ch_versions.mix(BUILD_PON.out.versions)
             pon_file = BUILD_PON.out.normal_panel
         }
         else {
-            if (!params.normal_panel) {
+            if (!ch_normal_panel) {
                 // ichorCNA can work without a PoN, although not optimally
                 log.warn("No PoN specified: CNA calling performance may be impacted")
                 pon_file = []
             }
             else {
-                pon_file = file(params.normal_panel, checkIfExists: true)
+                pon_file = ch_normal_panel.map{pon -> pon}
             }
         }
-
-        // FIXME: We shouldn't rely on params here
-        gc_wig = file(params.ichorcna_gc_wig, checkIfExists: true)
-        map_wig = file(params.ichorcna_map_wig, checkIfExists: true)
-        centromere = file(params.ichorcna_centromere_file, checkIfExists: true)
-        reptime_file = params.ichorcna_reptime_wig ? file(params.ichorcna_reptime_wig, checkIfExists: true) : []
 
         ICHORCNA(
             ch_bam_bai,
             pon_file,
-            gc_wig,
-            map_wig,
-            centromere,
-            reptime_file,
+            ch_gc_wig,
+            ch_map_wig,
+            ch_centromere,
+            ch_reptiming,
+            ch_fasta
         )
 
         ch_segments = ICHORCNA.out.ch_segments

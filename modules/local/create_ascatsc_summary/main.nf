@@ -1,20 +1,20 @@
-def VERSION = '0.0.1'
-
-process CREATE_ASCATSC_SUMMARY{
+process CREATE_ASCATSC_SUMMARY {
 
     tag "create ASCAT.sc summary for multiqc"
     label "process_single"
 
     input:
-        path "ascatsc_summary.txt"
+    path "ascatsc_summary.txt"
 
     output:
-        path "ascatsc_summary_mqc.tsv"       , emit: summary
-        path "versions.yml"                  , emit: versions
+    path "ascatsc_summary_mqc.tsv", emit: summary
+    path "versions.yml", emit: versions
 
     script:
 
-        """
+    def VERSION = '0.0.1'
+
+    """
         cat <<-MULTIQC_HEADER > ascatsc_summary_mqc.tsv
         #id: 'ascat_sc_data_summary'
         #section_name: 'ASCATsc'

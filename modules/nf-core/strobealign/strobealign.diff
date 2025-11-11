@@ -1,0 +1,45 @@
+Changes in component 'nf-core/strobealign'
+'modules/nf-core/strobealign/main.nf' is unchanged
+'modules/nf-core/strobealign/environment.yml' is unchanged
+Changes in 'strobealign/meta.yml':
+--- modules/nf-core/strobealign/meta.yml
++++ modules/nf-core/strobealign/meta.yml
+@@ -10,14 +10,14 @@
+   - bam
+   - sam
+ tools:
+-- "strobealign":
+-    description: "Align short reads using dynamic seed size with strobemers"
+-    homepage: "https://github.com/ksahlin/strobealign"
+-    documentation: "https://github.com/ksahlin/strobealign?tab=readme-ov-file#usage"
+-    tool_dev_url: "https://github.com/ksahlin/strobealign"
+-    doi: "10.1186/s13059-022-02831-7"
+-    licence: ['MIT']
+-    identifier: biotools:strobealign
++  - "strobealign":
++      description: "Align short reads using dynamic seed size with strobemers"
++      homepage: "https://github.com/ksahlin/strobealign"
++      documentation: "https://github.com/ksahlin/strobealign?tab=readme-ov-file#usage"
++      tool_dev_url: "https://github.com/ksahlin/strobealign"
++      doi: "10.1186/s13059-022-02831-7"
++      licence: ["MIT"]
++      identifier: biotools:strobealign
+ 
+ input:
+   - - meta:
+@@ -136,7 +136,7 @@
+         ontologies:
+           - edam: http://edamontology.org/format_3750 # YAML
+ authors:
+-- "@matthdsm"
++  - "@matthdsm"
+ maintainers:
+-- "@matthdsm"
+-- "@nvnieuwk"
++  - "@matthdsm"
++  - "@nvnieuwk"
+
+'modules/nf-core/strobealign/tests/nextflow.config' is unchanged
+'modules/nf-core/strobealign/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/strobealign/tests/main.nf.test' is unchanged
+************************************************************

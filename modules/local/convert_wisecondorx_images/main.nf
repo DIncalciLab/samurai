@@ -9,7 +9,7 @@ process CONVERT_WISECONDORX_IMAGES {
     label "process_single"
 
     input:
-        path images
+        path images, stageAs: 'plot_?.png'
     output:
         path "genome_plots.pdf", emit: genome_plot
         path "versions.yml",     emit: versions

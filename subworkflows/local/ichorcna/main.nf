@@ -13,14 +13,15 @@ workflow ICHORCNA {
     ch_map_wig      // Channel: path
     ch_centromere   // Channel: path
     ch_reptime_wig  // Channel: path (optional)
+    ch_fasta        // Channel: [meta, fasta]
 
     main:
 
-    ch_versions = Channel.empty()
-    ch_reports = Channel.empty()
+    ch_versions = channel.empty()
+    ch_reports = channel.empty()
     // Step 1: Generate coverage wig files
     // To generate Wig Files
-    HMMCOPY_READCOUNTER_ICHORCNA(ch_bam_bai)
+    HMMCOPY_READCOUNTER_ICHORCNA(ch_bam_bai, ch_fasta)
     ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_ICHORCNA.out.versions)
     // Step 2: run ichorCNA
     RUN_ICHORCNA(
@@ -55,14 +56,15 @@ workflow ICHORCNA {
         )
         .set { gistic_file }
 
+    ch_versions = ch_versions.mix(RUN_ICHORCNA.out.versions)
+
     CORRECT_LOGR_ICHORCNA(gistic_file, AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
     ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
 
     corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
+    PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
+    ch_versions = ch_versions.mix(PLOT_ICHORCNA.out.versions)
 
-    if (params.ichorcna_ploidy_aware_plot) {
-            PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params)
-        }
     // Step 4: Aggregate bin-level plots into a single file
     CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect())
     ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)

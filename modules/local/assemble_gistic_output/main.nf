@@ -1,5 +1,3 @@
-VERSION = '0.1'
-
 process ASSEMBLE_GISTIC_OUTPUT {
 
     tag "Rearrange GISTIC2 output"
@@ -7,18 +5,18 @@ process ASSEMBLE_GISTIC_OUTPUT {
     container "ghcr.io/dincalcilab/gistic-cli:0.5.4-ade3d88"
 
     input:
-        path gistic_folder
+    path gistic_folder
 
     output:
-        path("gistic_summary_mqc.txt"),                emit: gistic_lesions
-        path("gistic.gene_table.txt"),                 emit: gistic_genes
-        path("gistic_log2R.txt"),                      emit: gistic_log_r
-        path("gistic_cn_states.txt"),                  emit: gistic_cn_states
-        path("gistic_broad_lesions_mqc.txt"),          emit: gistic_broad_lesions, optional: true
-        path("versions.yml"),                          emit: versions
+    path ("gistic_summary_mqc.txt"), emit: gistic_lesions
+    path ("gistic.gene_table.txt"), emit: gistic_genes
+    path ("gistic_log2R.txt"), emit: gistic_log_r
+    path ("gistic_cn_states.txt"), emit: gistic_cn_states
+    path ("gistic_broad_lesions_mqc.txt"), emit: gistic_broad_lesions, optional: true
+    path ("versions.yml"), emit: versions
 
     when:
-        task.ext.when == null || task.ext.when
+    task.ext.when == null || task.ext.when
 
     script:
 
@@ -42,5 +40,4 @@ process ASSEMBLE_GISTIC_OUTPUT {
         gistic-cli: \$(gistic --version | cut -d ' ' -f2)
     END_VERSIONS
     """
-
 }

@@ -1,20 +1,20 @@
-def VERSION = '0.0.1'
-
-process CREATE_QDNASEQ_SUMMARY{
+process CREATE_QDNASEQ_SUMMARY {
 
     tag "create qdnaseq summary for multiqc"
     label "process_single"
 
     input:
-        path "qdnaseq_summary.txt"
+    path "qdnaseq_summary.txt"
 
     output:
-        path "qdnaseq_summary_mqc.tsv"       , emit: summary
-        path "versions.yml"                  , emit: versions
+    path "qdnaseq_summary_mqc.tsv", emit: summary
+    path "versions.yml", emit: versions
 
     script:
 
-        """
+    def VERSION = '0.0.1'
+
+    """
         cat <<-MULTIQC_HEADER > qdnaseq_summary_mqc.tsv
         #id: 'qdnaseq_data_summary'
         #section_name: 'QDNAseq'

@@ -1,10 +1,10 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/dincalcilab/samurai/master/nextflow_schema.json",
     "title": "dincalcilab/samurai pipeline parameters",
     "description": "SAMURAI: Shallow Analysis of Copy nuMber alterations Using a Reproducible And Integrated bioinformatics pipeline",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -58,6 +58,7 @@
                 "fasta": {
                     "type": "string",
                     "format": "file-path",
+                    "exists": true,
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
@@ -66,13 +67,22 @@
                 },
                 "fai": {
                     "type": "string",
-                    "description": "Path to the FASTA FAI index",
-                    "help_text": "A path to a FASTA index file. If not available, will be automatically searched."
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to FASTA index file.",
+                    "help_text": "",
+                    "fa_icon": "far fa-file-code"
                 },
                 "dict": {
                     "type": "string",
-                    "description": "Path to the FASTA sequence dictionary",
-                    "help_text": "A path to a FASTA dictionary file. If not available, will be automatically searched."
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.dict$",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to FASTA sequence dictionary file.",
+                    "help_text": "",
+                    "fa_icon": "far fa-file-code"
                 },
                 "igenomes_base": {
                     "type": "string",
@@ -152,6 +162,14 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display the full detailed help message."
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
+                },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
@@ -226,6 +244,12 @@
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
+                "trace_report_suffix": {
+                    "type": "string",
+                    "fa_icon": "far calendar",
+                    "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+                    "hidden": true
+                },
                 "show_hidden_params": {
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
@@ -243,7 +267,9 @@
             "properties": {
                 "purity": {
                     "type": "integer",
-                    "default": 1
+                    "default": 1,
+                    "description": "Purity for the qDNAseq calling algorithm",
+                    "hidden": true
                 },
                 "size_selection": {
                     "type": "boolean",
@@ -259,7 +285,8 @@
                 "max_fragmentsize": {
                     "type": "integer",
                     "default": 400,
-                    "hidden": true
+                    "hidden": true,
+                    "description": "Maximum fragment size to consider for the distribution"
                 }
             }
         },
@@ -412,7 +439,8 @@
                 },
                 "ichorcna_male_chrX_logR": {
                     "type": "number",
-                    "default": 0.3
+                    "default": 0.3,
+                    "description": "logR on chromosomeX to consider male status"
                 },
                 "ichorcna_min_map_score": {
                     "type": "number",
@@ -479,7 +507,8 @@
                     "description": "Estimate ploidy in ichorCNA"
                 },
                 "ichorcna_filter_bam_pon": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Perform size selection also on the BAM files from the panel of normals (and not only on samples)"
                 },
                 "ichorcna_normal_states": {
                     "type": "string",
@@ -533,7 +562,8 @@
                 },
                 "wisecondorx_yfrac": {
                     "type": "number",
-                    "default": 0.4
+                    "default": 0.4,
+                    "description": "chrY read fraction cutoff in order to manually define gender"
                 },
                 "wisecondorx_zscore": {
                     "type": "integer",
@@ -584,7 +614,8 @@
                 },
                 "ascat_sc_max_tumor_ploidy": {
                     "type": "integer",
-                    "default": 5
+                    "default": 5,
+                    "description": "Maximum tumor ploidy state to consider"
                 }
             }
         },
@@ -720,52 +751,52 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/$defs/reference_genome_options"
         },
         {
-            "$ref": "#/definitions/institutional_config_options"
+            "$ref": "#/$defs/institutional_config_options"
         },
         {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/$defs/generic_options"
         },
         {
-            "$ref": "#/definitions/workflow_specific_options"
+            "$ref": "#/$defs/workflow_specific_options"
         },
         {
-            "$ref": "#/definitions/alignment_options"
+            "$ref": "#/$defs/alignment_options"
         },
         {
-            "$ref": "#/definitions/common_swgs_options"
+            "$ref": "#/$defs/common_swgs_options"
         },
         {
-            "$ref": "#/definitions/qdnaseq_specific_options"
+            "$ref": "#/$defs/qdnaseq_specific_options"
         },
         {
-            "$ref": "#/definitions/common_liquid_biopsy_options"
+            "$ref": "#/$defs/common_liquid_biopsy_options"
         },
         {
-            "$ref": "#/definitions/ichorcna_options"
+            "$ref": "#/$defs/ichorcna_options"
         },
         {
-            "$ref": "#/definitions/wisecondorx_options"
+            "$ref": "#/$defs/wisecondorx_options"
         },
         {
-            "$ref": "#/definitions/ascat_sc_options"
+            "$ref": "#/$defs/ascat_sc_options"
         },
         {
-            "$ref": "#/definitions/gistic_specific_options"
+            "$ref": "#/$defs/gistic_specific_options"
         },
         {
-            "$ref": "#/definitions/fastq_trimming_specific_options"
+            "$ref": "#/$defs/fastq_trimming_specific_options"
         },
         {
-            "$ref": "#/definitions/chromosomal_instability_signatures"
+            "$ref": "#/$defs/chromosomal_instability_signatures"
         },
         {
-            "$ref": "#/definitions/hrdcna_score"
+            "$ref": "#/$defs/hrdcna_score"
         }
     ]
 }

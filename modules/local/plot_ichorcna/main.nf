@@ -7,7 +7,7 @@ process PLOT_ICHORCNA {
 
     input:
         tuple val(meta), path(cna_seg)
-        tuple val(meta), path(bins)
+        tuple val(meta2), path(bins)
         file(ichorcna_params)
 
     output:
@@ -26,7 +26,8 @@ process PLOT_ICHORCNA {
             --seg_file ${cna_seg} \\
             --binfile ${bins} \\
             --summary ${ichorcna_params} \\
-            --outdir .
+            --outdir . \\
+            ${args}
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
