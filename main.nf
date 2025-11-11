@@ -139,7 +139,7 @@ workflow {
 
     ch_samplesheet = PIPELINE_INITIALISATION.out.samplesheet.map { it ->
         def meta = it[0]
-        def read_group = "\"@RG\\tID:${meta.sample}\\tPU:1\\tSM:${meta.sample}\\tLB:${meta.sample}\\tDS:${params.fasta}\\tPL:Illumina\""
+        def read_group = "\"@RG\\tID:${meta.id}\\tPU:1\\tSM:${meta.id}\\tLB:${meta.id}\\tDS:${params.fasta}\\tPL:Illumina\""
         meta += [read_group: read_group]
         it[0] = meta
         it
