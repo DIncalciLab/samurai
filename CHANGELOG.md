@@ -3,7 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.3.0 - "Uesugi Kenshin" (2025-11-25)
+
+This release brings a few bug fixes and a large internal rerorganization to make the pipeline more robust. There are also a few new features, like better alignment parameters in BWA for cfDNA, support for read groups in BAM, and initial work towards using upstream nf-core modules.
+
+This release is named after Uesugi Kenshin (上杉謙信, 1530-1578), also known as 越後の龍 (the dragon of Echigo), a powerful warrior ruling over the province of Echigo during the Sengoku period of feudal Japan. Kenshin and Takeda Shingen were notoriously rivals, and they allegedly fought against each other in personal combat during the fourth battle of Kawanakajima (1561).
 
 ### New Features
 
