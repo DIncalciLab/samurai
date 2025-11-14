@@ -33,7 +33,7 @@ workflow SIZE_SELECTION {
             ch_versions = ch_versions.mix(BAMPE_FRAGMENTSIZE_PRE.out.versions)
         }
 
-        SAMTOOLS_VIEW(ch_bam_bai, ch_fasta, []) // size selection
+        SAMTOOLS_VIEW(ch_bam_bai, ch_fasta, [], "bai" /* index_format */) // size selection
         ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
 
         SAMTOOLS_INDEX_SIZE_SELECTION(SAMTOOLS_VIEW.out.bam)
