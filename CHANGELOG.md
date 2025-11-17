@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v1.3.1 - "Mori Ranmaru" (2025-11-17)
 
 This release is a hotfix for a regression in size selection that somehow slipped under the radar.
+Mori Ranmaru (森蘭丸, 1565-1582) was a retainer of warlord Oda Nobunaga during the Sengoku period, kown for his loyalty to his master.
 
 ### Bug Fixes
 
