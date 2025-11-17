@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.3.1 - "Mori Ranmaru" (2025-11-17)
+
+This release is a hotfix for a regression in size selection that somehow slipped under the radar.
+
+### Bug Fixes
+
+- Pass the right number of arguments to `samtools view` (@lbeltrame, c9e8b012e60c1ed9d9e0a4b88431fc51478b6d22)
+
 ## v1.3.0 - "Uesugi Kenshin" (2025-11-25)
 
 This release brings a few bug fixes and a large internal rerorganization to make the pipeline more robust. There are also a few new features, like better alignment parameters in BWA for cfDNA, support for read groups in BAM, and initial work towards using upstream nf-core modules.
