@@ -1,5 +1,4 @@
 include { ICHORCNA_RUN                                        } from '../../../modules/nf-core/ichorcna/run/main'
-include { RUN_ICHORCNA                                        } from '../../../modules/local/ichorcna/run/main'
 include { AGGREGATE_ICHORCNA_TABLE                            } from '../../../modules/local/aggregate_ichorcna_table/main'
 include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../modules/nf-core/hmmcopy/readcounter/main'
 include { CORRECT_LOGR_ICHORCNA                               } from '../../../modules/local/correct_logR_ichorcna/main'
@@ -65,11 +64,15 @@ workflow ICHORCNA {
     ch_versions = ch_versions.mix(CORRECT_LOGR_ICHORCNA.out.versions)
 
     corrected_gistic_file = CORRECT_LOGR_ICHORCNA.out.gistic_file
-    PLOT_ICHORCNA(RUN_ICHORCNA.out.cna_seg, RUN_ICHORCNA.out.bins, RUN_ICHORCNA.out.ichorcna_params.map { _meta, param -> param })
+    PLOT_ICHORCNA(
+        ICHORCNA_RUN.out.seg_txt,
+        ICHORCNA_RUN.out.cna_seg,
+        ICHORCNA_RUN.out.ichorcna_params.map { _meta, param -> param },
+    )
     ch_versions = ch_versions.mix(PLOT_ICHORCNA.out.versions)
 
     // Step 4: Aggregate bin-level plots into a single file
-    CONCATENATE_BIN_PLOTS(RUN_ICHORCNA.out.genome_plot.collect { _meta, plot -> plot })
+    CONCATENATE_BIN_PLOTS(ICHORCNA_RUN.out.genome_plot.collect { _meta, plot -> plot })
     ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
 
     emit:

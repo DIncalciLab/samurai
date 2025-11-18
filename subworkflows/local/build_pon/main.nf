@@ -1,5 +1,5 @@
 include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_PON } from "../../../modules/nf-core//hmmcopy/readcounter/main"
-include { ICHORCNA_GENERATE_PON                          } from "../../../modules/local/ichorcna/create_pon/main"
+include { ICHORCNA_CREATEPON                             } from '../../../modules/nf-core/ichorcna/createpon/main'
 include { SAMBAMBA_FILTER                                } from "../../../modules/local//sambamba/filterfragment/main"
 include { WISECONDORX_CONVERT as NORMAL_CONVERT          } from '../../../modules/nf-core/wisecondorx/convert/main'
 include { WISECONDORX_NEWREF                             } from '../../../modules/nf-core/wisecondorx/newref/main'
@@ -14,6 +14,7 @@ workflow BUILD_PON {
     map_wig
     reptime
     centromere
+    filter_bam_pon
 
     main:
 
@@ -21,7 +22,9 @@ workflow BUILD_PON {
     ch_bam_files = channel.fromFilePairs(
             "${normal_dir}/*.bam{,.bai}",
             checkIfExists: true
-        ).ifEmpty { error("No BAM or BAI files found at ${normal_dir}") }.map { meta, file ->
+        )
+        .ifEmpty { error("No BAM or BAI files found at ${normal_dir}") }
+        .map { meta, file ->
             def fmeta = [:]
             fmeta.id = meta
             tuple(fmeta, file[0], file[1])
@@ -29,7 +32,7 @@ workflow BUILD_PON {
 
     if (caller == "ichorcna") {
         // FIXME: We shouldn't depend on parameters here
-        if (params.filter_bam_pon) {
+        if (filter_bam_pon) {
             SAMBAMBA_FILTER(ch_bam_files)
             ch_bam_for_pon = SAMBAMBA_FILTER.out.filtered_bam
             ch_versions = ch_versions.mix(SAMBAMBA_FILTER.out.versions)
@@ -48,24 +51,27 @@ workflow BUILD_PON {
 
         ch_versions = ch_versions.mix(HMMCOPY_READCOUNTER_PON.out.versions)
 
-        ICHORCNA_GENERATE_PON(
+        ICHORCNA_CREATEPON(
             wigfiles,
             gc_wig,
             map_wig,
             centromere,
             reptime,
+            [], /* exons */
         )
 
-        normal_panel = ICHORCNA_GENERATE_PON.out.pon_file
-        ch_versions = ch_versions.mix(ICHORCNA_GENERATE_PON.out.versions)
+        normal_panel = ICHORCNA_CREATEPON.out.rds
+        ch_versions = ch_versions.mix(ICHORCNA_CREATEPON.out.versions)
     }
     else if (caller == "wisecondorx") {
         NORMAL_CONVERT(ch_bam_files, fasta, fai)
         ch_versions = ch_versions.mix(NORMAL_CONVERT.out.versions)
-        WISECONDORX_NEWREF(NORMAL_CONVERT.out.npz.map {meta, npz ->
-            def new_meta = meta + [id: "joined"]
-            [new_meta, npz]
-            }.groupTuple())
+        WISECONDORX_NEWREF(
+            NORMAL_CONVERT.out.npz.map { meta, npz ->
+                def new_meta = meta + [id: "joined"]
+                [new_meta, npz]
+            }.groupTuple()
+        )
         normal_panel = WISECONDORX_NEWREF.out.npz
         ch_versions = ch_versions.mix(WISECONDORX_NEWREF.out.versions)
     }
