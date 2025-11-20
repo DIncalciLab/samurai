@@ -414,18 +414,24 @@
                 },
                 "ichorcna_chrs_to_use": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))",
-                    "description": "Chromosomes to use for ichorCNA"
+                    "default": "1:22",
+                    "description": "Chromosomes to use for ichorCNA",
+                    "pattern": "^\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*')(?:\\s*,\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*'))*\\s*$",
+                    "examples": ["1:22", "1,2,3,4", "1:19, \\\"X\\\"", "3,5:9,'Y'"]
                 },
                 "ichorcna_chrs_to_train": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))",
-                    "description": "Chromosomes to use for training during an ichorCNA run"
+                    "default": "1:22",
+                    "description": "Chromosomes to use for training during an ichorCNA run",
+                    "pattern": "^\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*')(?:\\s*,\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*'))*\\s*$",
+                    "examples": ["1:22", "1,2,3,4", "1:19, \\\"X\\\"", "3,5:9,'Y'"]
                 },
                 "ichorcna_chrs_to_normalize": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))",
-                    "description": "Chromosomes to use for normalization during an ichorCNA run"
+                    "default": "1:22",
+                    "description": "Chromosomes to use for normalization during an ichorCNA run",
+                    "pattern": "^\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*')(?:\\s*,\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*'))*\\s*$",
+                    "examples": ["1:22", "1,2,3,4", "1:19, \\\"X\\\"", "3,5:9,'Y'"]
                 },
                 "ichorcna_estimate_normal": {
                     "type": "string",
