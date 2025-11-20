@@ -6,7 +6,7 @@ include { WISECONDORX_NEWREF                             } from '../../../module
 
 workflow BUILD_PON {
     take:
-    normal_dir
+    ch_normal_bam_bai
     caller
     fasta
     fai
@@ -19,27 +19,17 @@ workflow BUILD_PON {
     main:
 
     ch_versions = channel.empty()
-    ch_bam_files = channel.fromFilePairs(
-            "${normal_dir}/*.bam{,.bai}",
-            checkIfExists: true
-        )
-        .ifEmpty { error("No BAM or BAI files found at ${normal_dir}") }
-        .map { meta, file ->
-            def fmeta = [:]
-            fmeta.id = meta
-            tuple(fmeta, file[0], file[1])
-        }
 
     if (caller == "ichorcna") {
         // FIXME: We shouldn't depend on parameters here
         if (filter_bam_pon) {
-            SAMBAMBA_FILTER(ch_bam_files)
+            SAMBAMBA_FILTER(ch_normal_bam_bai)
             ch_bam_for_pon = SAMBAMBA_FILTER.out.filtered_bam
             ch_versions = ch_versions.mix(SAMBAMBA_FILTER.out.versions)
         }
         else {
             // Remove the BAM index for compatibility with the ReadCounter workflow
-            ch_bam_for_pon = ch_bam_files
+            ch_bam_for_pon = ch_normal_bam_bai
         }
 
         HMMCOPY_READCOUNTER_PON(ch_bam_for_pon, fasta)
@@ -64,7 +54,7 @@ workflow BUILD_PON {
         ch_versions = ch_versions.mix(ICHORCNA_CREATEPON.out.versions)
     }
     else if (caller == "wisecondorx") {
-        NORMAL_CONVERT(ch_bam_files, fasta, fai)
+        NORMAL_CONVERT(ch_normal_bam_bai, fasta, fai)
         ch_versions = ch_versions.mix(NORMAL_CONVERT.out.versions)
         WISECONDORX_NEWREF(
             NORMAL_CONVERT.out.npz.map { meta, npz ->

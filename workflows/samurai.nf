@@ -213,15 +213,22 @@ workflow SAMURAI {
 
     // CN Calling
 
+    ch_bam_type = ch_bam_bai.branch{ meta, _bam, _bai ->
+        normal: meta.status == "normal"
+        tumor: true // fallback if not specified
+    }
+
+    ch_ponfiles = build_pon ? ch_bam_type.normal.ifEmpty([[], []]) : [[], []]
+
     if (analysis_type == "solid_biopsy") {
         SOLID_BIOPSY(
-            ch_bam_bai,
+            ch_bam_type.tumor,
             caller,
             binsize,
             genome,
             ascat_predict_refit,
             build_pon,
-            ch_pon_path,
+            ch_ponfiles,
             ch_normal_panel,
             ch_gc_wig,
             ch_map_wig,
@@ -235,7 +242,7 @@ workflow SAMURAI {
     }
     else if (analysis_type == "liquid_biopsy") {
         if (size_selection) {
-            SIZE_SELECTION(ch_bam_bai, ch_fasta)
+            SIZE_SELECTION(ch_bam_type.tumor, ch_fasta)
             ch_versions = ch_versions.mix(SIZE_SELECTION.out.versions.first())
 
             ch_multiqc_files = ch_multiqc_files.mix(
@@ -256,7 +263,7 @@ workflow SAMURAI {
                 }
         }
         else {
-            ch_analysis = ch_bam_bai
+            ch_analysis = ch_bam_type.tumor
         }
 
         LIQUID_BIOPSY(
@@ -270,7 +277,7 @@ workflow SAMURAI {
             ch_centromere,
             ch_reptime,
             build_pon,
-            ch_pon_path,
+            ch_ponfiles,
             ch_blacklist)
         gistic_file = LIQUID_BIOPSY.out.corrected_gistic_file
         ch_versions = ch_versions.mix(LIQUID_BIOPSY.out.versions)

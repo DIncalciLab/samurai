@@ -19,7 +19,7 @@ workflow LIQUID_BIOPSY {
     ch_centromere // channel: path to centromere file
     ch_reptiming // channel: path to reptiming file
     build_pon // bool
-    pon_path // value: path
+    ch_pon_files // value: path
     ch_blacklist // channel: [meta, blacklist]
 
     main:
@@ -31,7 +31,7 @@ workflow LIQUID_BIOPSY {
     if (build_pon) {
 
         BUILD_PON(
-            pon_path,
+            ch_pon_files,
             caller,
             ch_fasta,
             ch_fai,
