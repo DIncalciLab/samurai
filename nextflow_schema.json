@@ -497,8 +497,8 @@
                 },
                 "ichorcna_plotylim": {
                     "type": "string",
-                    "default": "c(-2,4)",
-                    "description": "Y axis limits of the ichorCNA plot"
+                    "default": "-2,4",
+                    "description": "Y axis limits of the ichorCNA plot: comma separated (lower, upper)"
                 },
                 "ichorcna_estimate_sc": {
                     "type": "boolean",
