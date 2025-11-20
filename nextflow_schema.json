@@ -71,7 +71,6 @@
                     "exists": true,
                     "mimetype": "text/plain",
                     "description": "Path to FASTA index file.",
-                    "help_text": "",
                     "fa_icon": "far fa-file-code"
                 },
                 "dict": {
@@ -81,7 +80,6 @@
                     "exists": true,
                     "mimetype": "text/plain",
                     "description": "Path to FASTA sequence dictionary file.",
-                    "help_text": "",
                     "fa_icon": "far fa-file-code"
                 },
                 "igenomes_base": {
@@ -434,8 +432,8 @@
                     "examples": ["1:22", "1,2,3,4", "1:19, \\\"X\\\"", "3,5:9,'Y'"]
                 },
                 "ichorcna_estimate_normal": {
-                    "type": "string",
-                    "default": "TRUE",
+                    "type": "boolean",
+                    "default": true,
                     "description": "Whether ichorCNA should estimate normal contamination or not"
                 },
                 "ichorcna_fraction_reads_male": {
@@ -474,8 +472,7 @@
                     "description": "Maximum copy number to be considered by ichorCNA"
                 },
                 "ichorcna_include_homd": {
-                    "type": "string",
-                    "default": "FALSE",
+                    "type": "boolean",
                     "description": "Call also homozygous deletions in ichorCNA"
                 },
                 "ichorcna_txne": {
