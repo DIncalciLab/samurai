@@ -63,8 +63,22 @@
                     }
                 ],
                 "meta": ["gender"]
+            },
+            "status": {
+                "errorMessage": "Status must be either tumor or normal",
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "enum": ["tumor", "normal"]
+                    },
+                    {
+                        "type": "string",
+                        "maxLength": 0
+                    }
+                ],
+                "meta": ["status"]
             }
         },
-        "anyOf": [{ "required": ["sample", "fastq_1"] }, { "required": ["sample", "bam"] }]
+        "anyOf": [{ "required": ["sample", "fastq_1", "status"] }, { "required": ["sample", "bam", "status"] }]
     }
 }

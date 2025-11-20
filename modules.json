@@ -60,6 +60,16 @@
                         "git_sha": "3db80bad01d58d9977654212253a30af42c9fd48",
                         "installed_by": ["modules"]
                     },
+                    "ichorcna/createpon": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "installed_by": ["modules"]
+                    },
+                    "ichorcna/run": {
+                        "branch": "master",
+                        "git_sha": "4412c4b83c62cb2036b9a6939551a7fd988177d0",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "af27af1be706e6a2bb8fe454175b0cdf77f47b49",

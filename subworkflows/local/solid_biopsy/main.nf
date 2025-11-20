@@ -18,7 +18,7 @@ workflow SOLID_BIOPSY {
     genome     // value, genome to use
     ascat_predict_refit // boolean
     build_pon // boolean
-    pon_path
+    ponfiles
     ch_normal_panel // channel
     ch_gc_wig // channel: path to GC wig
     ch_map_wig // channel: path to mappability wig
@@ -127,7 +127,7 @@ workflow SOLID_BIOPSY {
         // If we want to build the normal panel
         if (build_pon) {
 
-            BUILD_PON(pon_path, caller)
+            BUILD_PON(ponfiles, caller)
             ch_versions = ch_versions.mix(BUILD_PON.out.versions)
             pon_file = BUILD_PON.out.normal_panel
         }
