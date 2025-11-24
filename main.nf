@@ -170,7 +170,7 @@ workflow {
 
     if (params.aligner_index) {
         ch_index = channel.fromPath(params.aligner_index, checkIfExists: true)
-            .map { idx -> [[id: 'aligner'], idx] }
+            .map { idx -> [[id: 'aligner'], idx] }.collect()
     }
     else if (!params.aligner_index && !params.igenomes_ignore && real_aligner) {
         ch_index = [
