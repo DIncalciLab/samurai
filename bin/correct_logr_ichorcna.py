@@ -31,7 +31,7 @@ def main(
     ),
 ):
 
-    segments = pl.scan_csv(seg, separator="\t")
+    segments = pl.scan_csv(seg, separator="\t").rename({"ID": "sample"})
     ploidy_df = pl.scan_csv(ploidy, separator="\t")
 
     result = (
