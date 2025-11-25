@@ -50,7 +50,8 @@ workflow ICHORCNA {
     ch_versions = ch_versions.mix(AGGREGATE_ICHORCNA_TABLE.out.versions)
     ch_reports = ch_reports.mix(AGGREGATE_ICHORCNA_TABLE.out.ichorcna_summary)
 
-    ICHORCNA_RUN.out.cna_seg
+    // seg.txt are the *segments*, cna.seg are instead bin-level calls
+    ICHORCNA_RUN.out.seg_txt
         .map { _meta, data -> data }
         .collectFile(
             storeDir: "${params.outdir}/ichorcna/",
