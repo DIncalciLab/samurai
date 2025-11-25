@@ -36,7 +36,9 @@ def main(
 
     result = (
         segments.join(
-            ploidy_df.select("sample", "Ploidy"), on="sample", how="left"
+            ploidy_df.select(pl.col("samplename").alias("sample"), "Ploidy"),
+            on="sample",
+            how="left",
         )
         .with_columns(
             pl.col("logR_Copy_Number")
