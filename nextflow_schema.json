@@ -71,7 +71,6 @@
                     "exists": true,
                     "mimetype": "text/plain",
                     "description": "Path to FASTA index file.",
-                    "help_text": "",
                     "fa_icon": "far fa-file-code"
                 },
                 "dict": {
@@ -81,7 +80,6 @@
                     "exists": true,
                     "mimetype": "text/plain",
                     "description": "Path to FASTA sequence dictionary file.",
-                    "help_text": "",
                     "fa_icon": "far fa-file-code"
                 },
                 "igenomes_base": {
@@ -414,22 +412,28 @@
                 },
                 "ichorcna_chrs_to_use": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))",
-                    "description": "Chromosomes to use for ichorCNA"
+                    "default": "1:22",
+                    "description": "Chromosomes to use for ichorCNA",
+                    "pattern": "^\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*')(?:\\s*,\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*'))*\\s*$",
+                    "examples": ["1:22", "1,2,3,4", "1:19, \\\"X\\\"", "3,5:9,'Y'"]
                 },
                 "ichorcna_chrs_to_train": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))",
-                    "description": "Chromosomes to use for training during an ichorCNA run"
+                    "default": "1:22",
+                    "description": "Chromosomes to use for training during an ichorCNA run",
+                    "pattern": "^\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*')(?:\\s*,\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*'))*\\s*$",
+                    "examples": ["1:22", "1,2,3,4", "1:19, \\\"X\\\"", "3,5:9,'Y'"]
                 },
                 "ichorcna_chrs_to_normalize": {
                     "type": "string",
-                    "default": "paste0(\\'chr\\', c(1:22))",
-                    "description": "Chromosomes to use for normalization during an ichorCNA run"
+                    "default": "1:22",
+                    "description": "Chromosomes to use for normalization during an ichorCNA run",
+                    "pattern": "^\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*')(?:\\s*,\\s*(?:\\d+(?:\\s*:\\s*\\d+)?|\\\"[A-Za-z][A-Za-z0-9_]*\\\"|'[A-Za-z][A-Za-z0-9_]*'))*\\s*$",
+                    "examples": ["1:22", "1,2,3,4", "1:19, \\\"X\\\"", "3,5:9,'Y'"]
                 },
                 "ichorcna_estimate_normal": {
-                    "type": "string",
-                    "default": "TRUE",
+                    "type": "boolean",
+                    "default": true,
                     "description": "Whether ichorCNA should estimate normal contamination or not"
                 },
                 "ichorcna_fraction_reads_male": {
@@ -468,8 +472,7 @@
                     "description": "Maximum copy number to be considered by ichorCNA"
                 },
                 "ichorcna_include_homd": {
-                    "type": "string",
-                    "default": "FALSE",
+                    "type": "boolean",
                     "description": "Call also homozygous deletions in ichorCNA"
                 },
                 "ichorcna_txne": {
@@ -494,8 +497,8 @@
                 },
                 "ichorcna_plotylim": {
                     "type": "string",
-                    "default": "c(-2,4)",
-                    "description": "Y axis limits of the ichorCNA plot"
+                    "default": "-2,4",
+                    "description": "Y axis limits of the ichorCNA plot: comma separated (lower, upper)"
                 },
                 "ichorcna_estimate_sc": {
                     "type": "boolean",

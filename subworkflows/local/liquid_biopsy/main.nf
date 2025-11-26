@@ -19,7 +19,7 @@ workflow LIQUID_BIOPSY {
     ch_centromere // channel: path to centromere file
     ch_reptiming // channel: path to reptiming file
     build_pon // bool
-    pon_path // value: path
+    ch_pon_files // value: path
     ch_blacklist // channel: [meta, blacklist]
 
     main:
@@ -30,7 +30,17 @@ workflow LIQUID_BIOPSY {
     // If we want to build the normal panel
     if (build_pon) {
 
-        BUILD_PON(pon_path, caller, ch_fasta, ch_fai, ch_gc_wig, ch_map_wig, ch_reptiming, ch_centromere)
+        BUILD_PON(
+            ch_pon_files,
+            caller,
+            ch_fasta,
+            ch_fai,
+            ch_gc_wig,
+            ch_map_wig,
+            ch_reptiming,
+            ch_centromere,
+            params.filter_bam_pon,
+        )
         ch_versions = ch_versions.mix(BUILD_PON.out.versions)
         pon_file = BUILD_PON.out.normal_panel.collect()
     }
@@ -60,7 +70,7 @@ workflow LIQUID_BIOPSY {
         corrected_gistic_file = ICHORCNA.out.gistic_file
     }
     else if (caller == "wisecondorx") {
-        
+
         BAM_CNV_WISECONDORX(ch_bam_bai, ch_fasta, ch_fai, pon_file, ch_blacklist)
         ch_versions = ch_versions.mix(BAM_CNV_WISECONDORX.out.versions)
 

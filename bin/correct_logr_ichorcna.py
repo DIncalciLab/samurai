@@ -31,12 +31,16 @@ def main(
     ),
 ):
 
-    segments = pl.scan_csv(seg, separator="\t")
+    segments = pl.scan_csv(seg, separator="\t").rename(
+        {"ID": "sample", "chrom": "chromosome"}
+    )
     ploidy_df = pl.scan_csv(ploidy, separator="\t")
 
     result = (
         segments.join(
-            ploidy_df.select("sample", "Ploidy"), on="sample", how="left"
+            ploidy_df.select(pl.col("samplename").alias("sample"), "Ploidy"),
+            on="sample",
+            how="left",
         )
         .with_columns(
             pl.col("logR_Copy_Number")
