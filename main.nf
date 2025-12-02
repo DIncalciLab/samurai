@@ -185,7 +185,7 @@ workflow {
     ichorcna_reptime_file = params.ichorcna_reptime_wig ? file(params.ichorcna_reptime_wig, checkIfExists: true) : []
 
     if (caller == "ichorcna" && (!ichorcna_gc_wig || !ichorcna_map_wig)) {
-        error("ichorCNA calling requires a GC WIG and a mappability WIG")
+        error("Error: ichorCNA calling requires a GC WIG and a mappability WIG")
     }
 
     wisecondor_blacklist = params.wisecondorx_blacklist ? channel.fromPath(params.wisecondorx_blacklist, checkIfExists: true).map { blacklist -> [[id: "blacklist"], blacklist] }.collect() : [[], []]
