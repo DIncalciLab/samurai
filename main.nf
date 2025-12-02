@@ -51,7 +51,6 @@ workflow DINCALCILAB_SAMURAI {
     genome_index
     caller
     binsize
-    pon_path
     run_fastp
     build_pon
     normal_panel
@@ -78,7 +77,6 @@ workflow DINCALCILAB_SAMURAI {
         genome_index,
         caller,
         binsize,
-        pon_path,
         run_fastp,
         build_pon,
         normal_panel,
@@ -149,7 +147,6 @@ workflow {
 
     genome = params.genome
     caller = params.analysis_type == "align_only" ? "none" : params.caller
-    pon_path = params.pon_path && params.build_pon ? params.pon_path : ""
     analysis_type = params.analysis_type
     binsize = params.binsize
     normal_panel = params.normal_panel ? channel.fromPath(params.normal_panel, checkIfExists: true).map{it -> it}.collect() : channel.empty()
@@ -207,7 +204,6 @@ workflow {
         ch_index,
         caller,
         binsize,
-        pon_path,
         params.run_fastp,
         params.build_pon,
         normal_panel,

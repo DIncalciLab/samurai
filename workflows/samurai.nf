@@ -67,7 +67,6 @@ workflow SAMURAI {
     ch_index
     caller
     binsize
-    ch_pon_path
     run_fastp
     build_pon
     ch_normal_panel

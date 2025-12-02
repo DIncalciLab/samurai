@@ -365,10 +365,6 @@
                     "type": "string",
                     "description": "Path to the panel of normals to be used"
                 },
-                "pon_path": {
-                    "type": "string",
-                    "description": "Path to BAM files to be used to build the panel of normals"
-                },
                 "pon_name": {
                     "type": "string",
                     "default": "PoN",
