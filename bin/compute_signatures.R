@@ -50,8 +50,12 @@ df_activity <- df_activity %>%
 readr::write_tsv(df_activity, file = paste0(args$projectname, "_activity.txt"),
     quote = "needed")
 
-png(filename="ascat_sc_plot_by_component.png")
-plotSampleByComponent(object = cnobj)
+# Only plot if samples are > 1
+total_samples <- segments %>% pull(sample) %>% unique() %>% length()
+png(filename = "ascat_sc_plot_by_component.png")
+if (total_samples > 1) {
+    plotSampleByComponent(object = cnobj)
+}
 dev.off()
 
 
