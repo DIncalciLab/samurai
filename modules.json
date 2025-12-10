@@ -62,12 +62,12 @@
                     },
                     "ichorcna/createpon": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "a507bfc61c00fc9881f408c3fb1b375bb8078a81",
                         "installed_by": ["modules"]
                     },
                     "ichorcna/run": {
                         "branch": "master",
-                        "git_sha": "4412c4b83c62cb2036b9a6939551a7fd988177d0",
+                        "git_sha": "a507bfc61c00fc9881f408c3fb1b375bb8078a81",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
