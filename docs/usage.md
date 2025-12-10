@@ -36,6 +36,7 @@ SAMPLE2,path/to/SAMPLE2.bam,male
 | `fastq_1` | Full path to FastQ file for Illumina short reads 1.                                                                                                                                    |
 | `fastq_2` | Full path to FastQ file for Illumina short reads 2.                                                                                                                                    |
 | `bam`     | Full path to BAM file. Note: `bam` is _mutually exclusive_ with `fastq_1` or `fastq_2`.                                                                                                |
+| `status`  | Type of sample, either condition (`tumor`) or reference (`normal`)                                                                                                                     |
 
 | Optional | Description                                                                                                  |
 | -------- | ------------------------------------------------------------------------------------------------------------ |
@@ -210,7 +211,6 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 | Parameter Name               | Description                                                              | Default Value | Possible Values      |
 | ---------------------------- | ------------------------------------------------------------------------ | ------------- | -------------------- |
 | `normal_panel`               | Path to the panel of normals to be used                                  |               |                      |
-| `pon_path`                   | Path to BAM files to be used to build the panel of normals               |               |                      |
 | `pon_name`                   | Name of the panel of normals to build                                    | `"PoN"`       |                      |
 | `build_pon`                  | Whether to build a panel of normals or not                               | `false`       | `true`, `false`      |
 | `selection_maxsize`          | Maximum insert size in bp to be included for size selection              | `150`         | Any positive integer |
@@ -218,36 +218,36 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 #### _ichorCNA specific options_
 
-| Parameter Name                      | Description                                                                 | Default Value                         | Possible Values                                  |
-| ----------------------------------- | --------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------ |
-| `ichorcna_genome_style`             | Genome style to be used by ichorCNA (NCBI or UCSC)                          | `UCSC`                                | `NCBI`, `UCSC`                                   |
-| `ichorcna_readcounter_chrs`         | Chromosomes to be used by ichorCNA                                          | `chr1,chr2,...,chr22`                 | List of chromosomes (e.g., `chr1,chr2,chr3,...`) |
-| `ichorcna_readcounter_quality`      | Minimum read count quality to keep in ichorCNA                              | `20`                                  | Any integer                                      |
-| `ichorcna_chrs_to_use`              | Chromosomes to use for ichorCNA                                             | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`)    |
-| `ichorcna_chrs_to_train`            | Chromosomes to use for training during an ichorCNA run                      | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`)    |
-| `ichorcna_chrs_to_normalize`        | Chromosomes to use for normalization during an ichorCNA run                 | `paste0('chr', c(1:22))`              | String format (e.g., `"chr1,chr2,...,chr22"`)    |
-| `ichorcna_estimate_normal`          | Whether ichorCNA should estimate normal contamination or not                | `true`                                | `true`, `false`                                  |
-| `ichorcna_fraction_reads_male`      | Fraction of data used for copy number calling                               | `0.001`                               | Any value between 0 and 1                        |
-| `ichorcna_male_chrX_logR`           | LogR value for male chromosome X                                            | `0.3`                                 | Any numerical value                              |
-| `ichorcna_min_map_score`            | Minimum mapping score for reads to be used by ichorCNA                      | `0.75`                                | Any value between 0 and 1                        |
-| `ichorcna_max_frac_genome_subclone` | Maximum fraction of genome allowed for subclone                             | `0.5`                                 | Any value between 0 and 1                        |
-| `ichorcna_max_frac_cna_subclone`    | Maximum fraction of CNA allowed for subclone                                | `0.7`                                 | Any value between 0 and 1                        |
-| `ichorcna_min_segment_bins`         | Minimum number of bins required for segmenting                              | `50`                                  | Any positive integer                             |
-| `ichorcna_max_cn`                   | Maximum copy number to be considered by ichorCNA                            | `5`                                   | Any positive integer                             |
-| `ichorcna_include_homd`             | Call also homozygous deletions in ichorCNA                                  | `"FALSE"`                             | `"TRUE"`, `"FALSE"`                              |
-| `ichorcna_txne`                     | Tumor-normal estimation strength for ichorCNA                               | `0.9999`                              | Any value between 0 and 1                        |
-| `ichorcna_alt_frac_threshold`       | Alternative fraction threshold for ichorCNA                                 | `0.05`                                | Any value between 0 and 1                        |
-| `ichorcna_trx_strength`             | Strength of transcription effect for ichorCNA                               | `10000`                               | Any integer                                      |
-| `ichorcna_plotfiletype`             | Output plot file type for ichorCNA                                          | `pdf`                                 | `pdf`, `png`, `jpeg`, etc.                       |
-| `ichorcna_plotylim`                 | Y-axis limits for the generated plots                                       | `c(-2,4)`                             | String format (e.g., `"c(-2, 4)"`)               |
-| `ichorcna_estimate_sc`              | Estimate copy number subclonality in ichorCNA                               | `false`                               | `true`, `false`                                  |
-| `ichorcna_estimate_ploidy`          | Estimate ploidy in ichorCNA                                                 | `true`                                | `true`, `false`                                  |
-| `ichorcna_filter_bam_pon`           | Apply PON filtering on BAM files                                            | N/A                                   | `true`, `false`                                  |
-| `ichorcna_normal_states`            | Fraction of normal copy number states used in ichorCNA                      | `0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99` | List of numerical values (e.g., `0.5, 0.6, 0.7`) |
-| `ichorcna_gc_wig`                   | Path to a Wiggle file with GC content data for the specified genome         | N/A                                   | File path (must be a `.wig` file)                |
-| `ichorcna_map_wig`                  | Path to a Wiggle file with mappability scores for the specified genome      | N/A                                   | File path (must be a `.wig` file)                |
-| `ichorcna_reptime_wig`              | Path to a Wiggle file with replication timing data for the specified genome | N/A                                   | File path (must be a `.wig` file)                |
-| `ichorcna_centromere_file`          | Path to a file with centromere data for the specified genome                | N/A                                   | File path (must be a `.txt` or similar format)   |
+| Parameter Name                      | Description                                                                 | Default Value                         | Possible Values                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------- |
+| `ichorcna_genome_style`             | Genome style to be used by ichorCNA (NCBI or UCSC)                          | `UCSC`                                | `NCBI`, `UCSC`                                                                          |
+| `ichorcna_readcounter_chrs`         | Chromosomes to be used by ichorCNA                                          | `chr1,chr2,...,chr22`                 | List of chromosomes (e.g., `chr1,chr2,chr3,...`)                                        |
+| `ichorcna_readcounter_quality`      | Minimum read count quality to keep in ichorCNA                              | `20`                                  | Any integer                                                                             |
+| `ichorcna_chrs_to_use`              | Chromosomes to use for ichorCNA                                             | `1:22`                                | A number, a range (`start:end`) or values separated by commas (e.g., `1:22` or `1,4,5`) |
+| `ichorcna_chrs_to_train`            | Chromosomes to use for training during an ichorCNA run                      | `1:22`                                | A number, a range (`start:end`) or values separated by commas (e.g., `1:22` or `1,4,5`) |
+| `ichorcna_chrs_to_normalize`        | Chromosomes to use for normalization during an ichorCNA run                 | `1:22`                                | A number, a range (`start:end`) or values separated by commas (e.g., `1:22` or `1,4,5`) |
+| `ichorcna_estimate_normal`          | Whether ichorCNA should estimate normal contamination or not                | `true`                                | `true`, `false`                                                                         |
+| `ichorcna_fraction_reads_male`      | Fraction of data used for copy number calling                               | `0.001`                               | Any value between 0 and 1                                                               |
+| `ichorcna_male_chrX_logR`           | LogR value for male chromosome X                                            | `0.3`                                 | Any numerical value                                                                     |
+| `ichorcna_min_map_score`            | Minimum mapping score for reads to be used by ichorCNA                      | `0.75`                                | Any value between 0 and 1                                                               |
+| `ichorcna_max_frac_genome_subclone` | Maximum fraction of genome allowed for subclone                             | `0.5`                                 | Any value between 0 and 1                                                               |
+| `ichorcna_max_frac_cna_subclone`    | Maximum fraction of CNA allowed for subclone                                | `0.7`                                 | Any value between 0 and 1                                                               |
+| `ichorcna_min_segment_bins`         | Minimum number of bins required for segmenting                              | `50`                                  | Any positive integer                                                                    |
+| `ichorcna_max_cn`                   | Maximum copy number to be considered by ichorCNA                            | `5`                                   | Any positive integer                                                                    |
+| `ichorcna_include_homd`             | Call also homozygous deletions in ichorCNA                                  | false                                 | `true`, `false`                                                                         |
+| `ichorcna_txne`                     | Tumor-normal estimation strength for ichorCNA                               | `0.9999`                              | Any value between 0 and 1                                                               |
+| `ichorcna_alt_frac_threshold`       | Alternative fraction threshold for ichorCNA                                 | `0.05`                                | Any value between 0 and 1                                                               |
+| `ichorcna_trx_strength`             | Strength of transcription effect for ichorCNA                               | `10000`                               | Any integer                                                                             |
+| `ichorcna_plotfiletype`             | Output plot file type for ichorCNA                                          | `pdf`                                 | `pdf`, `png`, `jpeg`, etc.                                                              |
+| `ichorcna_plotylim`                 | Y-axis limits for the generated plots                                       | `-2,4`                                | Two values (min and max), comma separated (e.g. `-2,4`)                                 |
+| `ichorcna_estimate_sc`              | Estimate copy number subclonality in ichorCNA                               | `false`                               | `true`, `false`                                                                         |
+| `ichorcna_estimate_ploidy`          | Estimate ploidy in ichorCNA                                                 | `true`                                | `true`, `false`                                                                         |
+| `ichorcna_filter_bam_pon`           | Apply PON filtering on BAM files                                            | N/A                                   | `true`, `false`                                                                         |
+| `ichorcna_normal_states`            | Fraction of normal copy number states used in ichorCNA                      | `0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99` | List of numerical values (e.g., `0.5, 0.6, 0.7`)                                        |
+| `ichorcna_gc_wig`                   | Path to a Wiggle file with GC content data for the specified genome         | N/A                                   | File path (must be a `.wig` file)                                                       |
+| `ichorcna_map_wig`                  | Path to a Wiggle file with mappability scores for the specified genome      | N/A                                   | File path (must be a `.wig` file)                                                       |
+| `ichorcna_reptime_wig`              | Path to a Wiggle file with replication timing data for the specified genome | N/A                                   | File path (must be a `.wig` file)                                                       |
+| `ichorcna_centromere_file`          | Path to a file with centromere data for the specified genome                | N/A                                   | File path (must be a `.txt` or similar format)                                          |
 
 #### _WisecondorX specific options_
 

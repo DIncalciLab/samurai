@@ -3,6 +3,29 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Breaking changes
+
+- A new **mandatory** column has been added in the samplesheet, `status`, which can be either `normal` or `tumor` (@lbeltrame, issue #13)
+- Option `--pon_path` has been **removed**. Instead, add your normal samples to the samplesheet (same rules as case samples) with the `normal` status
+- Due to a bug in ichorCNA with security implications, the syntax of all options regarding ichorCNA chromosome handling (but not the `readcounter` parameters) has changed:
+  - Specify chromosomes with _identifier only_ (without `chr`)
+  - Valid values are individual chromosomes, separated by comma (e.g. `1` or `1,2`), ranges using `:` (`1:22`) or a combination of the above (`1:22, X`). If you set `ichorcna_genomestyle`, the right prefix will be appended for you when running the analysis
+  - `ichorcna_plotylim` now takes a min and max value separated by comma (e.g. `-2,4`)
+  - All the ichorCNA options that require `TRUE` or `FALSE` now take a boolean `true` or `false`
+  - Raw R in any ichorCNA option (e.g. `c(1,2)`) is no longer supported and will raise an error.
+
+### New features
+
+- Support the latest version of ichorCNA (@lbeltrame and @SaraPotente, PR #57)
+- Update the ichorCNA modules to the latest upstream nf-core versions (@lbeltrame, PR #57)
+- PoN support in the samplesheet (@lbeltrame, #13, PR #57)
+
+### Bug fixes
+
+- Don't raise an error if in CIN quantification there is only one sample (#59, @lbeltrame)
+
 ## v1.3.1 - "Mori Ranmaru" (2025-11-17)
 
 This release is a hotfix for a regression in size selection that somehow slipped under the radar.
