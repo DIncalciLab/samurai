@@ -57,10 +57,10 @@ workflow BUILD_PON {
         NORMAL_CONVERT(ch_normal_bam_bai, fasta, fai)
         ch_versions = ch_versions.mix(NORMAL_CONVERT.out.versions)
         WISECONDORX_NEWREF(
-            NORMAL_CONVERT.out.npz.map { meta, npz ->
-                def new_meta = meta + [id: "joined"]
+            NORMAL_CONVERT.out.npz.map { _meta, npz ->
+                def new_meta = [id: "joined"]
                 [new_meta, npz]
-            }.groupTuple().collect()
+            }.groupTuple()
         )
         normal_panel = WISECONDORX_NEWREF.out.npz
         ch_versions = ch_versions.mix(WISECONDORX_NEWREF.out.versions)
