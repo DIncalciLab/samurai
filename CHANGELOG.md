@@ -3,7 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.4.0 - "Ashikaga Takauji" (2025-12-11)
+
+This release moves from an in-house snapshot of ichorCNA to the upstream nf-core (which required [some fixes in ichorCNA](https://github.com/GavinHaLab/ichorCNA/pull/26) and the [bioconda package](https://github.com/bioconda/bioconda-recipes/pull/61045) as well). It also moves away from the fragile "PoN files are gathered from a directory" to a more robust "normals are defined in the samplesheet". Notice that this version introduces **significant breaking changes** from the previous ones, which will require changes in workflow parameters. Make sure to read the section "Breaking changes" carefully before upgrading.
+
+This release is named after Ashikaga Takauji (足利尊氏; 1305-1358), the founder of the Ashikaga shogunate during the Japanese Middle Ages, whose rise to power marked the beginning of the Muromachi period (1336-1576; "Muromachi" was the area of Kyoto where the Ashikaga took residence).
 
 ### Breaking changes
 
@@ -19,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New features
 
 - Support the latest version of ichorCNA (@lbeltrame and @SaraPotente, PR #57)
+- Fix generating panel of normals without sufficient reads on chromosome X (https://github.com/GavinHaLab/ichorCNA/pull/26; https://github.com/bioconda/bioconda-recipes/pull/61045; https://github.com/nf-core/modules/pull/9531)
 - Update the ichorCNA modules to the latest upstream nf-core versions (@lbeltrame, PR #57)
 - PoN support in the samplesheet (@lbeltrame, #13, PR #57)
 
