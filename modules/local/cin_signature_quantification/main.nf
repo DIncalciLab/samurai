@@ -10,8 +10,8 @@ process CIN_SIGNATURE_QUANTIFICATION {
 
 
     output:
-        path("*_plot_by_component.png"),          emit: signatures_heatmap
-        path("signatures_summary_mqc.png"),       emit: sig_activity_plot
+        path("*_plot_by_component.png"),          emit: signatures_heatmap, optional: true
+        path("signatures_summary_mqc.png"),       emit: sig_activity_plot, optional: true
         path("*_signatures.rds"),                 emit: signature_rds
         path("*_activity.txt"),                   emit: sig_activity_file
         path("versions.yml"),                     emit: versions
