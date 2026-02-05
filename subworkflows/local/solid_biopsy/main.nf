@@ -157,6 +157,11 @@ workflow SOLID_BIOPSY {
         corrected_gistic_file = ICHORCNA.out.gistic_file
         ch_reports = ch_versions.mix(ICHORCNA.out.summary)
         ch_versions = ch_versions.mix(ICHORCNA.out.versions)
+
+        // FIXME: Compute signatures (duplication with ASCAT.sc)
+        CIN_SIGNATURE_QUANTIFICATION(ICHORCNA.out.signature_file)
+        ch_versions = ch_versions.mix(CIN_SIGNATURE_QUANTIFICATION.out.versions)
+        ch_reports = ch_reports.mix(CIN_SIGNATURE_QUANTIFICATION.out.sig_activity_plot)
     }
     else {
         error("Unknown CNV caller ${caller}")
