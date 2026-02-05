@@ -4,6 +4,7 @@ include { HMMCOPY_READCOUNTER as HMMCOPY_READCOUNTER_ICHORCNA } from '../../../m
 include { CORRECT_LOGR_ICHORCNA                               } from '../../../modules/local/correct_logR_ichorcna/main'
 include { CONCATENATE_PDF as CONCATENATE_BIN_PLOTS            } from '../../../modules/local/concatenate_pdf/main'
 include { PLOT_ICHORCNA                                       } from '../../../modules/local/plot_ichorcna/main'
+include { FORMAT_ICHORCNA_SEG                                  } from '../../../modules/local/format_ichorcna_seg/main'
 
 workflow ICHORCNA {
     take:
@@ -76,11 +77,26 @@ workflow ICHORCNA {
     CONCATENATE_BIN_PLOTS(ICHORCNA_RUN.out.genome_plot.collect { _meta, plot -> plot })
     ch_versions = ch_versions.mix(CONCATENATE_BIN_PLOTS.out.versions)
 
+    // Create file for signature analysis
+
+    formatted_ichor = FORMAT_ICHORCNA_SEG(ICHORCNA_RUN.out.seg_txt)
+
+    signature_file_ichor = formatted_ichor  
+        .collectFile(
+            storeDir: "${params.outdir}/ichorcna/",
+            name: "all_segments_ichorcna_signatures.seg",
+            keepHeader: true,
+            skip: 1
+        )
+
+
+
     emit:
-    versions    = ch_versions
-    summary     = ch_reports
-    ch_segments = called_segments
-    ch_bins     = bins
-    gistic_file = corrected_gistic_file
-    genome_plot = genome_plot
+    versions       = ch_versions
+    summary        = ch_reports
+    ch_segments    = called_segments
+    ch_bins        = bins
+    gistic_file    = corrected_gistic_file
+    genome_plot    = genome_plot
+    signature_file = signature_file_ichor
 }
