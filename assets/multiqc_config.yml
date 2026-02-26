@@ -270,6 +270,36 @@ custom_data:
     section_name: "Copy Number Signatures Activities"
     description: "The image is a summary view of Copy number Signatures from segmentation files, computed by the R Package CINSignatureQuantification."
 
+  cinmetrics_summary:
+    id: "cinmetrics"
+    section_name: "CINmetrics Results"
+    description: "This table reports CINmetrics values: Total Aberration Index (tai), Copy Number Aberrations (cna), Altered Base Segment (base_segments), Break Point (break_points), Fraction of Altered Genome (fga)"
+    plot_type: "table"
+    headers:
+        sample_id:
+            title: "Sample ID"
+            placement: 1
+        tai:
+            title: "TAI"
+            format: "{:,.4f}"
+            placement: 2
+            scale: False
+        cna:
+            title: "CNA"
+            format: "{:,.4f}"
+            placement: 3
+        base_segments:
+            title: "Base Segments"
+            format: "{:,.4f}"
+            placement: 4
+        break_points:
+            title: "Break Points"
+            format: "{:,.4f}"
+            placement: 5
+        fga:
+            title: "FGA"
+            format: "{:,.4f}"
+            placement: 6
   hrdcna_summary:
     id: "hrdcna"
     name: "HRDCNA Summary"
