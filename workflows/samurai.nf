@@ -187,29 +187,29 @@ workflow SAMURAI {
     }
 
     // QC metrics about alignment (coverage, etc.)
-    //BAM_QC_PICARD(
-    //    ch_bam_bai.map { meta, bam, bai ->
-    //        [meta, bam, bai, [], []]
-    //    },
-    //    ch_fasta,
-    //    ch_fai,
-    //    ch_dict,
-    //    [[], []] /* fasta_gzi */
-    //)
-//
-    //ch_versions = ch_versions.mix(
-    //    BAM_QC_PICARD.out.versions.first()
-    //)
-    //ch_multiqc_files = ch_multiqc_files.mix(
-    //    BAM_QC_PICARD.out.coverage_metrics.collect { _meta, metrics ->
-    //        metrics
-    //    }
-    //)
-    //ch_multiqc_files = ch_multiqc_files.mix(
-    //    BAM_QC_PICARD.out.multiple_metrics.collect { _meta, metrics ->
-    //        metrics
-    //    }
-    //)
+    BAM_QC_PICARD(
+        ch_bam_bai.map { meta, bam, bai ->
+            [meta, bam, bai, [], []]
+        },
+        ch_fasta,
+        ch_fai,
+       ch_dict,
+        [[], []] /* fasta_gzi */
+    )
+
+    ch_versions = ch_versions.mix(
+        BAM_QC_PICARD.out.versions.first()
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(
+        BAM_QC_PICARD.out.coverage_metrics.collect { _meta, metrics ->
+            metrics
+        }
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(
+        BAM_QC_PICARD.out.multiple_metrics.collect { _meta, metrics ->
+            metrics
+        }
+    )
 
     // CN Calling
 
