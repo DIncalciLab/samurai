@@ -21,7 +21,7 @@ process COMPUTE_CINMETRICS{
     compute_cinmetrics.R \\
         --seg_file $seg_file \\
         --output cinmetrics_summary_mqc.tsv \\
-$args
+        $args
 
     cat << END_VERSIONS > versions.yml
     "${task.process}":
