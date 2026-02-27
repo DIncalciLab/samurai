@@ -747,63 +747,62 @@
                 }
             }
         },
-        "cinmetrics_options": {
-            "title": "CINmetrics options",
-            "type": "object",
-            "description": "Options for computing chromosomal instability metrics using the CINmetrics R package.",
-            "default": "",
-            "properties": {
-                "compute_cinmetrics": {
-                    "type": "boolean",
-                    "description": "Compute chromosomal instability metrics using CINmetrics."
-                },
-                "cin_segmentMean_tai": {
-                    "type": "number",
-                    "default": 0.2,
-                    "description": "Segment mean threshold for TAI calculation."
-                },
-                "cin_segmentMean_cna": {
-                    "type": "number",
-                    "default": 0.2,
-                    "description": "Segment mean threshold for CNA count."
-                },
-                "cin_segmentMean_base_segments": {
-                    "type": "number",
-                    "default": 0.2,
-                    "description": "Segment mean threshold for number of base segments."
-                },
-                "cin_segmentMean_break_points": {
-                    "type": "number",
-                    "default": 0.2,
-                    "description": "Segment mean threshold for breakpoint count."
-                },
-                "cin_segmentMean_fga": {
-                    "type": "number",
-                    "default": 0.2,
-                    "description": "Segment mean threshold for FGA calculation."
-                },
-                "cin_segmentDistance_cna": {
-                    "type": "number",
-                    "default": 10000000,
-                    "description": "Minimum distance between segments (in bp) for CNA merging."
-                },
-                "cin_minSegSize_cna": {
-                    "type": "number",
-                    "default": 1000000,
-                    "description": "Minimum segment size (in bp) to consider for CNA."
-                },
-                "cin_genomeSize_fga": {
-                    "type": "number",
-                    "default": 3000000000,
-                    "description": "Genome size used for FGA normalization."
-                },
-                "cin_numProbes": {
-                    "type": "number",
-                    "description": "Optional number of probes per segment (if applicable)."
-                }
-            }            
+"cinmetrics_options": {
+    "title": "CINmetrics options",
+    "type": "object",
+    "description": "Options for computing chromosomal instability metrics using the CINmetrics R package.",
+    "default": "",
+    "properties": {
+        "compute_cinmetrics": {
+            "type": "boolean",
+            "description": "Compute chromosomal instability metrics using CINmetrics."
+        },
+        "cin_segmentMean_tai": {
+            "type": "number",
+            "default": 0.2,
+            "description": "Segment mean threshold for TAI calculation."
+        },
+        "cin_segmentMean_cna": {
+            "type": "number",
+            "default": -0.234,
+            "description": "Segment mean threshold for CNA count."
+        },
+        "cin_segmentMean_base_segments": {
+            "type": "number",
+            "default": 0.2,
+            "description": "Segment mean threshold for number of base segments."
+        },
+        "cin_segmentMean_break_points": {
+            "type": "number",
+            "default": 0.2,
+            "description": "Segment mean threshold for breakpoint count."
+        },
+        "cin_segmentMean_fga": {
+            "type": "number",
+            "default": 0.2,
+            "description": "Segment mean threshold for FGA calculation."
+        },
+        "cin_segmentDistance_cna": {
+            "type": "number",
+            "default": 10000000,
+            "description": "Minimum distance between segments (in bp) for CNA merging."
+        },
+        "cin_minSegSize_cna": {
+            "type": "number",
+            "default": 1000000,
+            "description": "Minimum segment size (in bp) to consider for CNA."
+        },
+        "cin_genomeSize_fga": {
+            "type": "number",
+            "default": 2873203431,
+            "description": "Genome size used for FGA normalization."
+        },
+        "cin_numProbes": {
+            "type": "number",
+            "description": "Optional number of probes per segment (if applicable)."
         }
-    },
+    }
+},
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
