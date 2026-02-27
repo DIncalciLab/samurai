@@ -69,6 +69,9 @@
 - [deepTools](https://pubmed.ncbi.nlm.nih.gov/24799436/)
   > Ramírez F, Dündar F, Diehl S, Grüning BA, Manke T. deepTools: a flexible platform for exploring deep-sequencing data. Nucleic Acids Res. 2014 Jul;42(Web Server issue):W187-91. doi: 10.1093/nar/gku365. Epub 2014 May 5. PMID: 24799436; PMCID: PMC4086134.
 
+- [CINmetrics](https://pubmed.ncbi.nlm.nih.gov/37123011/)
+  > Oza VH, Fisher JL, Darji R, Lasseigne BN. CINmetrics: an R package for analyzing copy number aberrations as a measure of chromosomal instability. PeerJ. 2023 Apr 25;11:e15244. doi: 10.7717/peerj.15244. PMID: 37123011; PMCID: PMC10143595.
+
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
