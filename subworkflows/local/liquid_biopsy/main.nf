@@ -45,18 +45,14 @@ workflow LIQUID_BIOPSY {
         pon_file = BUILD_PON.out.normal_panel.collect()
     }
     else {
-        if (!ch_normal_panel) {
-            if (caller == "wisecondorx") {
-                error("No PoN specified nor built, but WisecondorX requires it")
-            }
-            else {
-                // ichorCNA can work without a PoN, although not optimally
-                log.warn("No PoN specified: CNA calling performance can be impacted")
-                pon_file = []
-            }
+        
+        if (caller == "wisecondorx") {
+            pon_file = ch_normal_panel.ifEmpty(error("No PoN specified nor built, but WisecondorX requires it")).first()    
         }
         else {
-            pon_file = ch_normal_panel.collect()
+            // ichorCNA can work without a PoN, although not optimally
+            pon_file = ch_normal_panel.ifEmpty([]).first()
+            ch_normal_panel.ifEmpty { log.warn "No PoN specified: CNA calling performance may be impacted" }
         }
     }
 
