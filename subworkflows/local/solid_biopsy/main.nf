@@ -135,7 +135,7 @@ workflow SOLID_BIOPSY {
             if (!ch_normal_panel) {
                 // ichorCNA can work without a PoN, although not optimally
                 log.warn("No PoN specified: CNA calling performance may be impacted")
-                pon_file = []
+                pon_file = ch_normal_panel.ifEmpty([]).first()
             }
             else {
                 pon_file = ch_normal_panel.map{pon -> pon}
