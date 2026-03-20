@@ -764,7 +764,7 @@
         },
         "cin_segmentMean_cna": {
             "type": "number",
-            "default": -0.234,
+            "default": 0.2,
             "description": "Segment mean threshold for CNA count."
         },
         "cin_segmentMean_base_segments": {
@@ -802,7 +802,7 @@
             "description": "Optional number of probes per segment (if applicable)."
         }
     }
-},
+}},
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
