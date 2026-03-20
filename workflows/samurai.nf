@@ -193,7 +193,7 @@ workflow SAMURAI {
         },
         ch_fasta,
         ch_fai,
-       ch_dict,
+        ch_dict,
         [[], []] /* fasta_gzi */
     )
 
@@ -234,7 +234,9 @@ workflow SAMURAI {
             ch_map_wig,
             ch_centromere,
             ch_reptime,
-            ch_fasta
+            ch_fasta,
+            ch_fai, 
+            params.filter_bam_pon
         )
         gistic_file = SOLID_BIOPSY.out.gistic_file
         ch_versions = ch_versions.mix(SOLID_BIOPSY.out.versions.first())
@@ -288,11 +290,9 @@ workflow SAMURAI {
     }
 
     // Run CINmetrics if specified
-    if (params.compute_cinmetrics) {
-        COMPUTE_CINMETRICS(gistic_file)
-        ch_versions = ch_versions.mix(COMPUTE_CINMETRICS.out.versions)
-        ch_multiqc_files = ch_multiqc_files.mix(COMPUTE_CINMETRICS.out.cinmetrics_summary)
-    }
+    COMPUTE_CINMETRICS(gistic_file)
+    ch_versions = ch_versions.mix(COMPUTE_CINMETRICS.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(COMPUTE_CINMETRICS.out.cinmetrics_summary)
 
     // Run GISTIC if specified
     if (run_gistic) {
