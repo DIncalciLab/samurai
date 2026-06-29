@@ -19,6 +19,7 @@ include { methodsDescriptionText       } from '../subworkflows/local/utils_samur
 //
 
 include { CIN_SIGNATURE_QUANTIFICATION } from '../modules/local/cin_signature_quantification/main'
+include { COMPUTE_CINMETRICS           } from '../modules/local/cinmetrics/main'
 include { SOLID_BIOPSY                 } from '../subworkflows/local/solid_biopsy/main'
 include { SIZE_SELECTION               } from '../subworkflows/local/size_selection/main'
 include { LIQUID_BIOPSY                } from '../subworkflows/local/liquid_biopsy/main'
@@ -285,6 +286,11 @@ workflow SAMURAI {
     else if (analysis_type != "align_only") {
         error("Unknown / unsupported analysis ${analysis_type}")
     }
+
+    // Run CINmetrics if specified
+    COMPUTE_CINMETRICS(gistic_file)
+    ch_versions = ch_versions.mix(COMPUTE_CINMETRICS.out.versions)
+    ch_multiqc_files = ch_multiqc_files.mix(COMPUTE_CINMETRICS.out.cinmetrics_summary)
 
     // Run GISTIC if specified
     if (run_gistic) {
