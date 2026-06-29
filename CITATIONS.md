@@ -67,6 +67,7 @@
   > Mayakonda A, Lin DC, Assenov Y, Plass C, Koeffler HP. Maftools: efficient and comprehensive analysis of somatic variants in cancer. Genome Res. 2018 Nov;28(11):1747-1756. doi: 10.1101/gr.239244.118. Epub 2018 Oct 19. PMID: 30341162; PMCID: PMC6211645.
 
 - [deepTools](https://pubmed.ncbi.nlm.nih.gov/24799436/)
+
   > Ramírez F, Dündar F, Diehl S, Grüning BA, Manke T. deepTools: a flexible platform for exploring deep-sequencing data. Nucleic Acids Res. 2014 Jul;42(Web Server issue):W187-91. doi: 10.1093/nar/gku365. Epub 2014 May 5. PMID: 24799436; PMCID: PMC4086134.
 
 - [CINmetrics](https://pubmed.ncbi.nlm.nih.gov/37123011/)
