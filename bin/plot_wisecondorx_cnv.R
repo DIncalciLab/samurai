@@ -22,24 +22,15 @@ bin_path       <- argv$binfile
 output_dir     <- argv$outdir
 ratio_limit    <- argv$ratio_limit
 
-# --seg_file puo' ricevere piu' di un path se, a monte, un glob troppo
-# permissivo (es. "*.seg") matcha anche il file "*_gistic.seg" generato
-# nello stesso step (che NON ha la colonna 'call', e' pensato per GISTIC).
-# Scartiamo esplicitamente quel file e teniamo quello con i call reali.
+# take the right seg_file pattern
 seg_candidates <- argv$seg_file
 if (length(seg_candidates) > 1) {
-  message("Ricevuti piu' file per --seg_file (", paste(seg_candidates, collapse = ", "),
-          "): scarto quelli che terminano in '_gistic.seg'.")
   seg_candidates <- seg_candidates[!grepl("_gistic\\.seg$", seg_candidates)]
-  if (length(seg_candidates) == 0) {
-    stop("Nessun file valido rimasto per --seg_file dopo aver escluso '_gistic.seg'.")
-  }
 }
 seg_path <- seg_candidates[1]
 
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
-# ---- helper functions ------------------------------------------------------
 
 # Fix column names
 read_and_normalize <- function(path) {
@@ -52,7 +43,8 @@ read_and_normalize <- function(path) {
   df
 }
 
-# Rimappa i call gain/loss/neut di WisecondorX in etichette leggibili per il plot
+# Remap WisecondorX gain/loss/neut calls to readable labels for the plot
+
 classify_segments <- function(df) {
   call_map <- c(gain = "GAIN", loss = "LOSS", neut = "NEUTRAL")
   df %>% mutate(call = recode(tolower(call), !!!call_map, .default = "NEUTRAL"))
