@@ -537,10 +537,6 @@
                     "hidden": true,
                     "description": "Path to a file with centromere data for the specified genome.",
                     "format": "file-path"
-                },
-                "ichorcna_ploidy_aware_plot": {
-                    "type": "boolean",
-                    "description": "Ploidy-aware ichorCNA plots."
                 }
             }
         },
@@ -572,6 +568,11 @@
                 "wisecondorx_ylim": {
                     "type": "string",
                     "description": "Y axis limits for the generated plots"
+                },
+                "wisecondorx_plot_cnv_log2ratio": {
+                    "type": "number",
+                    "default": 0.1,
+                    "description": "Y-axis limit in log2(ratio) scale"
                 }
             }
         },
