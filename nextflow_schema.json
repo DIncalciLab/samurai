@@ -571,7 +571,7 @@
                 },
                 "wisecondorx_plot_cnv_log2ratio": {
                     "type": "number",
-                    "default": 0.1,
+                    "default": 1,
                     "description": "Y-axis limit in log2(ratio) scale"
                 }
             }
