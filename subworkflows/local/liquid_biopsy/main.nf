@@ -6,6 +6,7 @@ include { BAM_CNV_WISECONDORX          } from '../../../subworkflows/nf-core/bam
 include { ICHORCNA                     } from '../../../subworkflows/local/ichorcna/main'
 include { ASSEMBLE_WISECONDORX_OUTPUTS } from '../../../modules/local/assemble_wisecondorx_outputs/main'
 include { CONVERT_WISECONDORX_IMAGES   } from '../../../modules/local/convert_wisecondorx_images/main'
+include { PLOT_WISECONDORX_CNV         } from '../../../modules/local/plot_wisecondorx_cnv/main'
 
 workflow LIQUID_BIOPSY {
     take:
@@ -108,6 +109,12 @@ workflow LIQUID_BIOPSY {
         genome_plot = CONVERT_WISECONDORX_IMAGES.out.genome_plot
         // For compatibility with workflow output
         corrected_gistic_file = gistic_file
+
+       PLOT_WISECONDORX_CNV(CONVERT_GISTIC_SEG.out.segfile,
+                     BAM_CNV_WISECONDORX.out.bins_bed)
+        ch_versions = ch_versions.mix(PLOT_WISECONDORX_CNV.out.versions)
+
+        
     }
     else {
         error("Uknown / unsupported analysis type ${caller}")
