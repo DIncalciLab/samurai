@@ -14,7 +14,7 @@ p <- add_argument(p, "--id", help = "Sample ID")
 p <- add_argument(p, "--seg_file", help = "Segmented file with calls from WisecondorX", nargs = Inf)
 p <- add_argument(p, "--binfile", help = "Bin-level file from WisecondorX")
 p <- add_argument(p, "--outdir", help = "Output directory", default = ".")
-p <- add_argument(p, "--ratio_limit", help = "Y-axis limit in log2(ratio) scale; values beyond this are visually clipped", default = 1)
+p <- add_argument(p, "--ratio_limit", help = "Log2ratio limit of additional WisecondorX plots (application-generated plots are unaffected)", default = 1)
 argv <- parse_args(p)
 
 sample_id      <- argv$id

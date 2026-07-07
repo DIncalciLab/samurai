@@ -569,10 +569,10 @@
                     "type": "string",
                     "description": "Y axis limits for the generated plots"
                 },
-                "wisecondorx_plot_cnv_log2ratio": {
+                "wisecondorx_plot_y_max": {
                     "type": "number",
                     "default": 1,
-                    "description": "Y-axis limit in log2(ratio) scale"
+                    "description": "Upper log2ratio limit of additional WisecondorX plots (application-generated plots are unaffected)"
                 }
             }
         },
