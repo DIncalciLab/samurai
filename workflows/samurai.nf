@@ -290,9 +290,9 @@ workflow SAMURAI {
     // Run CINmetrics if specified
     if (analysis_type != "align_only") {
         COMPUTE_CINMETRICS(gistic_file)
+        ch_versions = ch_versions.mix(COMPUTE_CINMETRICS.out.versions)
+        ch_multiqc_files = ch_multiqc_files.mix(COMPUTE_CINMETRICS.out.cinmetrics_summary)
     }
-    ch_versions = ch_versions.mix(COMPUTE_CINMETRICS.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(COMPUTE_CINMETRICS.out.cinmetrics_summary)
 
     // Run GISTIC if specified
     if (run_gistic) {
