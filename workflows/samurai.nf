@@ -288,7 +288,9 @@ workflow SAMURAI {
     }
 
     // Run CINmetrics if specified
-    COMPUTE_CINMETRICS(gistic_file)
+    if (analysis_type != "align_only") {
+        COMPUTE_CINMETRICS(gistic_file)
+    }
     ch_versions = ch_versions.mix(COMPUTE_CINMETRICS.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(COMPUTE_CINMETRICS.out.cinmetrics_summary)
 
